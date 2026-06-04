@@ -363,13 +363,36 @@ export default function ListingDetailPage() {
 
       {/* Global verification status banner */}
       {!isVerified() && profile && (
-        <div className="w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300">
+        <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
+          profile.status === "rejected" 
+            ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
+            : "bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400"
+        }`}>
           <div className="flex items-center gap-2.5">
-            <span className="text-sm">🔒</span>
+            <span className="text-sm">
+              {profile.status === "rejected" ? "⚠️" : "🔒"}
+            </span>
             <p className="font-light">
-              <strong>Guest State</strong> — Proof documents are pending review. Posting classified advertisements is locked.
+              {profile.status === "rejected" ? (
+                <>
+                  <strong>Residency Profile Rejected</strong> (Reason: {profile.rejection_reason?.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}). 
+                  {profile.rejection_message && <span className="italic"> "{profile.rejection_message}"</span>}
+                </>
+              ) : (
+                <>
+                  <strong>Read-Only Guest State</strong> — Proof documents are pending review. Posting classified advertisements is locked.
+                </>
+              )}
             </p>
           </div>
+          {profile.status === "rejected" && (
+            <button 
+              onClick={() => router.push("/auth/complete-profile")}
+              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 dark:bg-amber-650 dark:hover:bg-amber-700 text-white font-bold text-[10px] uppercase tracking-wider active:scale-[0.98] transition-all cursor-pointer shrink-0"
+            >
+              Update & Resubmit
+            </button>
+          )}
         </div>
       )}
 
@@ -410,7 +433,7 @@ export default function ListingDetailPage() {
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
                   <div className="text-[10px] text-slate-400">
-                    {profile.phase} • Blk {profile.block}
+                    {profile.phase} • {profile.block}
                   </div>
                 )}
               </div>
@@ -447,8 +470,8 @@ export default function ListingDetailPage() {
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🛍️ Marketplace
               </Link>
-              <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📞 Local Directory
+              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+                🏢 Business Directory
               </Link>
             </nav>
 

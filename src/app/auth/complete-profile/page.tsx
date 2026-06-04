@@ -21,6 +21,38 @@ interface UserProfile {
   } | null;
 }
 
+const PHASE_BLOCKS: Record<string, string[]> = {
+  "Phase 1": [
+    "Central",
+    "Central Awami Villas",
+    "Central Kanal Villas",
+    "Eastern",
+    "Eastern Extension",
+    "Northern",
+    "Southern"
+  ],
+  "Phase 2": [
+    "Block A",
+    "Block B",
+    "Block C",
+    "Block D",
+    "Block D Awami Villas",
+    "Block E",
+    "Block F",
+    "Block G",
+    "Block H",
+    "Block J"
+  ],
+  "Phase 3": [],
+  "Phase 4": [
+    "Block G1",
+    "Block G2",
+    "Block G3",
+    "Block G4",
+    "Awami Homes"
+  ]
+};
+
 export default function CompleteProfilePage() {
   const router = useRouter();
 
@@ -56,7 +88,11 @@ export default function CompleteProfilePage() {
           if (data.user?.resident_profile) {
             const profile = data.user.resident_profile;
             setPreviousProfile(profile);
-            setPhase(profile.phase || "Phase 1");
+            
+            const loadedPhase = profile.phase;
+            const validPhases = ["Phase 1", "Phase 2", "Phase 3", "Phase 4"];
+            setPhase(validPhases.includes(loadedPhase) ? loadedPhase : "Phase 1");
+
             setBlock(profile.block || "");
             setHouseNumber(profile.house_number || "");
             setStreetNumber(profile.street_number || "");
@@ -223,33 +259,59 @@ export default function CompleteProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label htmlFor="phase" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
-                      Bahria Phase
+                      Bahria Phase <span className="text-rose-500">*</span>
                     </label>
                     <select
                       id="phase"
                       value={phase}
-                      onChange={(e) => setPhase(e.target.value)}
+                      onChange={(e) => {
+                        const newPhase = e.target.value;
+                        setPhase(newPhase);
+                        const newPhaseBlocks = PHASE_BLOCKS[newPhase] || [];
+                        if (newPhaseBlocks.length > 0 && !newPhaseBlocks.includes(block)) {
+                          setBlock("");
+                        }
+                      }}
                       className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors"
                     >
                       <option value="Phase 1">Phase 1</option>
                       <option value="Phase 2">Phase 2</option>
-                      <option value="Central">Central</option>
+                      <option value="Phase 3">Phase 3</option>
+                      <option value="Phase 4">Phase 4</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
                     <label htmlFor="block" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
-                      Block
+                      Block <span className="text-rose-500">*</span>
                     </label>
-                    <input
-                      id="block"
-                      type="text"
-                      required
-                      placeholder="e.g. Block G"
-                      value={block}
-                      onChange={(e) => setBlock(e.target.value)}
-                      className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors"
-                    />
+                    {(PHASE_BLOCKS[phase] || []).length > 0 ? (
+                      <select
+                        id="block"
+                        required
+                        value={block}
+                        onChange={(e) => setBlock(e.target.value)}
+                        className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors"
+                      >
+                        <option value="" disabled>Select Block</option>
+                        {(PHASE_BLOCKS[phase] || []).map((b) => (
+                          <option key={b} value={b}>{b}</option>
+                        ))}
+                        {block && !(PHASE_BLOCKS[phase] || []).includes(block) && (
+                          <option value={block}>{block}</option>
+                        )}
+                      </select>
+                    ) : (
+                      <input
+                        id="block"
+                        type="text"
+                        required
+                        placeholder="e.g. Block A"
+                        value={block}
+                        onChange={(e) => setBlock(e.target.value)}
+                        className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -257,7 +319,7 @@ export default function CompleteProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label htmlFor="house" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
-                      House/Plot No.
+                      House/Plot No. <span className="text-rose-500">*</span>
                     </label>
                     <input
                       id="house"
@@ -314,7 +376,7 @@ export default function CompleteProfilePage() {
                 {/* Secure Document Upload Input */}
                 <div className="space-y-1.5 pt-2">
                   <label className="text-xs font-semibold text-slate-455 dark:text-zinc-500">
-                    Residency Document Proof (Electricity Bill / Maintenance Bill)
+                    Residency Document Proof (Electricity Bill / Maintenance Bill) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative group border-2 border-dashed border-neutral-200 dark:border-zinc-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/30 rounded-xl p-6 transition-all duration-200 bg-neutral-50 dark:bg-zinc-950/40 text-center flex flex-col items-center justify-center min-h-[140px] cursor-pointer">
                     <input

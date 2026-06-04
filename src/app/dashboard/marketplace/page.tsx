@@ -5,6 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import { getEcho } from "@/lib/echo";
 
 interface ResidentProfile {
   phase: string;
@@ -174,6 +175,71 @@ export default function MarketplacePage() {
     initialize();
   }, []);
 
+  // References to keep event listeners updated without resubscribing Echo
+  const categoryRef = useRef(selectedCategory);
+  const searchRef = useRef(searchQuery);
+  const tabRef = useRef(activeTab);
+
+  useEffect(() => {
+    categoryRef.current = selectedCategory;
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  useEffect(() => {
+    tabRef.current = activeTab;
+  }, [activeTab]);
+
+  // Laravel Reverb WebSocket integration
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const echo = getEcho();
+    if (!echo) return;
+
+    // Join target user's strict private channel
+    const channelName = `user.${currentUser.id}`;
+    
+    echo.private(channelName)
+      .listen(".ResidentVerificationStatusUpdated", (data: { status: "pending" | "approved" | "rejected"; rejection_reason?: string; rejection_message?: string }) => {
+        console.log("WebSocket Reverb update received on Marketplace:", data);
+        
+        // Show toast notification
+        if (data.status === "approved") {
+          showToast("🎉 Congratulations! Your residency profile has been verified and approved!", "success");
+        } else if (data.status === "rejected") {
+          const reasonText = data.rejection_reason ? `Reason: ${data.rejection_reason.replace(/_/g, " ")}` : "Please review details.";
+          showToast(`⚠️ Residency verification rejected. ${reasonText}`, "error");
+        }
+
+        // Refetch user and listings context to instantly unlock ads posting
+        fetchUser().then(user => {
+          if (user) {
+            fetchListings(categoryRef.current, searchRef.current, tabRef.current === "my-listings", user);
+          }
+        });
+      })
+      .listen(".ListingStatusUpdated", (data: { listing_id: string; status: string; title: string }) => {
+        console.log("WebSocket Reverb update received on Marketplace for Listing status:", data);
+        
+        if (data.status === "active") {
+          showToast(`🎉 Your classified ad "${data.title}" has been approved!`, "success");
+        } else if (data.status === "suspended") {
+          showToast(`⚠️ Your classified ad "${data.title}" has been suspended by a moderator.`, "error");
+        }
+
+        // Refetch listings context to update status badges
+        fetchListings(categoryRef.current, searchRef.current, tabRef.current === "my-listings");
+      });
+
+    // Cleanup channel connection on unmount
+    return () => {
+      echo.leave(channelName);
+    };
+  }, [currentUser]);
+
   // Handle Search and Filter Changes
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -332,13 +398,36 @@ export default function MarketplacePage() {
 
       {/* Global verification status banner */}
       {!isVerified() && profile && (
-        <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300`}>
+        <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
+          profile.status === "rejected" 
+            ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
+            : "bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400"
+        }`}>
           <div className="flex items-center gap-2.5">
-            <span className="text-sm">🔒</span>
+            <span className="text-sm">
+              {profile.status === "rejected" ? "⚠️" : "🔒"}
+            </span>
             <p className="font-light">
-              <strong>Guest State</strong> — Proof documents are pending review. Posting classified advertisements is locked.
+              {profile.status === "rejected" ? (
+                <>
+                  <strong>Residency Profile Rejected</strong> (Reason: {profile.rejection_reason?.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}). 
+                  {profile.rejection_message && <span className="italic"> "{profile.rejection_message}"</span>}
+                </>
+              ) : (
+                <>
+                  <strong>Read-Only Guest State</strong> — Proof documents are pending review. Posting classified advertisements is locked.
+                </>
+              )}
             </p>
           </div>
+          {profile.status === "rejected" && (
+            <button 
+              onClick={() => router.push("/auth/complete-profile")}
+              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 dark:bg-amber-650 dark:hover:bg-amber-700 text-white font-bold text-[10px] uppercase tracking-wider active:scale-[0.98] transition-all cursor-pointer shrink-0"
+            >
+              Update & Resubmit
+            </button>
+          )}
         </div>
       )}
 
@@ -379,7 +468,7 @@ export default function MarketplacePage() {
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
                   <div className="text-[10px] text-slate-400">
-                    {profile.phase} • Blk {profile.block}
+                    {profile.phase} • {profile.block}
                   </div>
                 )}
               </div>
@@ -416,8 +505,8 @@ export default function MarketplacePage() {
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🛍️ Marketplace
               </Link>
-              <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📞 Local Directory
+              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+                🏢 Business Directory
               </Link>
             </nav>
 
@@ -594,7 +683,7 @@ export default function MarketplacePage() {
                         </div>
                         {item.user?.resident_profile && (
                           <div className="text-[9px] text-slate-455 dark:text-zinc-500">
-                            {item.user.resident_profile.phase} • Blk {item.user.resident_profile.block}
+                            {item.user.resident_profile.phase} • {item.user.resident_profile.block}
                           </div>
                         )}
                       </div>

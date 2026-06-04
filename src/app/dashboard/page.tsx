@@ -666,7 +666,7 @@ export default function DashboardPage() {
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
-            : "bg-emerald-500/10 border-emerald-500/20 text-slate-700 dark:text-emerald-350"
+            : "bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400"
         }`}>
           <div className="flex items-center gap-2.5">
             <span className="text-sm">
@@ -733,7 +733,7 @@ export default function DashboardPage() {
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
                   <div className="text-[10px] text-slate-400">
-                    {profile.phase} • Blk {profile.block}
+                    {profile.phase} • {profile.block}
                   </div>
                 )}
               </div>
@@ -774,8 +774,8 @@ export default function DashboardPage() {
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
                 🛍️ Marketplace
               </Link>
-              <Link href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📞 Local Directory
+              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+                🏢 Business Directory
               </Link>
             </nav>
 
@@ -852,7 +852,7 @@ export default function DashboardPage() {
                           {post.user.name}
                           {post.user.resident_profile && (
                             <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400 border border-teal-200/30">
-                              {post.user.resident_profile.phase} • Blk {post.user.resident_profile.block}
+                              {post.user.resident_profile.phase} • {post.user.resident_profile.block}
                             </span>
                           )}
                         </div>
@@ -941,7 +941,7 @@ export default function DashboardPage() {
                                     </span>
                                     {comment.user.resident_profile && (
                                       <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-light">
-                                        {comment.user.resident_profile.phase} • Blk {comment.user.resident_profile.block}
+                                        {comment.user.resident_profile.phase} • {comment.user.resident_profile.block}
                                       </span>
                                     )}
                                   </div>
