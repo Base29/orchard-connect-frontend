@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a; /* Slate 900 */
+  --primary-glow: radial-gradient(rgba(120, 119, 198, 0.1), rgba(255, 255, 255, 0));
+}
+
+.dark {
+  --background: #000000; /* Crisp pure black backdrop */
+  --foreground: #f8fafc; /* Zinc 50 */
+  --primary-glow: radial-gradient(rgba(120, 119, 198, 0.15), rgba(0, 0, 0, 0));
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Base resets and micro-transitions */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Seamless theme custom utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass-panel {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Minimalist thin borders */
+.subtle-border {
+  border-color: #f1f5f9; /* Slate 100 */
+}
+
+.dark .subtle-border {
+  border-color: #1e293b; /* Slate 800 */
+}
+
+/* Smooth ambient glows */
+.glow-effect {
+  background-image: var(--primary-glow);
+}
