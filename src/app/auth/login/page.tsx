@@ -96,14 +96,14 @@ function LoginForm() {
         <button
           type="button"
           onClick={() => { setMode("login"); setFormError(""); }}
-          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${mode === "login" ? "border-emerald-500 text-slate-900 dark:text-neutral-100" : "border-transparent text-slate-400 dark:text-zinc-500 hover:text-slate-650"}`}
+          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${mode === "login" ? "border-emerald-500 text-slate-900 dark:text-neutral-100" : "border-transparent text-slate-400 dark:text-zinc-400 hover:text-slate-700"}`}
         >
           Sign In
         </button>
         <button
           type="button"
           onClick={() => { setMode("register"); setFormError(""); }}
-          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${mode === "register" ? "border-emerald-500 text-slate-900 dark:text-neutral-100" : "border-transparent text-slate-400 dark:text-zinc-500 hover:text-slate-650"}`}
+          className={`flex-1 pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${mode === "register" ? "border-emerald-500 text-slate-900 dark:text-neutral-100" : "border-transparent text-slate-400 dark:text-zinc-400 hover:text-slate-700"}`}
         >
           Create Account
         </button>
@@ -111,7 +111,7 @@ function LoginForm() {
 
       {/* Dynamic Alerts */}
       {error && !formError && (
-        <div className="p-4 rounded-xl bg-rose-550/10 dark:bg-rose-950/20 border border-rose-200/40 text-rose-800 dark:text-rose-400 text-xs text-center font-medium animate-fadeIn">
+        <div className="p-4 rounded-xl bg-rose-500/10 dark:bg-rose-900/20 border border-rose-200/40 text-rose-800 dark:text-rose-400 text-xs text-center font-medium animate-fadeIn">
           {error === "oauth_failed" && "OAuth authentication was rejected or expired."}
           {error === "account_suspended" && "Your resident account has been suspended by moderation."}
           {error === "invalid_callback" && "Authentication sequence aborted due to invalid callback payload."}
@@ -119,7 +119,7 @@ function LoginForm() {
       )}
 
       {formError && (
-        <div className="p-4 rounded-xl bg-rose-550/10 dark:bg-rose-950/20 border border-rose-200/40 text-rose-855 dark:text-rose-400 text-xs text-center font-medium animate-fadeIn">
+        <div className="p-4 rounded-xl bg-rose-500/10 dark:bg-rose-900/20 border border-rose-200/40 text-rose-800 dark:text-rose-400 text-xs text-center font-medium animate-fadeIn">
           {formError}
         </div>
       )}
@@ -152,7 +152,7 @@ function LoginForm() {
 
       <div className="relative flex items-center justify-center py-2">
         <div className="absolute w-full border-t border-neutral-100 dark:border-zinc-800/80" />
-        <span className="relative px-3 text-xs bg-white dark:bg-zinc-900 text-slate-400 dark:text-zinc-500 font-medium">
+        <span className="relative px-3 text-xs bg-white dark:bg-zinc-900 text-slate-400 dark:text-zinc-400 font-medium">
           Or secure credentials
         </span>
       </div>
@@ -161,7 +161,7 @@ function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "register" && (
           <div className="space-y-1 animate-fadeIn">
-            <label htmlFor="name" className="text-xs font-semibold text-slate-400 dark:text-zinc-500">
+            <label htmlFor="name" className="text-xs font-semibold text-slate-400 dark:text-zinc-400">
               Full Name
             </label>
             <input
@@ -177,7 +177,7 @@ function LoginForm() {
         )}
 
         <div className="space-y-1">
-          <label htmlFor="email" className="text-xs font-semibold text-slate-400 dark:text-zinc-500">
+          <label htmlFor="email" className="text-xs font-semibold text-slate-400 dark:text-zinc-400">
             Email Address
           </label>
           <input
@@ -193,11 +193,11 @@ function LoginForm() {
 
         <div className="space-y-1">
           <div className="flex justify-between items-center">
-            <label htmlFor="pass" className="text-xs font-semibold text-slate-400 dark:text-zinc-500">
+            <label htmlFor="pass" className="text-xs font-semibold text-slate-400 dark:text-zinc-400">
               Secret Password
             </label>
             {mode === "login" && (
-              <a href="#" className="text-[10px] text-slate-400 dark:text-zinc-500 hover:underline">Forgot password?</a>
+              <a href="#" className="text-[10px] text-slate-400 dark:text-zinc-400 hover:underline">Forgot password?</a>
             )}
           </div>
           <input
@@ -213,7 +213,7 @@ function LoginForm() {
 
         {mode === "register" && (
           <div className="space-y-1 animate-fadeIn">
-            <label htmlFor="passConfirm" className="text-xs font-semibold text-slate-400 dark:text-zinc-500">
+            <label htmlFor="passConfirm" className="text-xs font-semibold text-slate-400 dark:text-zinc-400">
               Confirm Password
             </label>
             <input
@@ -244,7 +244,7 @@ function LoginForm() {
         </button>
       </form>
 
-      <div className="text-center text-xs text-slate-400 dark:text-zinc-500">
+      <div className="text-center text-xs text-slate-400 dark:text-zinc-400">
         {mode === "login" ? (
           <>
             New resident?{" "}
@@ -278,7 +278,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex items-center justify-center p-6 transition-colors duration-200">
       <Suspense fallback={
-        <div className="text-sm font-light text-slate-400 dark:text-zinc-500">
+        <div className="text-sm font-light text-slate-400 dark:text-zinc-400">
           Loading login layout...
         </div>
       }>

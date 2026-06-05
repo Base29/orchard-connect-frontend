@@ -726,13 +726,13 @@ export default function DashboardPage() {
             </button>
 
             <div className="flex items-center gap-3 pl-3 border-l border-neutral-200 dark:border-zinc-800">
-              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-750 dark:text-neutral-300 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm">
                 {getInitials(currentUser.name)}
               </div>
               <div className="hidden md:block text-left">
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                     {profile.phase} • {profile.block}
                   </div>
                 )}
@@ -742,14 +742,12 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Grid */}
       <div className="flex-1 w-full max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
         {/* Left Sidebar */}
         <aside className="lg:col-span-3 space-y-6">
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                 Residency Status
               </div>
               <div className="flex items-center gap-2">
@@ -759,7 +757,7 @@ export default function DashboardPage() {
                 </span>
               </div>
               {profile && (
-                <div className="text-xs text-slate-450 font-light leading-relaxed">
+                <div className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
                   Registered under house {profile.house_number}, {profile.street_number ? `${profile.street_number}, ` : ""}{profile.phase} ({profile.block}).
                 </div>
               )}
@@ -771,10 +769,10 @@ export default function DashboardPage() {
               <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🏠 Community Feed
               </Link>
-              <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+              <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🛍️ Marketplace
               </Link>
-              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🏢 Business Directory
               </Link>
             </nav>
@@ -783,7 +781,7 @@ export default function DashboardPage() {
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
             >
               Sign Out
             </button>
@@ -811,13 +809,13 @@ export default function DashboardPage() {
                 onChange={(e) => setNewPostContent(e.target.value)}
                 placeholder={isVerified() ? "Share something helpful with your fellow orchard residents..." : "Residency verification pending: posting is disabled."}
                 rows={3}
-                className="w-full text-sm py-2 focus:outline-none bg-transparent resize-none disabled:text-slate-400 dark:disabled:text-zinc-650"
+                className="w-full text-sm py-2 focus:outline-none bg-transparent resize-none disabled:text-slate-400 dark:disabled:text-zinc-500"
               />
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-zinc-800 relative z-20">
               <div className="flex gap-2">
-                <button type="button" disabled={!isVerified()} className="p-2 rounded-lg text-slate-400 dark:text-zinc-500 hover:bg-neutral-50 dark:hover:bg-zinc-850 disabled:opacity-30 disabled:hover:bg-transparent">
+                <button type="button" disabled={!isVerified()} className="p-2 rounded-lg text-slate-400 dark:text-zinc-400 hover:bg-neutral-50 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent">
                   📷 Image
                 </button>
               </div>
@@ -835,7 +833,7 @@ export default function DashboardPage() {
           {/* Feed List */}
           <div className="space-y-4">
             {posts.length === 0 ? (
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-8 text-center text-slate-400 dark:text-zinc-500 font-light">
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-8 text-center text-slate-400 dark:text-zinc-400 font-light">
                 No recent timeline posts found. Be the first to start the discussion!
               </div>
             ) : (
@@ -856,7 +854,7 @@ export default function DashboardPage() {
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                           {new Date(post.created_at).toLocaleDateString(undefined, {
                             hour: "2-digit",
                             minute: "2-digit"
@@ -872,7 +870,7 @@ export default function DashboardPage() {
                         className={`p-2 rounded-lg transition-all border border-transparent ${
                           post.flagged_by_user
                             ? "text-rose-500 cursor-default opacity-80"
-                            : "text-slate-450 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-200/30 cursor-pointer"
+                            : "text-slate-400 dark:text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-200/30 cursor-pointer"
                         }`}
                         title={post.flagged_by_user ? "You reported this post" : "Report post as inappropriate"}
                       >
@@ -894,7 +892,7 @@ export default function DashboardPage() {
                       className={`flex items-center gap-1.5 transition-colors ${
                         post.liked_by_user 
                           ? "text-rose-500 font-medium" 
-                          : "text-slate-400 dark:text-zinc-500 hover:text-slate-650 dark:hover:text-zinc-400"
+                          : "text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-300"
                       }`}
                     >
                       <svg className="w-4 h-4" fill={post.liked_by_user ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
@@ -904,7 +902,7 @@ export default function DashboardPage() {
                     </button>
                     <button
                       onClick={() => toggleComments(post.id)}
-                      className="text-slate-400 dark:text-zinc-500 hover:text-slate-650 dark:hover:text-zinc-400 flex items-center gap-1.5 transition-colors"
+                      className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-300 flex items-center gap-1.5 transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -925,27 +923,27 @@ export default function DashboardPage() {
                       ) : (
                         <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
                           {(!comments[post.id] || comments[post.id].length === 0) ? (
-                            <p className="text-[11px] text-slate-400 dark:text-zinc-500 italic font-light">
+                            <p className="text-[11px] text-slate-400 dark:text-zinc-400 italic font-light">
                               No comments yet. Write the first comment!
                             </p>
                           ) : (
                             comments[post.id].map(comment => (
                               <div key={comment.id} className="flex gap-2.5 items-start text-xs">
-                                <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-350 flex items-center justify-center font-bold text-[10px] shrink-0">
+                                <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-[10px] shrink-0">
                                   {getInitials(comment.user.name)}
                                 </div>
-                                <div className="flex-1 bg-slate-50 dark:bg-zinc-850/50 rounded-xl px-3 py-2">
+                                <div className="flex-1 bg-slate-50 dark:bg-zinc-800 rounded-xl px-3 py-2">
                                   <div className="flex items-center justify-between gap-2">
                                     <span className="font-semibold text-slate-800 dark:text-zinc-200">
                                       {comment.user.name}
                                     </span>
                                     {comment.user.resident_profile && (
-                                      <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-light">
+                                      <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                         {comment.user.resident_profile.phase} • {comment.user.resident_profile.block}
                                       </span>
                                     )}
                                   </div>
-                                  <p className="text-slate-650 dark:text-zinc-350 font-light mt-0.5 whitespace-pre-wrap leading-normal">
+                                  <p className="text-slate-600 dark:text-zinc-300 font-light mt-0.5 whitespace-pre-wrap leading-normal">
                                     {comment.content}
                                   </p>
                                 </div>
@@ -964,7 +962,7 @@ export default function DashboardPage() {
                             value={commentInputs[post.id] || ""}
                             onChange={(e) => setCommentInputs(prev => ({ ...prev, [post.id]: e.target.value }))}
                             disabled={commentSubmitting[post.id]}
-                            className="flex-1 bg-slate-50 dark:bg-zinc-850 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
+                            className="flex-1 bg-slate-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                           />
                           <button
                             type="submit"
@@ -975,7 +973,7 @@ export default function DashboardPage() {
                           </button>
                         </form>
                       ) : (
-                        <div className="bg-slate-50 dark:bg-zinc-850/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-500 text-center py-2 rounded-xl">
+                        <div className="bg-slate-50 dark:bg-zinc-800/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-400 text-center py-2 rounded-xl">
                           🔒 Verification required to write comments.
                         </div>
                       )}
@@ -991,7 +989,7 @@ export default function DashboardPage() {
             {hasMore && (
               <div ref={observerTarget} className="flex flex-col items-center justify-center py-6 gap-2">
                 <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <p className="text-[10px] font-light text-slate-450 dark:text-zinc-500">Loading older posts...</p>
+                <p className="text-[10px] font-light text-slate-500 dark:text-zinc-400">Loading older posts...</p>
               </div>
             )}
           </div>
@@ -1004,7 +1002,7 @@ export default function DashboardPage() {
           {/* Marketplace Widget */}
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
                 Classified Ads
               </span>
               <Link href="/dashboard/marketplace" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
@@ -1014,7 +1012,7 @@ export default function DashboardPage() {
 
             <div className="space-y-3">
               {listings.length === 0 ? (
-                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-500">
+                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400">
                   No active listings.
                 </div>
               ) : (
@@ -1027,7 +1025,7 @@ export default function DashboardPage() {
                       <h4 className="font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-emerald-500 transition-colors">
                         {item.title}
                       </h4>
-                      <p className="text-[10px] text-slate-400 truncate">{item.category}</p>
+                      <p className="text-[10px] text-slate-400 dark:text-zinc-400 truncate">{item.category}</p>
                     </Link>
                     
                     {isVerified() ? (
@@ -1040,7 +1038,7 @@ export default function DashboardPage() {
                         WhatsApp Seller
                       </a>
                     ) : (
-                      <div className="w-full text-center py-1.5 px-2 bg-slate-100 dark:bg-zinc-800 rounded-lg text-[9px] text-slate-400 dark:text-zinc-500 font-light border border-dashed border-neutral-200 dark:border-zinc-850">
+                      <div className="w-full text-center py-1.5 px-2 bg-slate-100 dark:bg-zinc-800 rounded-lg text-[9px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800">
                         🔒 Verification required to view seller
                       </div>
                     )}
@@ -1054,7 +1052,7 @@ export default function DashboardPage() {
           {isVerified() && (
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
                   My Posted Ads
                 </span>
                 <Link href="/dashboard/marketplace" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
@@ -1064,7 +1062,7 @@ export default function DashboardPage() {
 
               <div className="space-y-3">
                 {myListings.length === 0 ? (
-                  <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-500 italic font-light">
+                  <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400 italic font-light">
                     No ads posted yet.
                   </div>
                 ) : (
@@ -1072,34 +1070,34 @@ export default function DashboardPage() {
                     <Link
                       key={item.id}
                       href={`/dashboard/marketplace/${item.id}`}
-                      className="block rounded-xl border border-neutral-100 dark:border-zinc-800 p-3 space-y-2 text-xs hover:border-neutral-350 dark:hover:border-zinc-705 transition-all group"
+                      className="block rounded-xl border border-neutral-100 dark:border-zinc-800 p-3 space-y-2 text-xs hover:border-neutral-300 dark:hover:border-zinc-800 transition-all group"
                     >
                       <div className="flex justify-between items-center">
                         <div className="font-bold text-emerald-600 dark:text-emerald-450 group-hover:underline">
                           PKR {Number(item.price).toLocaleString('en-US')}
                         </div>
                         {item.status === "pending" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-955/20 dark:text-amber-400 border border-amber-250/20">
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-200/20">
                             Under Review
                           </span>
                         ) : item.status === "sold" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-slate-100 text-slate-805 dark:bg-zinc-850 dark:text-zinc-400 border border-neutral-200/30">
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-slate-100 text-slate-800 dark:bg-zinc-800 dark:text-zinc-400 border border-neutral-200/30">
                             Sold
                           </span>
                         ) : item.status === "active" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-emerald-50 text-emerald-808 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200/20">
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200/20">
                             Active
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-rose-50 text-rose-808 dark:bg-rose-955/20 dark:text-rose-400 border border-rose-200/20">
+                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400 border border-rose-200/20">
                             {item.status}
                           </span>
                         )}
                       </div>
-                      <h4 className="font-semibold text-slate-808 dark:text-zinc-200 truncate group-hover:text-emerald-500 transition-colors">
+                      <h4 className="font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-emerald-500 transition-colors">
                         {item.title}
                       </h4>
-                      <p className="text-[9px] text-slate-400 truncate">{item.category}</p>
+                      <p className="text-[9px] text-slate-400 dark:text-zinc-400 truncate">{item.category}</p>
                     </Link>
                   ))
                 )}
@@ -1109,19 +1107,19 @@ export default function DashboardPage() {
 
           {/* Announcements Widget */}
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
               Community Board
             </span>
             
             <div className="space-y-3 text-xs">
               {announcements.length === 0 ? (
-                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-500">
+                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400">
                   No notifications.
                 </div>
               ) : (
                 announcements.map((item) => (
                   <div key={item.id} className="space-y-0.5 border-l-2 border-emerald-500 pl-2">
-                    <div className="font-bold text-slate-850 dark:text-zinc-200 flex items-center gap-1.5">
+                    <div className="font-bold text-slate-800 dark:text-zinc-200 flex items-center gap-1.5">
                       {item.title}
                       {item.pinned && <span className="text-[9px] px-1 bg-amber-500/10 text-amber-600 rounded">Pin</span>}
                     </div>
@@ -1149,7 +1147,7 @@ export default function DashboardPage() {
               </h3>
               <button 
                 onClick={handleCloseFlagModal}
-                className="text-slate-400 hover:text-slate-650 dark:hover:text-zinc-350 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-all cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-all cursor-pointer"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1159,14 +1157,14 @@ export default function DashboardPage() {
 
             <form onSubmit={handleSubmitFlag} className="p-6 space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Why are you reporting this post?
                 </label>
                 <div className="relative">
                   <select
                     value={flagReason}
                     onChange={(e) => setFlagReason(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-zinc-850 text-slate-900 dark:text-neutral-100 border border-neutral-250/60 dark:border-zinc-800/80 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 appearance-none cursor-pointer"
                   >
                     <option value="spam">Spam or Misleading</option>
                     <option value="harassment">Harassment or Hate Speech</option>
@@ -1174,7 +1172,7 @@ export default function DashboardPage() {
                     <option value="inappropriate">Inappropriate or Explicit Content</option>
                     <option value="other">Other / Violation of Rules</option>
                   </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-450 dark:text-zinc-550">
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 dark:text-zinc-400">
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -1183,7 +1181,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Additional Context (Optional)
                 </label>
                 <textarea
@@ -1191,11 +1189,11 @@ export default function DashboardPage() {
                   onChange={(e) => setFlagComment(e.target.value)}
                   placeholder="Provide any details to help the moderation team understand the issue..."
                   rows={3}
-                  className="w-full bg-slate-50 dark:bg-zinc-850 text-slate-900 dark:text-neutral-100 border border-neutral-250/60 dark:border-zinc-800/80 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 resize-none font-light leading-relaxed"
+                  className="w-full bg-slate-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 resize-none font-light leading-relaxed"
                 />
               </div>
 
-              <div className="text-[10px] text-slate-450 dark:text-zinc-505 leading-relaxed bg-neutral-50 dark:bg-zinc-950/40 border border-neutral-200/50 dark:border-zinc-800/60 p-3 rounded-xl">
+              <div className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-neutral-50 dark:bg-zinc-950/40 border border-neutral-200/50 dark:border-zinc-800/60 p-3 rounded-xl">
                 ⚠️ <strong>Moderation Policy</strong>: Reports are logged under your resident identity and sent directly to society administrators. Submitting false reports maliciously may lead to temporary suspension.
               </div>
 
@@ -1204,7 +1202,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={handleCloseFlagModal}
                   disabled={flagSubmitting}
-                  className="px-4 py-2 border border-neutral-250/60 dark:border-zinc-800/80 hover:bg-neutral-50 dark:hover:bg-zinc-850/50 text-slate-650 dark:text-neutral-350 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 border border-neutral-200/60 dark:border-zinc-800/80 hover:bg-neutral-50 dark:hover:bg-zinc-800/50 text-slate-600 dark:text-zinc-300 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>

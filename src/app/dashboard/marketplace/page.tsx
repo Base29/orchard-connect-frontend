@@ -368,7 +368,7 @@ export default function MarketplacePage() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 transition-colors duration-200">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-light text-slate-400 dark:text-zinc-500">Syncing security handshake...</p>
+        <p className="text-sm font-light text-slate-400 dark:text-zinc-400">Syncing security handshake...</p>
       </div>
     );
   }
@@ -461,13 +461,13 @@ export default function MarketplacePage() {
             </button>
 
             <div className="flex items-center gap-3 pl-3 border-l border-neutral-200 dark:border-zinc-800">
-              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-755 dark:text-neutral-350 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm">
                 {getInitials(currentUser.name)}
               </div>
               <div className="hidden md:block text-left">
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                     {profile.phase} • {profile.block}
                   </div>
                 )}
@@ -485,7 +485,7 @@ export default function MarketplacePage() {
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
             
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                 Residency Status
               </div>
               <div className="flex items-center gap-2">
@@ -528,13 +528,13 @@ export default function MarketplacePage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Classifieds Marketplace</h1>
-              <p className="text-xs font-light text-slate-400 dark:text-zinc-500">
+              <p className="text-xs font-light text-slate-400 dark:text-zinc-400">
                 Buy and sell items within the gated society of Bahria Orchard.
               </p>
             </div>
             
             <div className="flex items-center gap-3">
-              <div className="flex p-0.5 bg-slate-105 dark:bg-zinc-900 rounded-lg border border-neutral-200/40 dark:border-zinc-800/80 text-xs">
+              <div className="flex p-0.5 bg-slate-100 dark:bg-zinc-900 rounded-lg border border-neutral-200/40 dark:border-zinc-800/80 text-xs">
                 <button
                   onClick={() => handleTabChange("browse")}
                   className={`px-3.5 py-1.5 rounded-md font-semibold transition-all ${
@@ -602,7 +602,7 @@ export default function MarketplacePage() {
                   onClick={() => handleCategorySelect(category)}
                   className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all cursor-pointer whitespace-nowrap ${
                     selectedCategory === category
-                      ? "bg-emerald-50 text-emerald-800 border-emerald-300/35 dark:bg-emerald-950/20 dark:text-emerald-450 dark:border-emerald-900/30"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-300/35 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-900/30"
                       : "bg-transparent text-slate-500 hover:text-slate-800 border-neutral-200/60 hover:border-neutral-300 dark:text-zinc-400 dark:border-zinc-800/80 dark:hover:border-zinc-700"
                   }`}
                 >
@@ -616,11 +616,11 @@ export default function MarketplacePage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16 gap-2">
               <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-xs text-slate-400 dark:text-zinc-500 font-light">Retrieving active listings...</p>
+              <p className="text-xs text-slate-400 dark:text-zinc-400 font-light">Retrieving active listings...</p>
             </div>
           ) : listings.length === 0 ? (
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 py-16 text-center shadow-sm">
-              <p className="text-slate-400 dark:text-zinc-500 font-light">No listings found matching your criteria.</p>
+              <p className="text-slate-400 dark:text-zinc-400 font-light">No listings found matching your criteria.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -630,7 +630,7 @@ export default function MarketplacePage() {
                   <Link
                     key={item.id}
                     href={`/dashboard/marketplace/${item.id}`}
-                    className="group bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 shadow-sm overflow-hidden flex flex-col hover:border-neutral-350 dark:hover:border-zinc-700 transition-all cursor-pointer"
+                    className="group bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 shadow-sm overflow-hidden flex flex-col hover:border-neutral-300 dark:hover:border-zinc-700 transition-all cursor-pointer"
                   >
                     {/* Image thumbnail */}
                     <div className="w-full aspect-[4/3] bg-slate-100 dark:bg-zinc-950 relative flex items-center justify-center overflow-hidden border-b border-neutral-100 dark:border-zinc-850">
@@ -638,10 +638,10 @@ export default function MarketplacePage() {
                         <img
                           src={imageUrl}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-305"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                         />
                       ) : (
-                        <div className="text-slate-350 text-2xl">🛍️</div>
+                        <div className="text-slate-400 dark:text-zinc-500 text-2xl">🛍️</div>
                       )}
                       
                       {item.status === "pending" && (
@@ -665,10 +665,10 @@ export default function MarketplacePage() {
                     <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                          <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                             {item.category}
                           </span>
-                          <span className="text-[9px] text-slate-400">
+                          <span className="text-[9px] text-slate-400 dark:text-zinc-400">
                             {new Date(item.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                           </span>
                         </div>
@@ -678,11 +678,11 @@ export default function MarketplacePage() {
                       </div>
 
                       <div className="flex items-center justify-between pt-1">
-                        <div className="font-bold text-emerald-600 dark:text-emerald-450 text-sm">
+                        <div className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                           PKR {Number(item.price).toLocaleString('en-US')}
                         </div>
                         {item.user?.resident_profile && (
-                          <div className="text-[9px] text-slate-455 dark:text-zinc-500">
+                          <div className="text-[9px] text-slate-500 dark:text-zinc-400">
                             {item.user.resident_profile.phase} • {item.user.resident_profile.block}
                           </div>
                         )}
@@ -703,12 +703,12 @@ export default function MarketplacePage() {
           <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-xl overflow-hidden animate-scale-up">
             
             <div className="px-6 py-4 border-b border-neutral-100 dark:border-zinc-800 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-855 dark:text-neutral-100 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-800 dark:text-neutral-100 flex items-center gap-2">
                 🛍️ Post a Classified Advertisement
               </h3>
               <button 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-350 p-1 rounded-lg hover:bg-neutral-150 dark:hover:bg-zinc-800 transition-all cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-all cursor-pointer"
               >
                 ✕
               </button>
@@ -718,7 +718,7 @@ export default function MarketplacePage() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                     Ad Title *
                   </label>
                   <input
@@ -732,7 +732,7 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                     Category *
                   </label>
                   <select
@@ -749,7 +749,7 @@ export default function MarketplacePage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                     Price (PKR) *
                   </label>
                   <input
@@ -764,7 +764,7 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                  <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                     WhatsApp Contact *
                   </label>
                   <input
@@ -779,7 +779,7 @@ export default function MarketplacePage() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Description *
                 </label>
                 <textarea
@@ -794,7 +794,7 @@ export default function MarketplacePage() {
 
               {/* Image upload zone */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Photos
                 </label>
                 
@@ -813,7 +813,7 @@ export default function MarketplacePage() {
                   ))}
                   
                   {newImages.length < 3 && (
-                    <label className="relative aspect-square border border-dashed border-neutral-250 hover:border-emerald-500 dark:border-zinc-800 dark:hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors">
+                    <label className="relative aspect-square border border-dashed border-neutral-200 hover:border-emerald-500 dark:border-zinc-800 dark:hover:border-zinc-600 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors">
                       <input
                         type="file"
                         accept="image/*"
@@ -824,12 +824,12 @@ export default function MarketplacePage() {
                       {uploadingImage ? (
                         <div className="flex flex-col items-center gap-1">
                           <div className="w-4 h-4 border border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                          <span className="text-[8px] text-slate-400">Uploading</span>
+                          <span className="text-[8px] text-slate-400 dark:text-zinc-400">Uploading</span>
                         </div>
                       ) : (
                         <>
-                          <span className="text-lg text-slate-400">+</span>
-                          <span className="text-[9px] text-slate-400">Add Photo</span>
+                          <span className="text-lg text-slate-400 dark:text-zinc-400">+</span>
+                          <span className="text-[9px] text-slate-400 dark:text-zinc-400">Add Photo</span>
                         </>
                       )}
                     </label>
@@ -847,7 +847,7 @@ export default function MarketplacePage() {
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
                   disabled={createSubmitting}
-                  className="px-4 py-2 border border-neutral-250/60 dark:border-zinc-805/80 hover:bg-neutral-50 dark:hover:bg-zinc-850/50 text-slate-650 dark:text-neutral-350 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 border border-neutral-200/60 dark:border-zinc-800/80 hover:bg-neutral-50 dark:hover:bg-zinc-800/50 text-slate-600 dark:text-neutral-300 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>

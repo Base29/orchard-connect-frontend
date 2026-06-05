@@ -197,9 +197,9 @@ export default function BusinessDirectoryPage() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 transition-colors duration-200">
+      <div className="min-h-screen bg-slate-50 dark:bg-zinc-955 flex flex-col items-center justify-center p-6 transition-colors duration-200">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-light text-slate-400 dark:text-zinc-500">Syncing directory logs...</p>
+        <p className="text-sm font-light text-slate-400 dark:text-zinc-400">Syncing directory logs...</p>
       </div>
     );
   }
@@ -292,13 +292,13 @@ export default function BusinessDirectoryPage() {
             </button>
 
             <div className="flex items-center gap-3 pl-3 border-l border-neutral-200 dark:border-zinc-800">
-              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-755 dark:text-neutral-350 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-200 flex items-center justify-center font-bold text-sm">
                 {getInitials(currentUser.name)}
               </div>
               <div className="hidden md:block text-left">
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                     {profile.phase} • {profile.block}
                   </div>
                 )}
@@ -316,7 +316,7 @@ export default function BusinessDirectoryPage() {
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
             
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                 Residency Status
               </div>
               <div className="flex items-center gap-2">
@@ -358,7 +358,7 @@ export default function BusinessDirectoryPage() {
           {/* Header Row */}
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Business Directory</h1>
-            <p className="text-xs font-light text-slate-400 dark:text-zinc-500">
+            <p className="text-xs font-light text-slate-400 dark:text-zinc-400">
               Browse and connect with verified local utilities, clinics, shops, and services inside Bahria Orchard.
             </p>
           </div>
@@ -372,9 +372,9 @@ export default function BusinessDirectoryPage() {
                   placeholder="Search businesses by name, details, or street location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-850 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                 />
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-400">
                   🔍
                 </span>
               </div>
@@ -424,11 +424,11 @@ export default function BusinessDirectoryPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-2.5">
               <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-xs text-slate-400 dark:text-zinc-500 font-light">Loading community directory lists...</p>
+              <p className="text-xs text-slate-400 dark:text-zinc-400 font-light">Loading community directory lists...</p>
             </div>
           ) : filteredListings.length === 0 ? (
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 py-20 text-center shadow-sm">
-              <p className="text-slate-400 dark:text-zinc-500 text-sm font-light">No local businesses found matching your criteria.</p>
+              <p className="text-slate-400 dark:text-zinc-400 text-sm font-light">No local businesses found matching your criteria.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -454,19 +454,19 @@ export default function BusinessDirectoryPage() {
                           {getInitials(business.name)}
                         </div>
                       )}
-                      
+
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider bg-slate-50 dark:bg-zinc-950 px-1.5 py-0.5 rounded border border-neutral-200/30 dark:border-zinc-800/50">
+                          <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider bg-slate-50 dark:bg-zinc-950 px-1.5 py-0.5 rounded border border-neutral-200/30 dark:border-zinc-800/50">
                             {business.categoryName}
                           </span>
                           {business.is_verified && (
-                            <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-1.5 py-0.5 rounded border border-emerald-250/20">
+                            <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-1.5 py-0.5 rounded border border-emerald-200/20">
                               ✓ Verified
                             </span>
                           )}
                         </div>
-                        <h3 className="font-bold text-slate-800 dark:text-zinc-150 text-sm group-hover:text-emerald-500 transition-colors">
+                        <h3 className="font-bold text-slate-800 dark:text-zinc-200 text-sm group-hover:text-emerald-500 transition-colors">
                           {business.name}
                         </h3>
                         {/* Rating row */}
@@ -476,12 +476,12 @@ export default function BusinessDirectoryPage() {
                               <span className="text-amber-500 font-bold flex items-center">
                                 ⭐ {Number(business.reviews_avg_rating).toFixed(1)}
                               </span>
-                              <span className="text-slate-400 dark:text-zinc-500">
+                              <span className="text-slate-400 dark:text-zinc-400">
                                 ({business.reviews_count} {business.reviews_count === 1 ? 'review' : 'reviews'})
                               </span>
                             </>
                           ) : (
-                            <span className="text-slate-400 dark:text-zinc-500 text-[10px] italic font-light">
+                            <span className="text-slate-400 dark:text-zinc-400 text-[10px] italic font-light">
                               No reviews yet
                             </span>
                           )}
@@ -494,18 +494,19 @@ export default function BusinessDirectoryPage() {
                     </p>
                   </div>
 
-                  <div className="space-y-3 pt-4 border-t border-neutral-100 dark:border-zinc-850 mt-4 text-xs font-light">
+                  <div className="space-y-3 pt-4 border-t border-neutral-100 dark:border-zinc-800 mt-4 text-xs font-light">
                     {/* Address details */}
                     {business.address && (
-                      <div className="text-slate-450 dark:text-zinc-500 flex items-start gap-1.5">
+                      <div className="text-slate-500 dark:text-zinc-400 flex items-start gap-1.5">
                         <span className="shrink-0 text-sm">📍</span>
                         <span className="leading-snug line-clamp-1">{business.address}</span>
                       </div>
                     )}
-                    <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 group-hover:underline flex items-center justify-end gap-1">
+                  </div>
+
+                  <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 group-hover:underline flex items-center justify-end gap-1">
                       View Details →
                     </div>
-                  </div>
                 </Link>
               ))}
             </div>

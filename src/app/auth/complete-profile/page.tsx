@@ -187,7 +187,7 @@ export default function CompleteProfilePage() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 transition-colors duration-200">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-light text-slate-400 dark:text-zinc-500">Checking verification status...</p>
+        <p className="text-sm font-light text-slate-400 dark:text-zinc-400">Checking verification status...</p>
       </div>
     );
   }
@@ -231,7 +231,7 @@ export default function CompleteProfilePage() {
                   Reason: <strong>{formatRejectionReason(previousProfile.rejection_reason)}</strong>
                 </p>
                 {previousProfile.rejection_message && (
-                  <p className="text-slate-500 dark:text-zinc-500 italic mt-1 font-light border-l-2 border-amber-500/30 pl-2">
+                  <p className="text-slate-500 dark:text-zinc-400 italic mt-1 font-light border-l-2 border-amber-500/30 pl-2">
                     "{previousProfile.rejection_message}"
                   </p>
                 )}
@@ -258,7 +258,7 @@ export default function CompleteProfilePage() {
                 {/* Phase & Block */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="phase" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
+                    <label htmlFor="phase" className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                       Bahria Phase <span className="text-rose-500">*</span>
                     </label>
                     <select
@@ -282,7 +282,7 @@ export default function CompleteProfilePage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="block" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
+                    <label htmlFor="block" className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                       Block <span className="text-rose-500">*</span>
                     </label>
                     {(PHASE_BLOCKS[phase] || []).length > 0 ? (
@@ -318,7 +318,7 @@ export default function CompleteProfilePage() {
                 {/* House/Plot & Street */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="house" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
+                    <label htmlFor="house" className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                       House/Plot No. <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -333,7 +333,7 @@ export default function CompleteProfilePage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="street" className="text-xs font-semibold text-slate-450 dark:text-zinc-500">
+                    <label htmlFor="street" className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                       Street Name/No. (Opt)
                     </label>
                     <input
@@ -349,7 +349,7 @@ export default function CompleteProfilePage() {
 
                 {/* Residency Type Selector */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-slate-455 dark:text-zinc-500">
+                  <label className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                     Residency Type
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -375,7 +375,7 @@ export default function CompleteProfilePage() {
 
                 {/* Secure Document Upload Input */}
                 <div className="space-y-1.5 pt-2">
-                  <label className="text-xs font-semibold text-slate-455 dark:text-zinc-500">
+                  <label className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
                     Residency Document Proof (Electricity Bill / Maintenance Bill) <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative group border-2 border-dashed border-neutral-200 dark:border-zinc-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/30 rounded-xl p-6 transition-all duration-200 bg-neutral-50 dark:bg-zinc-950/40 text-center flex flex-col items-center justify-center min-h-[140px] cursor-pointer">
@@ -390,7 +390,7 @@ export default function CompleteProfilePage() {
                       <p className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
                         {documentFile ? documentFile.name : "Select proof file"}
                       </p>
-                      <p className="text-[10px] text-slate-400 dark:text-zinc-500">
+                      <p className="text-[10px] text-slate-400 dark:text-zinc-400">
                         PDF, PNG, JPG, JPEG (Max. 10MB)
                       </p>
                     </div>

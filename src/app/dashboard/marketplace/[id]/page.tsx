@@ -426,13 +426,13 @@ export default function ListingDetailPage() {
             </button>
 
             <div className="flex items-center gap-3 pl-3 border-l border-neutral-200 dark:border-zinc-800">
-              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-755 dark:text-neutral-350 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm">
                 {getInitials(currentUser.name)}
               </div>
               <div className="hidden md:block text-left">
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                     {profile.phase} • {profile.block}
                   </div>
                 )}
@@ -450,7 +450,7 @@ export default function ListingDetailPage() {
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
             
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                 Residency Status
               </div>
               <div className="flex items-center gap-2">
@@ -464,13 +464,13 @@ export default function ListingDetailPage() {
             <hr className="border-neutral-100 dark:border-zinc-800" />
 
             <nav className="flex flex-col gap-1 text-sm font-medium">
-              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🏠 Community Feed
               </Link>
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🛍️ Marketplace
               </Link>
-              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🏢 Business Directory
               </Link>
             </nav>
@@ -493,7 +493,7 @@ export default function ListingDetailPage() {
           <div>
             <Link 
               href="/dashboard/marketplace" 
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-450 hover:underline transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline transition-colors"
             >
               ← Back to Marketplace
             </Link>
@@ -503,14 +503,14 @@ export default function ListingDetailPage() {
             <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl p-12 flex justify-center items-center">
               <div className="flex flex-col items-center gap-3">
                 <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-slate-400 font-light">Loading listing details...</span>
+                <span className="text-xs text-slate-400 dark:text-zinc-400 font-light">Loading listing details...</span>
               </div>
             </div>
           ) : !listing ? (
             <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl p-12 text-center">
               <div className="text-4xl mb-3">🛍️</div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Listing Not Found</h2>
-              <p className="text-xs text-slate-455 dark:text-zinc-500 mt-1 max-w-sm mx-auto font-light">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto font-light">
                 The ad you are looking for may have been deleted, marked as sold, or flagged by the community for moderator review.
               </p>
               <Link 
@@ -556,7 +556,7 @@ export default function ListingDetailPage() {
                         )}
                       </>
                     ) : (
-                      <div className="text-slate-350 text-5xl">🛍️</div>
+                      <div className="text-slate-400 dark:text-zinc-500 text-5xl">🛍️</div>
                     )}
                   </div>
 
@@ -584,17 +584,17 @@ export default function ListingDetailPage() {
                     <div className="flex justify-between items-start gap-4">
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/20 px-2.5 py-0.5 rounded-md border border-emerald-200/20">
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/20 px-2.5 py-0.5 rounded-md border border-emerald-200/20">
                             {listing.category}
                           </span>
                           
                           {listing.status === "pending" && (
-                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-955/20 dark:text-amber-400 border border-amber-250/20">
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-200/20">
                               Under Review
                             </span>
                           )}
                           {listing.status === "sold" && (
-                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-50 text-rose-805 dark:bg-rose-955/20 dark:text-rose-400 border border-rose-200/20">
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400 border border-rose-200/20">
                               Sold
                             </span>
                           )}
@@ -612,8 +612,8 @@ export default function ListingDetailPage() {
                           title={listing.flagged_by_user ? "You flagged this ad" : "Report ad"}
                           className={`p-2 rounded-xl border transition-all active:scale-95 shrink-0 ${
                             listing.flagged_by_user
-                              ? "bg-rose-50 border-rose-200 text-rose-500 dark:bg-rose-950/20 dark:border-rose-900/30 dark:text-rose-400 opacity-60 cursor-not-allowed"
-                              : "bg-white border-neutral-200 text-slate-500 hover:text-rose-500 hover:border-rose-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-rose-450 dark:hover:border-rose-900/30 cursor-pointer"
+                              ? "bg-rose-50 border-rose-200 text-rose-500 dark:bg-rose-900/20 dark:border-rose-900/30 dark:text-rose-400 opacity-60 cursor-not-allowed"
+                              : "bg-white border-neutral-200 text-slate-500 hover:text-rose-500 hover:border-rose-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-rose-400 dark:hover:border-rose-900/30 cursor-pointer"
                           }`}
                         >
                           🚩
@@ -629,8 +629,8 @@ export default function ListingDetailPage() {
                     <hr className="border-neutral-100 dark:border-zinc-800" />
 
                     {/* Seller Detail Card */}
-                    <div className="bg-slate-50 dark:bg-zinc-950/40 border border-neutral-150/40 dark:border-zinc-850 p-4 rounded-2xl flex gap-3.5 items-center text-xs">
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-250/20">
+                    <div className="bg-slate-50 dark:bg-zinc-950/40 border border-neutral-200/40 dark:border-zinc-800 p-4 rounded-2xl flex gap-3.5 items-center text-xs">
+                      <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 border border-emerald-200/20">
                         {getInitials(listing.user.name)}
                       </div>
                       <div className="flex-1">
@@ -641,7 +641,7 @@ export default function ListingDetailPage() {
                           </span>
                         </div>
                         {listing.user.resident_profile && (
-                          <div className="text-[10px] text-slate-400 font-light mt-0.5">
+                          <div className="text-[10px] text-slate-400 dark:text-zinc-400 font-light mt-0.5">
                             House {listing.user.resident_profile.house_number}, {listing.user.resident_profile.phase} • Block {listing.user.resident_profile.block}
                           </div>
                         )}
@@ -650,10 +650,10 @@ export default function ListingDetailPage() {
 
                     {/* Description */}
                     <div className="space-y-1.5">
-                      <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                      <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                         Description
                       </h3>
-                      <p className="text-xs text-slate-650 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-wrap">
+                      <p className="text-xs text-slate-600 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-wrap">
                         {listing.description}
                       </p>
                     </div>
@@ -671,7 +671,7 @@ export default function ListingDetailPage() {
                         💬 WhatsApp Seller
                       </a>
                     ) : (
-                      <div className="w-full text-center py-3 px-3 bg-slate-100 dark:bg-zinc-800/80 rounded-xl text-[10px] text-slate-400 dark:text-zinc-500 font-light border border-dashed border-neutral-200 dark:border-zinc-850">
+                      <div className="w-full text-center py-3 px-3 bg-slate-100 dark:bg-zinc-800/80 rounded-xl text-[10px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800">
                         🔒 Residency verification required to contact seller.
                       </div>
                     )}
@@ -682,7 +682,7 @@ export default function ListingDetailPage() {
                     <div className="flex gap-3 pt-6 mt-6 border-t border-neutral-100 dark:border-zinc-800 justify-between items-center">
                       <button
                         onClick={handleToggleSold}
-                        className="flex-1 py-2.5 px-3 border border-neutral-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-850 text-slate-800 dark:text-zinc-300 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer text-center"
+                        className="flex-1 py-2.5 px-3 border border-neutral-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-800 dark:text-zinc-300 font-bold text-xs rounded-xl active:scale-[0.98] transition-all cursor-pointer text-center"
                       >
                         {listing.status === "active" ? "Mark as Sold" : "Re-activate Listing"}
                       </button>
@@ -701,7 +701,7 @@ export default function ListingDetailPage() {
 
               {/* Discussion Thread (Comments) */}
               <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-sm p-6 space-y-4">
-                <h2 className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <h2 className="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Public Q&A / Discussion Thread
                 </h2>
 
@@ -711,7 +711,7 @@ export default function ListingDetailPage() {
                     <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : comments.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic font-light py-2">
+                  <p className="text-xs text-slate-400 dark:text-zinc-400 italic font-light py-2">
                     No public questions yet. Ask the seller something about this product!
                   </p>
                 ) : (
@@ -725,12 +725,12 @@ export default function ListingDetailPage() {
                           <div className="flex items-center justify-between gap-2">
                             <span className="font-bold text-slate-800 dark:text-zinc-100">{c.user.name}</span>
                             {c.user.resident_profile && (
-                              <span className="text-[9px] text-slate-400 font-light">
+                              <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                 {c.user.resident_profile.phase} • Block {c.user.resident_profile.block}
                               </span>
                             )}
                           </div>
-                          <p className="text-slate-600 dark:text-zinc-350 mt-1 font-light leading-relaxed whitespace-pre-wrap">
+                          <p className="text-slate-600 dark:text-zinc-300 mt-1 font-light leading-relaxed whitespace-pre-wrap">
                             {c.content}
                           </p>
                         </div>
@@ -759,7 +759,7 @@ export default function ListingDetailPage() {
                     </button>
                   </form>
                 ) : (
-                  <div className="bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-850 text-xs text-slate-455 text-center py-3 rounded-xl">
+                  <div className="bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-3 rounded-xl">
                     🔒 Residency verification is required to participate in discussions.
                   </div>
                 )}
@@ -777,12 +777,12 @@ export default function ListingDetailPage() {
           <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-xl overflow-hidden animate-scale-up">
             
             <div className="px-6 py-4 border-b border-neutral-100 dark:border-zinc-800 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-805 dark:text-neutral-100 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-800 dark:text-neutral-100 flex items-center gap-2">
                 ⚠️ Report Classified Ad
               </h3>
               <button 
                 onClick={handleCloseFlagModal}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-350 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-all cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-all cursor-pointer"
               >
                 ✕
               </button>
@@ -790,13 +790,13 @@ export default function ListingDetailPage() {
 
             <form onSubmit={handleSubmitFlag} className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Reason for Reporting
                 </label>
                 <select
                   value={flagReason}
                   onChange={(e) => setFlagReason(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-250/50 dark:border-zinc-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                 >
                   <option value="spam">Spam / Duplicate listing</option>
                   <option value="harassment">Harassment or Abuse</option>
@@ -807,7 +807,7 @@ export default function ListingDetailPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                <label className="text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   Additional Details
                 </label>
                 <textarea
@@ -816,7 +816,7 @@ export default function ListingDetailPage() {
                   onChange={(e) => setFlagComment(e.target.value)}
                   maxLength={1000}
                   rows={4}
-                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-250/50 dark:border-zinc-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors resize-none font-light leading-relaxed"
+                  className="w-full bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors resize-none font-light leading-relaxed"
                 />
               </div>
 

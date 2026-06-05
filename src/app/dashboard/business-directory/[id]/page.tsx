@@ -272,7 +272,7 @@ export default function BusinessDetailPage() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 transition-colors duration-200">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-light text-slate-400 dark:text-zinc-500">Syncing business handshake...</p>
+        <p className="text-sm font-light text-slate-400 dark:text-zinc-400">Syncing business handshake...</p>
       </div>
     );
   }
@@ -365,13 +365,13 @@ export default function BusinessDetailPage() {
             </button>
 
             <div className="flex items-center gap-3 pl-3 border-l border-neutral-200 dark:border-zinc-800">
-              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-755 dark:text-neutral-350 flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm">
                 {getInitials(currentUser.name)}
               </div>
               <div className="hidden md:block text-left">
                 <div className="text-sm font-semibold">{currentUser.name}</div>
                 {profile && (
-                  <div className="text-[10px] text-slate-400">
+                  <div className="text-[10px] text-slate-400 dark:text-zinc-400">
                     {profile.phase} • {profile.block}
                   </div>
                 )}
@@ -389,7 +389,7 @@ export default function BusinessDetailPage() {
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
             
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                 Residency Status
               </div>
               <div className="flex items-center gap-2">
@@ -432,7 +432,7 @@ export default function BusinessDetailPage() {
           <div>
             <Link 
               href="/dashboard/business-directory" 
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-605 dark:text-emerald-450 hover:underline transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline transition-colors"
             >
               ← Back to Business Directory
             </Link>
@@ -442,14 +442,14 @@ export default function BusinessDetailPage() {
             <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl p-12 flex justify-center items-center">
               <div className="flex flex-col items-center gap-3">
                 <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-xs text-slate-400 font-light">Loading business profile...</span>
+                <span className="text-xs text-slate-400 dark:text-zinc-400">Loading business profile...</span>
               </div>
             </div>
           ) : !business ? (
             <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl p-12 text-center">
               <div className="text-4xl mb-3">🏢</div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Business Listing Not Found</h2>
-              <p className="text-xs text-slate-455 dark:text-zinc-505 mt-1 max-w-sm mx-auto font-light">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto font-light">
                 The business listing you are looking for may have been deleted, unverified, or modified.
               </p>
               <Link 
@@ -499,7 +499,7 @@ export default function BusinessDetailPage() {
                           ⭐ {Number(business.reviews_avg_rating).toFixed(1)} ({business.reviews_count})
                         </span>
                       ) : (
-                        <span className="text-[10px] font-light text-slate-400 dark:text-zinc-500 italic bg-slate-50 dark:bg-zinc-950 px-2.5 py-0.5 rounded-md border border-neutral-200/30 dark:border-zinc-800/30">
+                        <span className="text-[10px] font-light text-slate-400 dark:text-zinc-400 italic bg-slate-50 dark:bg-zinc-950 px-2.5 py-0.5 rounded-md border border-neutral-200/30 dark:border-zinc-800/30">
                           No ratings yet
                         </span>
                       )}
@@ -510,10 +510,10 @@ export default function BusinessDetailPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                    <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                       About the Business
                     </h3>
-                    <p className="text-xs text-slate-650 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs text-slate-600 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-wrap">
                       {business.description || "No description provided."}
                     </p>
                   </div>
@@ -521,7 +521,7 @@ export default function BusinessDetailPage() {
                   <hr className="border-neutral-100 dark:border-zinc-800" />
 
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">
+                    <h3 className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                       Contact & Location Details
                     </h3>
                     
@@ -530,7 +530,7 @@ export default function BusinessDetailPage() {
                         <div className="text-slate-700 dark:text-zinc-300 flex items-start gap-2.5">
                           <span className="text-sm shrink-0">📍</span>
                           <div className="space-y-0.5">
-                            <span className="font-semibold block text-[10px] text-slate-400 uppercase tracking-wider">Address</span>
+                            <span className="font-semibold block text-[10px] text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Address</span>
                             <span className="leading-snug">{business.address}</span>
                           </div>
                         </div>
@@ -542,7 +542,7 @@ export default function BusinessDetailPage() {
                             <div className="text-slate-700 dark:text-zinc-300 flex items-start gap-2.5">
                               <span className="text-sm shrink-0">📞</span>
                               <div className="space-y-0.5">
-                                <span className="font-semibold block text-[10px] text-slate-400 uppercase tracking-wider">Phone</span>
+                                <span className="font-semibold block text-[10px] text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Phone</span>
                                 <a href={`tel:${business.contact_phone}`} className="hover:underline text-emerald-600 dark:text-emerald-450 font-medium">
                                   {business.contact_phone}
                                 </a>
@@ -564,7 +564,7 @@ export default function BusinessDetailPage() {
                           )}
                         </>
                       ) : (
-                        <div className="bg-slate-50 dark:bg-zinc-955/60 rounded-2xl border border-dashed border-neutral-200 dark:border-zinc-850 p-4 text-center text-slate-400 dark:text-zinc-500 font-normal">
+                        <div className="bg-slate-50 dark:bg-zinc-800/60 rounded-2xl border border-dashed border-neutral-200 dark:border-zinc-800 p-4 text-center text-slate-400 dark:text-zinc-400 font-normal">
                           🔒 Residency verification is required to view contact details and message this business.
                         </div>
                       )}
@@ -577,22 +577,21 @@ export default function BusinessDetailPage() {
 
               {/* Reviews and Ratings System Section */}
               <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-sm p-6 space-y-6">
-                <div className="flex items-center justify-between border-b border-neutral-100 dark:border-zinc-850 pb-4">
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                <div className="flex items-center justify-between border-b border-neutral-100 dark:border-zinc-800 pb-4">
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
                     Resident Reviews & Ratings
                   </h2>
                   {business.reviews_count && business.reviews_count > 0 && (
-                    <div className="text-xs text-slate-450 dark:text-zinc-500 font-light">
+                    <div className="text-xs text-slate-500 dark:text-zinc-400 font-light">
                       Average Rating: <span className="font-bold text-slate-800 dark:text-zinc-200">{Number(business.reviews_avg_rating).toFixed(1)} / 5.0</span>
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                   {/* Review Submission Form (Gated) */}
-                  <div className="lg:col-span-5 bg-slate-50/50 dark:bg-zinc-950/20 border border-neutral-200/40 dark:border-zinc-850/80 p-5 rounded-2xl space-y-4">
-                    <h3 className="text-xs font-bold text-slate-800 dark:text-zinc-205">
+                  <div className="lg:col-span-5 bg-slate-50/50 dark:bg-zinc-900/20 border border-neutral-200/40 dark:border-zinc-800/80 p-5 rounded-2xl space-y-4">
+                    <h3 className="text-xs font-bold text-slate-800 dark:text-zinc-200">
                       {myExistingReview ? "✏️ Update Your Review" : "⭐ Write a Review"}
                     </h3>
 
@@ -600,7 +599,7 @@ export default function BusinessDetailPage() {
                       <form onSubmit={handleReviewSubmit} className="space-y-4">
                         {/* Rating Star Selection */}
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider block">
                             Your Rating *
                           </label>
                           <div className="flex items-center gap-1.5">
@@ -630,7 +629,7 @@ export default function BusinessDetailPage() {
 
                         {/* Comment textarea */}
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider block">
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider block">
                             Your Review Comment
                           </label>
                           <textarea
@@ -638,7 +637,7 @@ export default function BusinessDetailPage() {
                             rows={3}
                             value={formComment}
                             onChange={(e) => setFormComment(e.target.value)}
-                            className="w-full bg-white dark:bg-zinc-950 text-slate-900 dark:text-neutral-105 border border-neutral-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 resize-none transition-colors font-light leading-relaxed"
+                            className="w-full bg-white dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 border border-neutral-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 resize-none transition-colors font-light leading-relaxed"
                           />
                         </div>
 
@@ -665,7 +664,7 @@ export default function BusinessDetailPage() {
                         </div>
                       </form>
                     ) : (
-                      <div className="bg-white dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-850 text-xs text-slate-455 text-center py-5 rounded-xl font-light">
+                      <div className="bg-white dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-5 rounded-xl font-light">
                         🔒 Verification required to write reviews.
                       </div>
                     )}
@@ -673,18 +672,18 @@ export default function BusinessDetailPage() {
 
                   {/* Reviews List Column */}
                   <div className="lg:col-span-7 space-y-4">
-                    <h3 className="text-xs font-bold text-slate-700 dark:text-zinc-350">
+                    <h3 className="text-xs font-bold text-slate-700 dark:text-zinc-300">
                       Recent Reviews ({business.reviews?.length || 0})
                     </h3>
 
                     {(!business.reviews || business.reviews.length === 0) ? (
-                      <p className="text-xs text-slate-400 dark:text-zinc-500 italic font-light py-6">
+                      <p className="text-xs text-slate-400 dark:text-zinc-400 italic font-light py-6">
                         No reviews have been written for this business yet. Be the first to share your experience!
                       </p>
                     ) : (
                       <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
                         {business.reviews.map((rev) => (
-                          <div key={rev.id} className="flex gap-3 items-start text-xs border-b border-neutral-50 dark:border-zinc-850 pb-4 last:border-0 last:pb-0">
+                          <div key={rev.id} className="flex gap-3 items-start text-xs border-b border-neutral-50 dark:border-zinc-800 pb-4 last:border-0 last:pb-0">
                             <div 
                               className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-[10px] shrink-0 shadow-sm border border-neutral-200/20"
                               style={{ background: getGradient(rev.user.name) }}
@@ -697,7 +696,7 @@ export default function BusinessDetailPage() {
                                   <span className="font-bold text-slate-800 dark:text-zinc-100 block">
                                     {rev.user.name}
                                     {rev.user.resident_profile && (
-                                      <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-light ml-1.5">
+                                      <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light ml-1.5">
                                         ({rev.user.resident_profile.phase} • Block {rev.user.resident_profile.block})
                                       </span>
                                     )}
@@ -706,7 +705,7 @@ export default function BusinessDetailPage() {
                                     <span className="text-amber-500 font-bold text-xs flex items-center leading-none">
                                       {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
                                     </span>
-                                    <span className="text-[10px] text-slate-400 dark:text-zinc-550 font-light">
+                                    <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-light">
                                       {new Date(rev.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
                                     </span>
                                   </div>
@@ -716,14 +715,14 @@ export default function BusinessDetailPage() {
                                 {rev.user_id !== currentUser.id && currentUser.status === "admin" && (
                                   <button
                                     onClick={() => handleAdminReviewDelete(rev.id)}
-                                    className="text-[10px] text-rose-505 hover:underline cursor-pointer"
+                                    className="text-[10px] text-rose-500 hover:underline cursor-pointer"
                                   >
                                     Delete
                                   </button>
                                 )}
                               </div>
                               {rev.comment && (
-                                <p className="text-slate-650 dark:text-zinc-350 font-light leading-relaxed whitespace-pre-wrap pt-0.5">
+                                <p className="text-slate-600 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-wrap pt-0.5">
                                   {rev.comment}
                                 </p>
                               )}
