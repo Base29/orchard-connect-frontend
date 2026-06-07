@@ -93,6 +93,12 @@ export default function DashboardPage() {
 
   // Core data states
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const currentUserRef = React.useRef<User | null>(null);
+  currentUserRef.current = currentUser;
+
+  const commentSubmittingRef = React.useRef<Record<string, boolean>>({});
+  const postSubmittingRef = React.useRef(false);
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [myListings, setMyListings] = useState<Listing[]>([]);
@@ -250,7 +256,7 @@ export default function DashboardPage() {
     echo.private('feed')
       .listen('.PostLiked', (data: { post_id: string; likes_count: number; user_id: string; liked: boolean }) => {
         console.log("Real-time PostLiked received:", data);
-        if (data.user_id === currentUser.id) return;
+        if (data.user_id === currentUserRef.current?.id) return;
 
         setPosts(prev => prev.map(post => {
           if (post.id === data.post_id) {
@@ -266,7 +272,7 @@ export default function DashboardPage() {
         console.log("Real-time CommentCreated received:", data);
         const { comment } = data;
         
-        if (comment.user_id === currentUser.id) return;
+        if (comment.user_id === currentUserRef.current?.id) return;
         
         // If comments are loaded/expanded for this post, add the comment
         setComments(prev => {
@@ -306,7 +312,9 @@ export default function DashboardPage() {
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostContent.trim() || isVerified() === false) return;
+    if (postSubmittingRef.current) return;
 
+    postSubmittingRef.current = true;
     setPostSubmitting(true);
     try {
       const response = await apiRequest("/api/posts", {
@@ -327,6 +335,7 @@ export default function DashboardPage() {
     } catch (err) {
       showToast("Network error publishing post.", "error");
     } finally {
+      postSubmittingRef.current = false;
       setPostSubmitting(false);
     }
   };
@@ -425,7 +434,9 @@ export default function DashboardPage() {
     e.preventDefault();
     const content = commentInputs[postId]?.trim();
     if (!content || isVerified() === false) return;
+    if (commentSubmittingRef.current[postId]) return;
 
+    commentSubmittingRef.current[postId] = true;
     setCommentSubmitting(prev => ({ ...prev, [postId]: true }));
     try {
       const response = await apiRequest(`/api/posts/${postId}/comments`, {
@@ -466,6 +477,7 @@ export default function DashboardPage() {
     } catch (err) {
       showToast("Error publishing comment.", "error");
     } finally {
+      commentSubmittingRef.current[postId] = false;
       setCommentSubmitting(prev => ({ ...prev, [postId]: false }));
     }
   };

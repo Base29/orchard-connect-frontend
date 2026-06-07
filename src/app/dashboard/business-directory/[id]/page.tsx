@@ -189,11 +189,16 @@ export default function BusinessDetailPage() {
     router.push("/");
   };
 
+  // References to prevent concurrent submissions
+  const reviewSubmittingRef = React.useRef(false);
+
   // Review Form Submit (Create/Update)
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formRating === 0 || isVerified() === false || !business) return;
+    if (reviewSubmittingRef.current) return;
 
+    reviewSubmittingRef.current = true;
     setSubmittingReview(true);
     try {
       const res = await apiRequest(`/api/directory/${businessId}/reviews`, {
@@ -214,6 +219,7 @@ export default function BusinessDetailPage() {
     } catch (err) {
       showToast("Network error submitting review.", "error");
     } finally {
+      reviewSubmittingRef.current = false;
       setSubmittingReview(false);
     }
   };

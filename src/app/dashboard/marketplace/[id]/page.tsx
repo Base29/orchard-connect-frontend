@@ -201,11 +201,16 @@ export default function ListingDetailPage() {
     router.push("/");
   };
 
+  // References to prevent concurrent submissions
+  const commentSubmittingRef = React.useRef(false);
+
   // Add Comment handler
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCommentText.trim() || !listing || isVerified() === false) return;
+    if (commentSubmittingRef.current) return;
 
+    commentSubmittingRef.current = true;
     setCommentSubmitting(true);
     try {
       const res = await apiRequest(`/api/listings/${listingId}/comments`, {
@@ -215,7 +220,11 @@ export default function ListingDetailPage() {
 
       if (res.ok) {
         const newComment = await res.json();
-        setComments(prev => [...prev, newComment]);
+        setComments(prev => {
+          const exists = prev.some(c => c.id === newComment.id);
+          if (exists) return prev;
+          return [...prev, newComment];
+        });
         setNewCommentText("");
         showToast("Comment posted!", "success");
       } else {
@@ -225,6 +234,7 @@ export default function ListingDetailPage() {
     } catch (err) {
       showToast("Network error submitting comment.", "error");
     } finally {
+      commentSubmittingRef.current = false;
       setCommentSubmitting(false);
     }
   };
