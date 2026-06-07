@@ -3,6 +3,7 @@
 import React, { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import { getBaseUrl } from "@/lib/api";
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -10,7 +11,7 @@ function LoginForm() {
   const { theme, toggleTheme } = useTheme();
   
   const error = searchParams.get("error");
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl = getBaseUrl();
 
   // Tab mode state: Sign In vs Registration
   const [mode, setMode] = useState<"login" | "register">("login");

@@ -1,6 +1,6 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
-import { getAuthToken } from "./api";
+import { getAuthToken, getBaseUrl } from "./api";
 
 declare global {
   interface Window {
@@ -25,8 +25,8 @@ export function getEcho(): any {
 
   window.Pusher = Pusher;
 
-  // Dynamically resolve WebSocket connection parameters from the NEXT_PUBLIC_API_URL or active host
-  const apiHttpUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+  // Dynamically resolve WebSocket connection parameters from the dynamic API URL
+  const apiHttpUrl = getBaseUrl();
 
   let wsHost = window.location.hostname;
   let wsPort = 8080;
@@ -36,14 +36,7 @@ export function getEcho(): any {
   if (apiHttpUrl.startsWith("http://") || apiHttpUrl.startsWith("https://")) {
     try {
       const apiVal = new URL(apiHttpUrl);
-      
-      // If the API URL hostname is localhost but the window hostname is not,
-      // the user is accessing localhost from an IP or external host.
-      if (apiVal.hostname === "localhost" && window.location.hostname !== "localhost") {
-        wsHost = window.location.hostname;
-      } else {
-        wsHost = apiVal.hostname;
-      }
+      wsHost = apiVal.hostname;
 
       const apiPort = apiVal.port ? parseInt(apiVal.port) : (apiVal.protocol === "https:" ? 443 : 80);
       wsPort = apiPort;

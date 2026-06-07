@@ -33,7 +33,7 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
     headers.set("Content-Type", "application/json");
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const baseUrl = getBaseUrl();
   
   try {
     const response = await fetch(`${baseUrl}${endpoint}`, {
@@ -53,5 +53,31 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
   } catch (error) {
     console.error("API request failed:", error);
     throw error;
+  }
+}
+
+/**
+ * Determine the API base URL dynamically.
+ * Swaps localhost with the window's hostname if accessed from an external client (like a mobile device on LAN),
+ * while preserving the original port and protocol.
+ */
+export function getBaseUrl(): string {
+  const defaultUrl = "http://localhost:8080";
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || defaultUrl;
+
+  if (typeof window === "undefined") {
+    return envUrl;
+  }
+
+  try {
+    const url = new URL(envUrl);
+    // If the configured API URL hostname is localhost, but the browser is visiting a different host,
+    // swap the hostname to match the browser's hostname while preserving the port and protocol.
+    if (url.hostname === "localhost" && window.location.hostname !== "localhost") {
+      url.hostname = window.location.hostname;
+    }
+    return url.toString().replace(/\/$/, ""); // Remove trailing slash if any
+  } catch {
+    return envUrl;
   }
 }
