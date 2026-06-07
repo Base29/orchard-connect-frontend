@@ -362,12 +362,6 @@ export default function Home() {
               >
                 Get Verified Access
               </a>
-              <a
-                href="/dashboard"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white dark:bg-zinc-900 hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-800 dark:text-neutral-100 border border-neutral-200 dark:border-zinc-800 font-semibold active:scale-95 transition-all text-center cursor-pointer"
-              >
-                Try Resident Demo
-              </a>
             </div>
           </div>
         </section>

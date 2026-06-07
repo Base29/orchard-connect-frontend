@@ -25,18 +25,44 @@ export function getEcho(): any {
 
   window.Pusher = Pusher;
 
-  const wsHost = window.location.hostname;
-  const caddyPort = 8080; // Entry port of the unified Caddy proxy
+  // Dynamically resolve WebSocket connection parameters from the NEXT_PUBLIC_API_URL or active host
+  const apiHttpUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+
+  let wsHost = window.location.hostname;
+  let wsPort = 8080;
+  let wssPort = 8080;
+  let forceTLS = false;
+
+  if (apiHttpUrl.startsWith("http://") || apiHttpUrl.startsWith("https://")) {
+    try {
+      const apiVal = new URL(apiHttpUrl);
+      
+      // If the API URL hostname is localhost but the window hostname is not,
+      // the user is accessing localhost from an IP or external host.
+      if (apiVal.hostname === "localhost" && window.location.hostname !== "localhost") {
+        wsHost = window.location.hostname;
+      } else {
+        wsHost = apiVal.hostname;
+      }
+
+      const apiPort = apiVal.port ? parseInt(apiVal.port) : (apiVal.protocol === "https:" ? 443 : 80);
+      wsPort = apiPort;
+      wssPort = apiPort;
+      forceTLS = apiVal.protocol === "https:";
+    } catch (e) {
+      console.error("Failed to parse API URL for Echo configuration:", e);
+    }
+  }
 
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: "orchard_reverb_key", // Matches REVERB_APP_KEY in docker-compose/env
     wsHost: wsHost,
-    wsPort: caddyPort,
-    wssPort: caddyPort,
-    forceTLS: false, // True in prod, false in local dev monorepo
+    wsPort: wsPort,
+    wssPort: wssPort,
+    forceTLS: forceTLS,
     enabledTransports: ["ws", "wss"],
-    authEndpoint: "http://localhost:8080/api/broadcasting/auth", // Secure Sanctum authorizer
+    authEndpoint: `${apiHttpUrl}/api/broadcasting/auth`, // Secure Sanctum authorizer
     auth: {
       headers: {
         Authorization: `Bearer ${token}`,

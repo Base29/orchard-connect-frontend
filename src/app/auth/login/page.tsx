@@ -10,6 +10,7 @@ function LoginForm() {
   const { theme, toggleTheme } = useTheme();
   
   const error = searchParams.get("error");
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   // Tab mode state: Sign In vs Registration
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -29,7 +30,6 @@ function LoginForm() {
     setLoading(true);
     setFormError("");
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
     const endpoint = mode === "login" ? "/api/auth/login" : "/api/auth/register";
 
     try {
@@ -127,7 +127,7 @@ function LoginForm() {
       {/* OAuth Options */}
       <div className="space-y-2.5">
         <button
-          onClick={() => window.location.href = "http://localhost:8080/api/auth/google/redirect"}
+          onClick={() => window.location.href = `${baseUrl}/api/auth/google/redirect`}
           className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-800 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-zinc-700/50 active:scale-[0.99] transition-all cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -140,7 +140,7 @@ function LoginForm() {
         </button>
 
         <button
-          onClick={() => window.location.href = "http://localhost:8080/api/auth/facebook/redirect"}
+          onClick={() => window.location.href = `${baseUrl}/api/auth/facebook/redirect`}
           className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-800 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-zinc-700/50 active:scale-[0.99] transition-all cursor-pointer"
         >
           <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
