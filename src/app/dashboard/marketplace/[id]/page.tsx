@@ -474,14 +474,23 @@ export default function ListingDetailPage() {
             <hr className="border-neutral-100 dark:border-zinc-800" />
 
             <nav className="flex flex-col gap-1 text-sm font-medium">
-              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-855 text-slate-600 dark:text-zinc-400 transition-all">
                 🏠 Community Feed
+              </Link>
+              <Link href="/dashboard/announcements" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+                📢 Announcements
+              </Link>
+              <Link href="/dashboard/news" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+                📰 Orchard News
               </Link>
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🛍️ Marketplace
               </Link>
               <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🏢 Business Directory
+              </Link>
+              <Link href="/dashboard/phone-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+                📞 Phone Directory
               </Link>
             </nav>
 

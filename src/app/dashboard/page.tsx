@@ -87,9 +87,19 @@ interface Announcement {
   pinned: boolean;
 }
 
+interface PostImage {
+  file: File;
+  previewUrl: string;
+  url?: string;
+  status: "uploading" | "success" | "error";
+}
+
 export default function DashboardPage() {
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+
+  // File Upload Reference
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Core data states
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -103,6 +113,10 @@ export default function DashboardPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [myListings, setMyListings] = useState<Listing[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  // Post Draft Images & Lightbox
+  const [selectedImages, setSelectedImages] = useState<PostImage[]>([]);
+  const [activeLightbox, setActiveLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
   // Page interaction states
   const [loading, setLoading] = useState(true);
@@ -308,18 +322,89 @@ export default function DashboardPage() {
     };
   }, [currentUser]);
 
+  // Image Upload Handlers
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (selectedImages.length + files.length > 3) {
+      showToast("You can only upload a maximum of 3 images per post.", "error");
+      return;
+    }
+
+    const newImages = files.map(file => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+      status: "uploading" as const,
+    }));
+
+    setSelectedImages(prev => [...prev, ...newImages]);
+
+    // Upload each file concurrently
+    newImages.forEach(async (img) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", img.file);
+        formData.append("type", "post");
+
+        const res = await apiRequest("/api/media/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setSelectedImages(prev => prev.map(p => p.previewUrl === img.previewUrl ? { ...p, status: "success", url: data.url } : p));
+        } else {
+          setSelectedImages(prev => prev.map(p => p.previewUrl === img.previewUrl ? { ...p, status: "error" } : p));
+          showToast("Failed to upload image. Max file size: 5MB.", "error");
+        }
+      } catch (err) {
+        setSelectedImages(prev => prev.map(p => p.previewUrl === img.previewUrl ? { ...p, status: "error" } : p));
+        showToast("Network error uploading image.", "error");
+      }
+    });
+
+    // Reset input value so the user can select the same file again if they delete it
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = (previewUrl: string) => {
+    setSelectedImages(prev => {
+      const target = prev.find(p => p.previewUrl === previewUrl);
+      if (target) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return prev.filter(p => p.previewUrl !== previewUrl);
+    });
+  };
+
   // Interaction: Create Post
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostContent.trim() || isVerified() === false) return;
+    
+    // Validate if any image is currently uploading
+    if (selectedImages.some(img => img.status === "uploading")) {
+      showToast("Please wait for all images to complete uploading.", "info");
+      return;
+    }
+
     if (postSubmittingRef.current) return;
 
     postSubmittingRef.current = true;
     setPostSubmitting(true);
     try {
+      const uploadedUrls = selectedImages
+        .filter(img => img.status === "success" && img.url)
+        .map(img => img.url);
+
       const response = await apiRequest("/api/posts", {
         method: "POST",
-        body: JSON.stringify({ content: newPostContent.trim() }),
+        body: JSON.stringify({ 
+          content: newPostContent.trim(),
+          media_urls: uploadedUrls,
+        }),
       });
 
       if (response.ok) {
@@ -327,6 +412,11 @@ export default function DashboardPage() {
         // Insert new post to top of timeline
         setPosts(prev => [newPost, ...prev]);
         setNewPostContent("");
+        
+        // Revoke all preview URLs and reset selected images
+        selectedImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
+        setSelectedImages([]);
+        
         showToast("Post shared successfully!", "success");
       } else {
         const errData = await response.json();
@@ -781,11 +871,20 @@ export default function DashboardPage() {
               <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
                 🏠 Community Feed
               </Link>
+              <Link href="/dashboard/announcements" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+                📢 Announcements
+              </Link>
+              <Link href="/dashboard/news" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+                📰 Orchard News
+              </Link>
               <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🛍️ Marketplace
               </Link>
               <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
                 🏢 Business Directory
+              </Link>
+              <Link href="/dashboard/phone-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-400 transition-all">
+                📞 Phone Directory
               </Link>
             </nav>
 
@@ -811,30 +910,78 @@ export default function DashboardPage() {
               <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/60 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none" />
             )}
 
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              multiple 
+              accept="image/jpeg,image/png,image/jpg,image/webp" 
+              className="hidden" 
+            />
+
             <div className="flex gap-3">
               <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm shrink-0">
                 {getInitials(currentUser.name)}
               </div>
-              <textarea
-                value={newPostContent}
-                disabled={!isVerified()}
-                onChange={(e) => setNewPostContent(e.target.value)}
-                placeholder={isVerified() ? "Share something helpful with your fellow orchard residents..." : "Residency verification pending: posting is disabled."}
-                rows={3}
-                className="w-full text-sm py-2 focus:outline-none bg-transparent resize-none disabled:text-slate-400 dark:disabled:text-zinc-500"
-              />
+              <div className="flex-1 space-y-3">
+                <textarea
+                  value={newPostContent}
+                  disabled={!isVerified()}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder={isVerified() ? "Share something helpful with your fellow orchard residents..." : "Residency verification pending: posting is disabled."}
+                  rows={3}
+                  className="w-full text-sm py-2 focus:outline-none bg-transparent resize-none disabled:text-slate-400 dark:disabled:text-zinc-500"
+                />
+
+                {/* Selected Images Preview Grid */}
+                {selectedImages.length > 0 && (
+                  <div className="flex flex-wrap gap-2.5 pt-1">
+                    {selectedImages.map((img) => (
+                      <div key={img.previewUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 group">
+                        <img src={img.previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                        {img.status === "uploading" && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          </div>
+                        )}
+                        {img.status === "error" && (
+                          <div className="absolute inset-0 bg-rose-500/20 flex items-center justify-center" title="Upload failed">
+                            <span className="text-white text-xs">⚠️</span>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(img.previewUrl)}
+                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white text-[10px] transition-colors cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-zinc-800 relative z-20">
               <div className="flex gap-2">
-                <button type="button" disabled={!isVerified()} className="p-2 rounded-lg text-slate-400 dark:text-zinc-400 hover:bg-neutral-50 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent">
-                  📷 Image
+                <button 
+                  type="button" 
+                  disabled={!isVerified() || selectedImages.length >= 3} 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-2 rounded-lg text-slate-400 dark:text-zinc-400 hover:bg-neutral-50 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                  title="Attach images (Max 3)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                  </svg>
                 </button>
               </div>
               
               <button
                 type="submit"
-                disabled={postSubmitting || !newPostContent.trim() || !isVerified()}
+                disabled={postSubmitting || !newPostContent.trim() || !isVerified() || selectedImages.some(img => img.status === "uploading")}
                 className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-black font-bold text-xs rounded-full hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:active:scale-100 transition-all cursor-pointer"
               >
                 {postSubmitting ? "Posting..." : "Post to Feed"}
@@ -896,6 +1043,28 @@ export default function DashboardPage() {
                   <p className="text-sm font-light leading-relaxed text-slate-700 dark:text-zinc-300 whitespace-pre-wrap">
                     {post.content}
                   </p>
+
+                  {/* Post Images Grid */}
+                  {post.media_urls && post.media_urls.length > 0 && (
+                    <div className={`mt-3 grid gap-2 overflow-hidden rounded-2xl ${
+                      post.media_urls.length === 1 ? 'grid-cols-1' : post.media_urls.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+                    }`}>
+                      {post.media_urls.map((url, idx) => (
+                        <div 
+                          key={idx} 
+                          className="relative aspect-video w-full bg-neutral-100 dark:bg-zinc-950 overflow-hidden cursor-zoom-in group border border-neutral-200/20 dark:border-zinc-800/30"
+                          onClick={() => setActiveLightbox({ images: post.media_urls || [], index: idx })}
+                        >
+                          <img 
+                            src={url} 
+                            alt={`Post image ${idx + 1}`} 
+                            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" 
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Reaction Hooks */}
                   <div className="flex items-center gap-6 pt-3 border-t border-neutral-100 dark:border-zinc-800 text-xs">
@@ -1119,9 +1288,14 @@ export default function DashboardPage() {
 
           {/* Announcements Widget */}
           <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
-              Community Board
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
+                Community Board
+              </span>
+              <Link href="/dashboard/announcements" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
+                View All →
+              </Link>
+            </div>
             
             <div className="space-y-3 text-xs">
               {announcements.length === 0 ? (
@@ -1130,13 +1304,15 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 announcements.map((item) => (
-                  <div key={item.id} className="space-y-0.5 border-l-2 border-emerald-500 pl-2">
+                  <div key={item.id} className="space-y-0.5 border-l-2 border-emerald-500 pl-2 animate-fade-in">
                     <div className="font-bold text-slate-800 dark:text-zinc-200 flex items-center gap-1.5">
-                      {item.title}
+                      <Link href={`/dashboard/announcements/${item.id}`} className="hover:text-emerald-500 transition-colors">
+                        {item.title}
+                      </Link>
                       {item.pinned && <span className="text-[9px] px-1 bg-amber-500/10 text-amber-600 rounded">Pin</span>}
                     </div>
-                    <p className="text-slate-500 dark:text-zinc-400 font-light text-[11px] leading-snug">
-                      {item.content}
+                    <p className="text-slate-500 dark:text-zinc-450 font-light text-[11px] leading-snug line-clamp-2">
+                      {item.content ? item.content.replace(/<[^>]*>?/gm, " ").trim() : ""}
                     </p>
                   </div>
                 ))
@@ -1236,6 +1412,78 @@ export default function DashboardPage() {
             </form>
 
           </div>
+        </div>
+      )}
+
+      {/* Lightbox Zoom Modal */}
+      {activeLightbox && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 transition-all duration-300"
+          onClick={() => setActiveLightbox(null)}
+        >
+          <button 
+            onClick={() => setActiveLightbox(null)}
+            className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-lg transition-colors cursor-pointer z-50 border border-white/15"
+            aria-label="Close lightbox"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <div className="relative w-full max-w-5xl h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            {activeLightbox.images.length > 1 && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveLightbox(prev => {
+                    if (!prev) return null;
+                    const newIndex = (prev.index - 1 + prev.images.length) % prev.images.length;
+                    return { ...prev, index: newIndex };
+                  });
+                }}
+                className="absolute left-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 border border-white/15"
+                aria-label="Previous image"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+
+            <div className="flex items-center justify-center p-2 max-w-full max-h-[85vh]">
+              <img 
+                src={activeLightbox.images[activeLightbox.index]} 
+                alt="Enlarged post content" 
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl select-none" 
+              />
+            </div>
+
+            {activeLightbox.images.length > 1 && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveLightbox(prev => {
+                    if (!prev) return null;
+                    const newIndex = (prev.index + 1) % prev.images.length;
+                    return { ...prev, index: newIndex };
+                  });
+                }}
+                className="absolute right-4 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 border border-white/15"
+                aria-label="Next image"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+          </div>
+          
+          {activeLightbox.images.length > 1 && (
+            <div className="absolute bottom-6 text-xs text-white/60 font-semibold tracking-wider bg-black/40 px-3 py-1.5 rounded-full border border-white/10">
+              {activeLightbox.index + 1} / {activeLightbox.images.length}
+            </div>
+          )}
         </div>
       )}
 
