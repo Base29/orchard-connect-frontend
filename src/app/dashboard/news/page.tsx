@@ -34,6 +34,7 @@ interface NewsArticle {
   status: string;
   created_at: string;
   comments_count: number;
+  image_url?: string | null;
   author?: {
     name: string;
   };
@@ -392,10 +393,19 @@ export default function NewsPage() {
               {newsList.map((news) => (
                 <div 
                   key={news.id} 
-                  className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-6 space-y-4 shadow-sm hover:border-neutral-300 dark:hover:border-zinc-700 transition-all"
+                  className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-6 shadow-sm hover:border-neutral-300 dark:hover:border-zinc-700 transition-all flex flex-col md:flex-row gap-6"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
+                  {news.image_url && (
+                    <div className="relative w-full md:w-48 lg:w-60 h-40 md:h-auto min-h-[140px] rounded-xl overflow-hidden shrink-0">
+                      <img 
+                        src={news.image_url} 
+                        alt={news.title}
+                        className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-950/20 px-2.5 py-0.5 rounded-md border border-emerald-200/20 uppercase tracking-wide">
                           News Update
@@ -414,28 +424,28 @@ export default function NewsPage() {
                           {news.title}
                         </h2>
                       </Link>
-                    </div>
-                  </div>
 
-                  <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed line-clamp-3 whitespace-pre-wrap">
-                    {stripHtml(news.content)}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-zinc-850 text-xs">
-                    <div className="flex items-center gap-2 text-slate-400 dark:text-zinc-450 font-light">
-                      <span>👤 By {news.author?.name || "Society Office"}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        💬 {news.comments_count} {news.comments_count === 1 ? "Comment" : "Comments"}
-                      </span>
+                      <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed line-clamp-3 whitespace-pre-wrap">
+                        {stripHtml(news.content)}
+                      </p>
                     </div>
 
-                    <Link 
-                      href={`/dashboard/news/${news.id}`}
-                      className="text-emerald-600 dark:text-emerald-450 font-bold hover:underline"
-                    >
-                      Read Full Article →
-                    </Link>
+                    <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-zinc-850 text-xs">
+                      <div className="flex items-center gap-2 text-slate-400 dark:text-zinc-450 font-light">
+                        <span>👤 By {news.author?.name || "Society Office"}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          💬 {news.comments_count} {news.comments_count === 1 ? "Comment" : "Comments"}
+                        </span>
+                      </div>
+
+                      <Link 
+                        href={`/dashboard/news/${news.id}`}
+                        className="text-emerald-600 dark:text-emerald-450 font-bold hover:underline"
+                      >
+                        Read Full Article →
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}

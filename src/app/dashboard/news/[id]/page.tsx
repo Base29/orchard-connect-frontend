@@ -45,6 +45,7 @@ interface NewsArticle {
   content: string;
   status: string;
   created_at: string;
+  image_url?: string | null;
   author?: {
     name: string;
   };
@@ -421,7 +422,7 @@ export default function NewsDetailPage() {
                     <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 bg-emerald-50 dark:bg-emerald-950/20 px-2.5 py-0.5 rounded-md border border-emerald-200/20 uppercase tracking-wide">
                       News Update
                     </span>
-                    <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-normal">
+                    <span className="text-[10px] text-slate-400 dark:text-zinc-550 font-normal">
                       Published on {new Date(article.created_at).toLocaleDateString(undefined, {
                         weekday: "long",
                         month: "long",
@@ -435,10 +436,20 @@ export default function NewsDetailPage() {
                     {article.title}
                   </h1>
 
-                  <div className="text-xs text-slate-400 dark:text-zinc-500 font-light flex items-center gap-1.5 pt-1">
+                  <div className="text-xs text-slate-400 dark:text-zinc-550 font-light flex items-center gap-1.5 pt-1">
                     <span>👤 Published by: <strong>{article.author?.name || "Society Office"}</strong></span>
                   </div>
                 </div>
+
+                {article.image_url && (
+                  <div className="relative w-full h-[250px] md:h-[400px] rounded-xl overflow-hidden mt-4 shadow-sm border border-neutral-200/40 dark:border-zinc-850">
+                    <img 
+                      src={article.image_url} 
+                      alt={article.title}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                )}
 
                 <hr className="border-neutral-100 dark:border-zinc-850" />
 
