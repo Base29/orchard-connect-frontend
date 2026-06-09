@@ -423,6 +423,9 @@ export default function AnnouncementsPage() {
               <Link href="/dashboard/phone-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
                 📞 Phone Directory
               </Link>
+              <Link href="/dashboard/polls" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
+                📊 Polls
+              </Link>
             </nav>
 
             <hr className="border-neutral-100 dark:border-zinc-800" />
