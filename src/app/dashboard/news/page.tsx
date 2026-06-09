@@ -395,13 +395,17 @@ export default function NewsPage() {
                   key={news.id} 
                   className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-6 shadow-sm hover:border-neutral-300 dark:hover:border-zinc-700 transition-all flex flex-col md:flex-row gap-6"
                 >
-                  {news.image_url && (
+                  {news.image_url ? (
                     <div className="relative w-full md:w-48 lg:w-60 h-40 md:h-auto min-h-[140px] rounded-xl overflow-hidden shrink-0">
                       <img 
                         src={news.image_url} 
                         alt={news.title}
                         className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
                       />
+                    </div>
+                  ) : (
+                    <div className="w-full md:w-48 lg:w-60 h-40 md:h-auto min-h-[140px] bg-slate-100 dark:bg-zinc-950 relative flex items-center justify-center overflow-hidden border border-neutral-200/40 dark:border-zinc-850 rounded-xl shrink-0">
+                      <div className="text-slate-400 dark:text-zinc-550 text-3xl">📰</div>
                     </div>
                   )}
                   <div className="flex-1 flex flex-col justify-between space-y-3">

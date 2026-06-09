@@ -34,6 +34,7 @@ interface Announcement {
   status: string;
   pinned: boolean;
   created_at: string;
+  image_url?: string | null;
   author?: {
     name: string;
   } | null;
@@ -439,6 +440,16 @@ export default function AnnouncementDetailPage() {
                     <span>👤 Published by: <strong>{announcement.author?.name || "Society Office"}</strong></span>
                   </div>
                 </div>
+
+                {announcement.image_url && (
+                  <div className="relative w-full h-[250px] md:h-[400px] rounded-xl overflow-hidden mt-4 shadow-sm border border-neutral-200/40 dark:border-zinc-850 animate-fade-in">
+                    <img 
+                      src={announcement.image_url} 
+                      alt={announcement.title}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                )}
 
                 <hr className="border-neutral-100 dark:border-zinc-850" />
 

@@ -85,6 +85,7 @@ interface Announcement {
   content: string;
   category: string;
   pinned: boolean;
+  image_url?: string | null;
 }
 
 interface PostImage {

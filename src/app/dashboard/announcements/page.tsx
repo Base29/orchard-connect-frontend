@@ -34,6 +34,7 @@ interface Announcement {
   status: string;
   pinned: boolean;
   created_at: string;
+  image_url?: string | null;
   author?: {
     name: string;
   } | null;
@@ -502,7 +503,7 @@ export default function AnnouncementsPage() {
                 return (
                   <div
                     key={item.id}
-                    className={`group bg-white dark:bg-zinc-900 rounded-2xl border p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all relative overflow-hidden ${
+                    className={`group bg-white dark:bg-zinc-900 rounded-2xl border p-6 flex flex-col md:flex-row gap-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden ${
                       item.pinned 
                         ? "border-amber-400/80 dark:border-amber-500/60 bg-amber-50/10 dark:bg-amber-950/5" 
                         : "border-neutral-200/60 dark:border-zinc-800/80 hover:border-neutral-350 dark:hover:border-zinc-700"
@@ -513,52 +514,69 @@ export default function AnnouncementsPage() {
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600" />
                     )}
 
-                    <div className="space-y-4">
-                      {/* Meta header bar */}
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md ${config.bg}`}>
-                            {config.icon} {config.label}
-                          </span>
-                          {item.pinned && (
-                            <span className="text-[10px] font-bold uppercase tracking-wide text-amber-600 dark:text-amber-450 bg-amber-50 dark:bg-amber-950/20 px-2 py-0.5 rounded-md border border-amber-300/30">
-                              📌 Pinned
-                            </span>
-                          )}
+                    {/* Image block (Image or Placeholder) */}
+                    <div className="relative w-full md:w-48 lg:w-60 h-40 md:h-auto min-h-[140px] bg-slate-50 dark:bg-zinc-950 rounded-xl overflow-hidden shrink-0 flex items-center justify-center border border-neutral-100 dark:border-zinc-850">
+                      {item.image_url ? (
+                        <img 
+                          src={item.image_url} 
+                          alt={item.title}
+                          className="object-cover w-full h-full group-hover:scale-105 transition-all duration-500"
+                        />
+                      ) : (
+                        <div className="text-slate-400 dark:text-zinc-500 text-3xl select-none">
+                          {config.icon}
                         </div>
-                        <span className="text-[10px] text-slate-450 dark:text-zinc-550 font-normal">
-                          {new Date(item.created_at).toLocaleDateString(undefined, {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric"
-                          })}
-                        </span>
-                      </div>
-
-                      {/* Announcement Content details */}
-                      <div className="space-y-1">
-                        <Link href={`/dashboard/announcements/${item.id}`}>
-                          <h2 className="text-base md:text-lg font-bold text-slate-800 dark:text-zinc-150 leading-tight group-hover:text-emerald-500 transition-colors cursor-pointer inline-block">
-                            {item.title}
-                          </h2>
-                        </Link>
-                        <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed line-clamp-3 whitespace-pre-wrap pt-2">
-                          {stripHtml(item.content)}
-                        </p>
-                      </div>
+                      )}
                     </div>
 
-                    {/* Footer author and navigation bar */}
-                    <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-zinc-850 mt-5 text-xs">
-                      <span className="text-slate-400 dark:text-zinc-500 font-light flex items-center gap-1">
-                        👤 Published by: <strong className="font-semibold text-slate-500 dark:text-zinc-450">{item.author?.name || "Society Office"}</strong>
-                      </span>
-                      <Link
-                        href={`/dashboard/announcements/${item.id}`}
-                        className="text-emerald-600 dark:text-emerald-450 font-bold hover:underline transition-all"
-                      >
-                        View Details →
-                      </Link>
+                    <div className="flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-4">
+                        {/* Meta header bar */}
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md ${config.bg}`}>
+                              {config.icon} {config.label}
+                            </span>
+                            {item.pinned && (
+                              <span className="text-[10px] font-bold uppercase tracking-wide text-amber-600 dark:text-amber-450 bg-amber-50 dark:bg-amber-950/20 px-2 py-0.5 rounded-md border border-amber-300/30">
+                                📌 Pinned
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-slate-450 dark:text-zinc-550 font-normal">
+                            {new Date(item.created_at).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric"
+                            })}
+                          </span>
+                        </div>
+
+                        {/* Announcement Content details */}
+                        <div className="space-y-1">
+                          <Link href={`/dashboard/announcements/${item.id}`}>
+                            <h2 className="text-base md:text-lg font-bold text-slate-800 dark:text-zinc-150 leading-tight group-hover:text-emerald-500 transition-colors cursor-pointer inline-block">
+                              {item.title}
+                            </h2>
+                          </Link>
+                          <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed line-clamp-3 whitespace-pre-wrap pt-2">
+                            {stripHtml(item.content)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Footer author and navigation bar */}
+                      <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-zinc-850 mt-5 text-xs">
+                        <span className="text-slate-400 dark:text-zinc-500 font-light flex items-center gap-1">
+                          👤 Published by: <strong className="font-semibold text-slate-500 dark:text-zinc-450">{item.author?.name || "Society Office"}</strong>
+                        </span>
+                        <Link
+                          href={`/dashboard/announcements/${item.id}`}
+                          className="text-emerald-600 dark:text-emerald-450 font-bold hover:underline transition-all"
+                        >
+                          View Details →
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 );

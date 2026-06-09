@@ -441,13 +441,17 @@ export default function NewsDetailPage() {
                   </div>
                 </div>
 
-                {article.image_url && (
+                {article.image_url ? (
                   <div className="relative w-full h-[250px] md:h-[400px] rounded-xl overflow-hidden mt-4 shadow-sm border border-neutral-200/40 dark:border-zinc-850">
                     <img 
                       src={article.image_url} 
                       alt={article.title}
                       className="object-cover w-full h-full"
                     />
+                  </div>
+                ) : (
+                  <div className="relative w-full h-[200px] md:h-[300px] rounded-xl overflow-hidden mt-4 bg-slate-100 dark:bg-zinc-950 flex items-center justify-center border border-neutral-200/40 dark:border-zinc-850 shadow-sm">
+                    <div className="text-slate-400 dark:text-zinc-550 text-6xl">📰</div>
                   </div>
                 )}
 
