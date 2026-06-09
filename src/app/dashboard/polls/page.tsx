@@ -34,6 +34,22 @@ interface PollOption {
   votes_count: number;
 }
 
+interface VoteDetail {
+  id: string;
+  poll_id: string;
+  poll_option_id: string;
+  user_id: string;
+  created_at: string;
+  user: {
+    name: string;
+    resident_profile?: ResidentProfile | null;
+  };
+  option: {
+    id: string;
+    option_text: string;
+  };
+}
+
 interface Poll {
   id: string;
   user_id: string;
@@ -50,6 +66,8 @@ interface Poll {
     resident_profile?: ResidentProfile | null;
   };
   user_voted_option_id?: string | null;
+  votes?: VoteDetail[];
+  is_anonymous: boolean;
 }
 
 export default function PollsPage() {
@@ -77,6 +95,7 @@ export default function PollsPage() {
   const [createStartAt, setCreateStartAt] = useState("");
   const [createEndAt, setCreateEndAt] = useState("");
   const [createOptions, setCreateOptions] = useState<string[]>(["", ""]);
+  const [createIsAnonymous, setCreateIsAnonymous] = useState(false);
   const [createSubmitting, setCreateSubmitting] = useState(false);
 
   // Edit Poll Modal & Form State
@@ -87,6 +106,7 @@ export default function PollsPage() {
   const [editStartAt, setEditStartAt] = useState("");
   const [editEndAt, setEditEndAt] = useState("");
   const [editOptions, setEditOptions] = useState<string[]>([]);
+  const [editIsAnonymous, setEditIsAnonymous] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   // Suspend Reason Modal State
@@ -94,6 +114,12 @@ export default function PollsPage() {
   const [suspendingPollId, setSuspendingPollId] = useState<string | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
   const [suspendSubmitting, setSuspendSubmitting] = useState(false);
+
+  // Expanded Voters List State
+  const [expandedVoters, setExpandedVoters] = useState<Record<string, boolean>>({});
+  const toggleVoters = (pollId: string) => {
+    setExpandedVoters(prev => ({ ...prev, [pollId]: !prev[pollId] }));
+  };
 
   // Toast
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" | "info" }>({
@@ -258,6 +284,7 @@ export default function PollsPage() {
           start_at: toUTCISOString(createStartAt),
           end_at: toUTCISOString(createEndAt),
           options: filteredOptions,
+          is_anonymous: createIsAnonymous,
         }),
       });
 
@@ -270,6 +297,7 @@ export default function PollsPage() {
         setCreateStartAt("");
         setCreateEndAt("");
         setCreateOptions(["", ""]);
+        setCreateIsAnonymous(false);
         
         // Refetch polls
         fetchPolls();
@@ -313,6 +341,7 @@ export default function PollsPage() {
     setEditStartAt(formatLocal(poll.start_at));
     setEditEndAt(formatLocal(poll.end_at));
     setEditOptions(poll.options.map(o => o.option_text));
+    setEditIsAnonymous(poll.is_anonymous || false);
     setIsEditModalOpen(true);
   };
 
@@ -337,6 +366,7 @@ export default function PollsPage() {
           start_at: toUTCISOString(editStartAt),
           end_at: toUTCISOString(editEndAt),
           options: filteredOptions,
+          is_anonymous: editIsAnonymous,
         }),
       });
 
@@ -747,6 +777,12 @@ export default function PollsPage() {
                       </div>
 
                       <div className="flex items-center gap-2">
+                        {poll.is_anonymous && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-800 dark:bg-blue-955/20 dark:text-blue-400 border border-blue-200/20">
+                            🔒 Anonymous
+                          </span>
+                        )}
+
                         {poll.status === "suspended" ? (
                           <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-50 text-rose-800 dark:bg-rose-955/20 dark:text-rose-400 border border-rose-200/25">
                             ⛔ Suspended
@@ -876,6 +912,61 @@ export default function PollsPage() {
                       </div>
                     </div>
 
+                    {poll.is_anonymous && (
+                      <div className="pt-2.5 flex items-center gap-1.5 text-[10px] text-slate-400 dark:text-zinc-500 italic font-light">
+                        <span>🔒</span>
+                        <span>Voter identities are anonymous for this poll. Only vote counts are tracked.</span>
+                      </div>
+                    )}
+
+                    {/* Collapsible Voters List for creator/admin/moderator */}
+                    {!poll.is_anonymous && ((currentUser && poll.user_id === currentUser.id) || isModerator()) && poll.votes && poll.votes.length > 0 && (
+                      <div className="pt-3 border-t border-neutral-100 dark:border-zinc-850 mt-4">
+                        <button
+                          onClick={() => toggleVoters(poll.id)}
+                          className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-neutral-200 transition-colors uppercase tracking-wider cursor-pointer"
+                        >
+                          <span>{expandedVoters[poll.id] ? "▼" : "▶"}</span>
+                          <span>👥 View Voters List ({poll.votes.length})</span>
+                        </button>
+
+                        {expandedVoters[poll.id] && (
+                          <div className="mt-3.5 space-y-2 max-h-[250px] overflow-y-auto pr-1">
+                            {poll.votes.map((vote) => (
+                              <div
+                                key={vote.id}
+                                className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50/50 dark:bg-zinc-850/30 border border-neutral-100 dark:border-zinc-800/60 text-[11px]"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-200 flex items-center justify-center font-bold text-[10px]">
+                                    {getInitials(vote.user.name)}
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-slate-750 dark:text-neutral-100">
+                                      {vote.user.name}
+                                    </div>
+                                    {vote.user.resident_profile && (
+                                      <div className="text-[9px] text-slate-400 dark:text-zinc-550 font-light">
+                                        {vote.user.resident_profile.phase} • {vote.user.resident_profile.block}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <span className="px-2 py-0.5 rounded-md font-bold text-[9px] bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-250/20">
+                                    {vote.option.option_text}
+                                  </span>
+                                  <div className="text-[8px] text-slate-400 dark:text-zinc-500 mt-1 font-light">
+                                    {new Date(vote.created_at).toLocaleString("en-US", { timeZone: "Asia/Karachi", dateStyle: "short", timeStyle: "short" })}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                   </div>
                 );
               })}
@@ -956,6 +1047,23 @@ export default function PollsPage() {
                     className="w-full bg-slate-50 dark:bg-zinc-850 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                   />
                 </div>
+              </div>
+
+              {/* Anonymous Checkbox */}
+              <div className="flex items-start gap-2.5 bg-slate-50 dark:bg-zinc-850/60 p-3 rounded-xl border border-neutral-200/30 dark:border-zinc-800/40">
+                <input
+                  type="checkbox"
+                  id="create-is-anonymous"
+                  checked={createIsAnonymous}
+                  onChange={(e) => setCreateIsAnonymous(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 border-neutral-355 dark:border-zinc-700 bg-transparent cursor-pointer"
+                />
+                <label htmlFor="create-is-anonymous" className="text-xs font-semibold text-slate-700 dark:text-zinc-300 cursor-pointer select-none">
+                  🔒 Anonymous Poll
+                  <span className="block text-[10px] font-light text-slate-400 dark:text-zinc-550 mt-0.5 leading-relaxed">
+                    Voter names and individual selections will be kept completely private. Only vote counts and option percentages will be displayed.
+                  </span>
+                </label>
               </div>
 
               {/* Options Section */}
@@ -1094,6 +1202,23 @@ export default function PollsPage() {
                     className="w-full bg-slate-50 dark:bg-zinc-850 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                   />
                 </div>
+              </div>
+
+              {/* Anonymous Checkbox */}
+              <div className="flex items-start gap-2.5 bg-slate-50 dark:bg-zinc-855/60 p-3 rounded-xl border border-neutral-200/30 dark:border-zinc-800/40">
+                <input
+                  type="checkbox"
+                  id="edit-is-anonymous"
+                  checked={editIsAnonymous}
+                  onChange={(e) => setEditIsAnonymous(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 border-neutral-355 dark:border-zinc-700 bg-transparent cursor-pointer"
+                />
+                <label htmlFor="edit-is-anonymous" className="text-xs font-semibold text-slate-700 dark:text-zinc-300 cursor-pointer select-none">
+                  🔒 Anonymous Poll
+                  <span className="block text-[10px] font-light text-slate-400 dark:text-zinc-555 mt-0.5 leading-relaxed">
+                    Voter names and individual selections will be kept completely private. Only vote counts and option percentages will be displayed.
+                  </span>
+                </label>
               </div>
 
               {/* Options Section */}
