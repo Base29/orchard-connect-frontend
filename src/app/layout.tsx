@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { MaintenanceProvider } from "@/components/MaintenanceProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -55,7 +56,9 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full bg-white text-slate-900 dark:bg-black dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200 antialiased">
         <ThemeProvider initialTheme={theme}>
-          {children}
+          <MaintenanceProvider>
+            {children}
+          </MaintenanceProvider>
         </ThemeProvider>
       </body>
     </html>

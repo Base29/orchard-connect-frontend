@@ -10,6 +10,7 @@ declare global {
 }
 
 let echoInstance: any = null;
+let cachedToken: string | null = null;
 
 /**
  * Initializes and retrieves the singleton Laravel Echo instance.
@@ -18,11 +19,23 @@ let echoInstance: any = null;
 export function getEcho(): any {
   if (typeof window === "undefined") return null;
 
-  if (echoInstance) return echoInstance;
+  const token = getAuthToken() || null;
 
-  const token = getAuthToken();
-  if (!token) return null;
+  if (echoInstance && cachedToken === token) {
+    return echoInstance;
+  }
 
+  // Disconnect existing instance if the token changed
+  if (echoInstance) {
+    try {
+      echoInstance.disconnect();
+    } catch (e) {
+      console.error("Failed to disconnect old Echo instance:", e);
+    }
+    echoInstance = null;
+  }
+
+  cachedToken = token;
   window.Pusher = Pusher;
 
   // Dynamically resolve WebSocket connection parameters from the dynamic API URL
@@ -47,6 +60,16 @@ export function getEcho(): any {
     }
   }
 
+  const authConfig = token ? {
+    authEndpoint: `${apiHttpUrl}/api/broadcasting/auth`, // Secure Sanctum authorizer
+    auth: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    },
+  } : {};
+
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: "orchard_reverb_key", // Matches REVERB_APP_KEY in docker-compose/env
@@ -55,13 +78,7 @@ export function getEcho(): any {
     wssPort: wssPort,
     forceTLS: forceTLS,
     enabledTransports: ["ws", "wss"],
-    authEndpoint: `${apiHttpUrl}/api/broadcasting/auth`, // Secure Sanctum authorizer
-    auth: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    },
+    ...authConfig,
   });
 
   window.Echo = echoInstance;
