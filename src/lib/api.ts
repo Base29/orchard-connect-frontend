@@ -49,6 +49,13 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
       }
     }
 
+    if (response.status === 503) {
+      if (typeof window !== "undefined") {
+        // Dispatch a custom event to notify MaintenanceProvider
+        window.dispatchEvent(new CustomEvent("platform-maintenance"));
+      }
+    }
+
     return response;
   } catch (error) {
     console.error("API request failed:", error);

@@ -32,6 +32,10 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
       if (statusRes.ok) {
         const statusData = await statusRes.json();
         setIsMaintenance(!!statusData.is_enabled);
+        if (statusData.reverb_key) {
+          // Initialize/refresh Echo with the correct key from the backend environment dynamically
+          getEcho(statusData.reverb_key);
+        }
       }
     } catch (err) {
       console.error("Error checking maintenance status:", err);
@@ -45,6 +49,19 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
     checkStatus();
     setAuthToken(getAuthToken());
   }, [pathname]);
+
+  // Setup fallback event listener to catch 503 response triggers immediately (e.g. client clicks during active session)
+  useEffect(() => {
+    const handleMaintenanceEvent = () => {
+      console.log("Fail-safe platform-maintenance event caught, transitioning immediately to maintenance screen.");
+      setIsMaintenance(true);
+    };
+
+    window.addEventListener("platform-maintenance", handleMaintenanceEvent);
+    return () => {
+      window.removeEventListener("platform-maintenance", handleMaintenanceEvent);
+    };
+  }, []);
 
   // Setup WebSocket connection to listen to real-time events, re-binding if the auth token changes
   useEffect(() => {

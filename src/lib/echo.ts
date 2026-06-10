@@ -11,31 +11,36 @@ declare global {
 
 let echoInstance: any = null;
 let cachedToken: string | null = null;
+let cachedKey: string | null = null;
 
 /**
  * Initializes and retrieves the singleton Laravel Echo instance.
  * Automatically injects the active user Sanctum Bearer token for private channel authorization.
+ * Supports dynamically passing the Reverb app key fetched from the backend.
  */
-export function getEcho(): any {
+export function getEcho(dynamicKey?: string): any {
   if (typeof window === "undefined") return null;
 
   const token = getAuthToken() || null;
+  const currentKey = dynamicKey || cachedKey || "orchard_reverb_key";
 
-  if (echoInstance && cachedToken === token) {
+  if (echoInstance && cachedToken === token && cachedKey === currentKey) {
     return echoInstance;
   }
 
-  // Disconnect existing instance if the token changed
+  // Disconnect existing instance if the token or key changed
   if (echoInstance) {
     try {
       echoInstance.disconnect();
+      console.log("[Reverb] Disconnected old Echo instance due to token/key change.");
     } catch (e) {
-      console.error("Failed to disconnect old Echo instance:", e);
+      console.error("[Reverb] Failed to disconnect old Echo instance:", e);
     }
     echoInstance = null;
   }
 
   cachedToken = token;
+  cachedKey = currentKey;
   window.Pusher = Pusher;
 
   // Dynamically resolve WebSocket connection parameters
@@ -76,7 +81,7 @@ export function getEcho(): any {
         }
       }
     } catch (e) {
-      console.error("Failed to parse API URL for Echo configuration:", e);
+      console.error("[Reverb] Failed to parse API URL for Echo configuration:", e);
       // Fallback to match current window location
       wsHost = window.location.hostname;
       forceTLS = isHttps;
@@ -101,9 +106,11 @@ export function getEcho(): any {
     },
   } : {};
 
+  console.log(`[Reverb] Initializing Echo: host=${wsHost}, port=${wsPort}, secure=${forceTLS}, key=${currentKey}`);
+
   echoInstance = new Echo({
     broadcaster: "reverb",
-    key: "orchard_reverb_key", // Matches REVERB_APP_KEY in docker-compose/env
+    key: currentKey,
     wsHost: wsHost,
     wsPort: wsPort,
     wssPort: wssPort,
@@ -111,6 +118,20 @@ export function getEcho(): any {
     enabledTransports: ["ws", "wss"],
     ...authConfig,
   });
+
+  // Attach connection lifecycle loggers for debugging production/demo issues
+  if (echoInstance.connector && echoInstance.connector.pusher) {
+    const conn = echoInstance.connector.pusher.connection;
+    conn.bind("state_change", (states: any) => {
+      console.log(`[Reverb] Connection state changed: ${states.previous} -> ${states.current}`);
+    });
+    conn.bind("error", (err: any) => {
+      console.error("[Reverb] Connection error:", err);
+    });
+    conn.bind("connected", () => {
+      console.log("[Reverb] Socket successfully connected and online!");
+    });
+  }
 
   window.Echo = echoInstance;
   return echoInstance;
