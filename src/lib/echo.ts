@@ -38,30 +38,61 @@ export function getEcho(): any {
   cachedToken = token;
   window.Pusher = Pusher;
 
-  // Dynamically resolve WebSocket connection parameters from the dynamic API URL
-  const apiHttpUrl = getBaseUrl();
+  // Dynamically resolve WebSocket connection parameters
+  const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+  let wsHost = typeof window !== "undefined" ? window.location.hostname : "localhost";
+  let wsPort = isHttps ? 443 : 80;
+  let wssPort = 443;
+  let forceTLS = isHttps;
 
-  let wsHost = window.location.hostname;
-  let wsPort = 8080;
-  let wssPort = 8080;
-  let forceTLS = false;
-
-  if (apiHttpUrl.startsWith("http://") || apiHttpUrl.startsWith("https://")) {
+  if (typeof window !== "undefined") {
+    const apiHttpUrl = getBaseUrl();
     try {
       const apiVal = new URL(apiHttpUrl);
-      wsHost = apiVal.hostname;
-
-      const apiPort = apiVal.port ? parseInt(apiVal.port) : (apiVal.protocol === "https:" ? 443 : 80);
-      wsPort = apiPort;
-      wssPort = apiPort;
-      forceTLS = apiVal.protocol === "https:";
+      
+      // If we are accessing via the Next.js dev server port (e.g., 3000), we need to direct
+      // the websocket traffic to the backend API port (usually 8080) since Next.js doesn't proxy ws/wss.
+      const isNextDev = window.location.port && window.location.port !== "8080" && window.location.port !== "80" && window.location.port !== "443";
+      
+      if (isNextDev) {
+        wsHost = apiVal.hostname;
+        forceTLS = apiVal.protocol === "https:";
+        const apiPort = apiVal.port ? parseInt(apiVal.port) : (apiVal.protocol === "https:" ? 443 : 80);
+        wsPort = apiPort;
+        wssPort = apiPort;
+      } else {
+        // In unified environments (production, demo, or local dev accessed via Caddy directly),
+        // we connect to the WebSocket on the exact same host, protocol, and port as the browser page.
+        // This avoids mixed-content blocks and respects external proxy routing (like Cloudflare, Nginx, ALB).
+        wsHost = window.location.hostname;
+        forceTLS = isHttps;
+        if (window.location.port) {
+          const port = parseInt(window.location.port);
+          wsPort = port;
+          wssPort = port;
+        } else {
+          wsPort = isHttps ? 443 : 80;
+          wssPort = 443;
+        }
+      }
     } catch (e) {
       console.error("Failed to parse API URL for Echo configuration:", e);
+      // Fallback to match current window location
+      wsHost = window.location.hostname;
+      forceTLS = isHttps;
+      if (window.location.port) {
+        const port = parseInt(window.location.port);
+        wsPort = port;
+        wssPort = port;
+      } else {
+        wsPort = isHttps ? 443 : 80;
+        wssPort = 443;
+      }
     }
   }
 
   const authConfig = token ? {
-    authEndpoint: `${apiHttpUrl}/api/broadcasting/auth`, // Secure Sanctum authorizer
+    authEndpoint: `${getBaseUrl()}/api/broadcasting/auth`, // Secure Sanctum authorizer
     auth: {
       headers: {
         Authorization: `Bearer ${token}`,

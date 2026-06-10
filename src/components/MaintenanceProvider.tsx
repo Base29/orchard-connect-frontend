@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, getAuthToken } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import { MaintenancePage } from "./MaintenancePage";
 
@@ -21,6 +21,7 @@ export const useMaintenance = () => useContext(MaintenanceContext);
 export function MaintenanceProvider({ children }: { children: React.ReactNode }) {
   const [isMaintenance, setIsMaintenance] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   const pathname = usePathname();
 
@@ -42,9 +43,10 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
   // Run initial status check and re-run on path changes (e.g. navigation, login/logout redirects)
   useEffect(() => {
     checkStatus();
+    setAuthToken(getAuthToken());
   }, [pathname]);
 
-  // Setup WebSocket connection to listen to real-time events
+  // Setup WebSocket connection to listen to real-time events, re-binding if the auth token changes
   useEffect(() => {
     const echo = getEcho();
     if (echo) {
@@ -59,7 +61,7 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
         echo.leave("maintenance");
       };
     }
-  }, []);
+  }, [authToken]);
 
   // Display a clean, minimal loading spinner while initial state resolves
   if (loading) {
