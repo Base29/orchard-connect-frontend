@@ -112,9 +112,6 @@ export default function DashboardPage() {
   const postSubmittingRef = React.useRef(false);
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [myListings, setMyListings] = useState<Listing[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   // Post Draft Images & Lightbox
   const [selectedImages, setSelectedImages] = useState<PostImage[]>([]);
@@ -182,21 +179,9 @@ export default function DashboardPage() {
         return;
       }
 
-      // Initiate all requests concurrently to hide network latency
-      const [postsRes, listingsRes, myListingsRes, announcementsRes] = await Promise.all([
-        apiRequest("/api/posts"),
-        apiRequest("/api/listings"),
-        apiRequest(`/api/listings?user_id=${userData.user.id}`),
-        apiRequest("/api/announcements"),
-      ]);
-
-      // Parse JSON concurrently for resolving endpoints
-      const [postsData, listingsData, myListingsData, announcementsData] = await Promise.all([
-        postsRes.ok ? postsRes.json() : null,
-        listingsRes.ok ? listingsRes.json() : null,
-        myListingsRes.ok ? myListingsRes.json() : null,
-        announcementsRes.ok ? announcementsRes.json() : null,
-      ]);
+      // Fetch posts from feed API
+      const postsRes = await apiRequest("/api/posts");
+      const postsData = postsRes.ok ? await postsRes.json() : null;
 
       if (postsData) {
         const mappedPosts = (postsData.data || []).map((post: any) => ({
@@ -208,26 +193,6 @@ export default function DashboardPage() {
         setCurrentPage(postsData.current_page || 1);
         setNextPageUrl(postsData.next_page_url || null);
         setHasMore(!!postsData.next_page_url);
-      }
-
-      if (listingsData) {
-        const mappedListings = (listingsData.data || []).map((item: any) => ({
-          ...item,
-          flagged_by_user: item.flags ? item.flags.some((flag: any) => flag.user_id === userData.user.id) : false
-        }));
-        setListings(mappedListings);
-      }
-
-      if (myListingsData) {
-        const mappedMyListings = (myListingsData.data || []).map((item: any) => ({
-          ...item,
-          flagged_by_user: item.flags ? item.flags.some((flag: any) => flag.user_id === userData.user.id) : false
-        }));
-        setMyListings(mappedMyListings);
-      }
-
-      if (announcementsData) {
-        setAnnouncements(announcementsData || []);
       }
 
     } catch (err) {
@@ -853,7 +818,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* Center Timeline */}
-        <main className="lg:col-span-6 space-y-6 order-1 lg:order-2">
+        <main className="lg:col-span-9 space-y-6 order-1 lg:order-2">
           
           {/* Header Row */}
           <div>
@@ -1139,151 +1104,6 @@ export default function DashboardPage() {
           </div>
 
         </main>
-
-        {/* Right Section */}
-        <aside className="lg:col-span-3 space-y-6 order-2 lg:order-1">
-          
-          {/* Marketplace Widget */}
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative overflow-hidden">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
-                Classified Ads
-              </span>
-              <Link href="/dashboard/marketplace" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
-                View All →
-              </Link>
-            </div>
-
-            <div className="space-y-3">
-              {listings.length === 0 ? (
-                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400">
-                  No active listings.
-                </div>
-              ) : (
-                listings.map((item) => (
-                  <div key={item.id} className="rounded-xl border border-neutral-100 dark:border-zinc-800 p-3 space-y-2 text-xs hover:border-neutral-300 dark:hover:border-zinc-700 transition-all">
-                    <Link href={`/dashboard/marketplace/${item.id}`} className="block space-y-1 group">
-                      <div className="font-bold text-emerald-600 dark:text-emerald-450 group-hover:underline">
-                        PKR {Number(item.price).toLocaleString('en-US')}
-                      </div>
-                      <h4 className="font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-emerald-500 transition-colors">
-                        {item.title}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 dark:text-zinc-400 truncate">{item.category}</p>
-                    </Link>
-                    
-                    {isVerified() ? (
-                      <a
-                        href={`https://wa.me/${item.contact_whatsapp.replace(/\+/g, "")}?text=Hi,%20I'm%20interested%2520in%2520your%2520listing%2520${encodeURIComponent(item.title)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold transition-colors text-[10px]"
-                      >
-                        WhatsApp Seller
-                      </a>
-                    ) : (
-                      <div className="w-full text-center py-1.5 px-2 bg-slate-100 dark:bg-zinc-800 rounded-lg text-[9px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800">
-                        🔒 Verification required to view seller
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* My Posted Ads Widget */}
-          {isVerified() && (
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
-                  My Posted Ads
-                </span>
-                <Link href="/dashboard/marketplace" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
-                  Manage Ads →
-                </Link>
-              </div>
-
-              <div className="space-y-3">
-                {myListings.length === 0 ? (
-                  <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400 italic font-light">
-                    No ads posted yet.
-                  </div>
-                ) : (
-                  myListings.slice(0, 3).map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/dashboard/marketplace/${item.id}`}
-                      className="block rounded-xl border border-neutral-100 dark:border-zinc-800 p-3 space-y-2 text-xs hover:border-neutral-300 dark:hover:border-zinc-800 transition-all group"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="font-bold text-emerald-600 dark:text-emerald-450 group-hover:underline">
-                          PKR {Number(item.price).toLocaleString('en-US')}
-                        </div>
-                        {item.status === "pending" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-200/20">
-                            Under Review
-                          </span>
-                        ) : item.status === "sold" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-slate-100 text-slate-800 dark:bg-zinc-800 dark:text-zinc-400 border border-neutral-200/30">
-                            Sold
-                          </span>
-                        ) : item.status === "active" ? (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400 border border-emerald-200/20">
-                            Active
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-400 border border-rose-200/20">
-                            {item.status}
-                          </span>
-                        )}
-                      </div>
-                      <h4 className="font-semibold text-slate-800 dark:text-zinc-200 truncate group-hover:text-emerald-500 transition-colors">
-                        {item.title}
-                      </h4>
-                      <p className="text-[9px] text-slate-400 dark:text-zinc-400 truncate">{item.category}</p>
-                    </Link>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Announcements Widget */}
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
-                Community Board
-              </span>
-              <Link href="/dashboard/announcements" className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 hover:underline">
-                View All →
-              </Link>
-            </div>
-            
-            <div className="space-y-3 text-xs">
-              {announcements.length === 0 ? (
-                <div className="text-center text-xs py-4 text-slate-400 dark:text-zinc-400">
-                  No notifications.
-                </div>
-              ) : (
-                announcements.map((item) => (
-                  <div key={item.id} className="space-y-0.5 border-l-2 border-emerald-500 pl-2 animate-fade-in">
-                    <div className="font-bold text-slate-800 dark:text-zinc-200 flex items-center gap-1.5">
-                      <Link href={`/dashboard/announcements/${item.id}`} className="hover:text-emerald-500 transition-colors">
-                        {item.title}
-                      </Link>
-                      {item.pinned && <span className="text-[9px] px-1 bg-amber-500/10 text-amber-600 rounded">Pin</span>}
-                    </div>
-                    <p className="text-slate-500 dark:text-zinc-450 font-light text-[11px] leading-snug line-clamp-2">
-                      {item.content ? item.content.replace(/<[^>]*>?/gm, " ").trim() : ""}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-        </aside>
 
       </div>
 
