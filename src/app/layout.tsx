@@ -44,8 +44,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const theme = document.cookie.match(/theme=([^;]+)/)?.[1] || 
-                  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                const theme = document.cookie.match(/theme=([^;]+)/)?.[1] || 'light';
                 document.documentElement.classList.add(theme);
                 document.documentElement.classList.remove(theme === 'dark' ? 'light' : 'dark');
                 document.documentElement.style.colorScheme = theme;

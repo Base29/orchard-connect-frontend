@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -603,60 +604,12 @@ export default function PollsPage() {
       <div className="flex-1 w-full max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Sidebar */}
-        <aside className="lg:col-span-3 space-y-6">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-5 shadow-sm">
-            
-            <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
-                Residency Status
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${isVerified() ? "bg-emerald-500" : "bg-amber-500"}`} />
-                <span className="text-sm font-medium">
-                  {isVerified() ? "Verified Resident" : "Pending Verification"}
-                </span>
-              </div>
-            </div>
-
-            <hr className="border-neutral-100 dark:border-zinc-800" />
-
-            <nav className="flex flex-col gap-1 text-sm font-medium">
-              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                🏠 Community Feed
-              </Link>
-              <Link href="/dashboard/announcements" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📢 Announcements
-              </Link>
-              <Link href="/dashboard/news" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📰 Orchard News
-              </Link>
-              <Link href="/dashboard/marketplace" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                🛍️ Marketplace
-              </Link>
-              <Link href="/dashboard/business-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                🏢 Business Directory
-              </Link>
-              <Link href="/dashboard/phone-directory" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-50 dark:hover:bg-zinc-850 text-slate-600 dark:text-zinc-400 transition-all">
-                📞 Phone Directory
-              </Link>
-              <Link href="/dashboard/polls" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 transition-colors">
-                📊 Polls
-              </Link>
-            </nav>
-
-            <hr className="border-neutral-100 dark:border-zinc-800" />
-
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
-            >
-              Sign Out
-            </button>
-          </div>
+        <aside className="lg:col-span-3 space-y-6 order-2 lg:order-1">
+          <NavigationCard currentUser={currentUser} activeKey="polls" variant="desktop" />
         </aside>
 
         {/* Center Content */}
-        <main className="lg:col-span-9 space-y-6">
+        <main className="lg:col-span-9 space-y-6 order-1 lg:order-2">
           
           {/* Header Row */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -684,6 +637,8 @@ export default function PollsPage() {
               </div>
             )}
           </div>
+
+          <NavigationCard currentUser={currentUser} activeKey="polls" variant="mobile" />
 
           {/* Enforce One Active Poll Alert */}
           {isVerified() && hasActivePollRunning() && (
