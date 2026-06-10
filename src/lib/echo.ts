@@ -42,6 +42,10 @@ export function getEcho(dynamicKey?: string): any {
   cachedToken = token;
   cachedKey = currentKey;
   window.Pusher = Pusher;
+  
+  if (typeof window !== "undefined" && (window.location.search.includes("debug") || process.env.NODE_ENV !== "production")) {
+    Pusher.logToConsole = true;
+  }
 
   // Dynamically resolve WebSocket connection parameters
   const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";

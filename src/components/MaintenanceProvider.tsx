@@ -74,6 +74,11 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
         setIsMaintenance(data.is_enabled);
       });
 
+      // Listen to all events on this channel for diagnostic logging
+      channel.listenToAll((eventName: string, data: any) => {
+        console.log(`[Reverb] Raw event received on 'maintenance' channel: event=${eventName}`, data);
+      });
+
       return () => {
         echo.leave("maintenance");
       };
