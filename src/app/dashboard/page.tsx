@@ -305,7 +305,7 @@ export default function DashboardPortalPage() {
 
   if (loading || !currentUser) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-zinc-955 flex flex-col items-center justify-center p-6 transition-colors duration-200">
+      <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 transition-colors duration-200">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-sm font-light text-slate-400 dark:text-zinc-500">Syncing community portal...</p>
       </div>

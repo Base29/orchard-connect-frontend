@@ -208,7 +208,7 @@ function LoginForm() {
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-955 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 transition-colors"
+            className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 transition-colors"
           />
         </div>
 
