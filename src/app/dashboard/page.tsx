@@ -7,6 +7,7 @@ import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import NavigationCard from "@/components/NavigationCard";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -27,6 +28,7 @@ interface User {
   avatar_url?: string;
   status: string;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface Listing {
@@ -79,6 +81,7 @@ interface Poll {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
 }
 
@@ -690,8 +693,9 @@ export default function DashboardPortalPage() {
                             <span className="px-2 py-0.5 rounded text-[8px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-450 border border-emerald-500/15">
                               🗳️ Active Poll
                             </span>
-                            <span className="text-[9px] text-slate-400 dark:text-zinc-550">
+                            <span className="text-[9px] text-slate-400 dark:text-zinc-550 flex items-center gap-1">
                               Proposed by {poll.user.name.split(" ")[0]}
+                              <RoleBadge roles={poll.user.roles} />
                             </span>
                           </div>
                           <h3 className="text-xs font-extrabold text-slate-800 dark:text-neutral-100 hover:text-emerald-500 transition-colors line-clamp-2">

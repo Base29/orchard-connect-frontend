@@ -6,6 +6,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -26,6 +27,7 @@ interface User {
   avatar_url?: string;
   status: string;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface PollOption {
@@ -44,6 +46,7 @@ interface VoteDetail {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
   option: {
     id: string;
@@ -65,6 +68,7 @@ interface Poll {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
   user_voted_option_id?: string | null;
   votes?: VoteDetail[];
@@ -717,8 +721,9 @@ export default function PollsPage() {
                           {getInitials(poll.user.name)}
                         </div>
                         <div>
-                          <div className="flex items-center gap-1.5 text-xs font-semibold">
-                            {poll.user.name}
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+                            <span>{poll.user.name}</span>
+                            <RoleBadge roles={poll.user.roles} />
                             {poll.user.resident_profile && (
                               <span className="px-1.5 py-0.5 rounded text-[8px] bg-neutral-100 text-slate-500 dark:bg-zinc-800 dark:text-zinc-400 border border-neutral-200/10">
                                 {poll.user.resident_profile.phase} • {poll.user.resident_profile.block}
@@ -897,8 +902,9 @@ export default function PollsPage() {
                                     {getInitials(vote.user.name)}
                                   </div>
                                   <div>
-                                    <div className="font-semibold text-slate-750 dark:text-neutral-100">
-                                      {vote.user.name}
+                                    <div className="flex flex-wrap items-center gap-1.5 font-semibold text-slate-750 dark:text-neutral-100">
+                                      <span>{vote.user.name}</span>
+                                      <RoleBadge roles={vote.user.roles} />
                                     </div>
                                     {vote.user.resident_profile && (
                                       <div className="text-[9px] text-slate-400 dark:text-zinc-550 font-light">

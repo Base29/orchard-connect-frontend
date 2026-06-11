@@ -6,6 +6,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -37,6 +38,7 @@ interface Comment {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
 }
 
@@ -54,6 +56,7 @@ interface Listing {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
   flags?: any[];
   flagged_by_user?: boolean;
@@ -611,8 +614,9 @@ export default function ListingDetailPage() {
                         {getInitials(listing.user.name)}
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center gap-1.5">
                           <span className="font-bold text-slate-800 dark:text-zinc-100">{listing.user.name}</span>
+                          <RoleBadge roles={listing.user.roles} />
                           <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
                             ✓ Verified Seller
                           </span>
@@ -699,8 +703,11 @@ export default function ListingDetailPage() {
                           {getInitials(c.user.name)}
                         </div>
                         <div className="flex-1 bg-slate-50 dark:bg-zinc-950/40 rounded-2xl px-4 py-3">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-bold text-slate-800 dark:text-zinc-100">{c.user.name}</span>
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-800 dark:text-zinc-100">{c.user.name}</span>
+                              <RoleBadge roles={c.user.roles} />
+                            </div>
                             {c.user.resident_profile && (
                               <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                 {c.user.resident_profile.phase} • Block {c.user.resident_profile.block}

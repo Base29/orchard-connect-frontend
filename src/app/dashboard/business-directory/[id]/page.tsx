@@ -6,6 +6,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -26,6 +27,7 @@ interface User {
   avatar_url?: string;
   status: string;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface DirectoryReview {
@@ -38,6 +40,7 @@ interface DirectoryReview {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
 }
 
@@ -666,14 +669,15 @@ export default function BusinessDetailPage() {
                             <div className="flex-1 space-y-1">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <span className="font-bold text-slate-800 dark:text-zinc-100 block">
-                                    {rev.user.name}
+                                  <div className="flex flex-wrap items-center gap-1.5 font-bold text-slate-800 dark:text-zinc-100">
+                                    <span>{rev.user.name}</span>
+                                    <RoleBadge roles={rev.user.roles} />
                                     {rev.user.resident_profile && (
-                                      <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light ml-1.5">
+                                      <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                         ({rev.user.resident_profile.phase} • Block {rev.user.resident_profile.block})
                                       </span>
                                     )}
-                                  </span>
+                                  </div>
                                   <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="text-amber-500 font-bold text-xs flex items-center leading-none">
                                       {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}

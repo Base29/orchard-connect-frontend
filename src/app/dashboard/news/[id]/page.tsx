@@ -6,6 +6,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -26,6 +27,7 @@ interface User {
   avatar_url?: string;
   status: string;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface Comment {
@@ -37,6 +39,7 @@ interface Comment {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
 }
 
@@ -446,8 +449,11 @@ export default function NewsDetailPage() {
                           {getInitials(c.user.name)}
                         </div>
                         <div className="flex-1 bg-slate-50/50 dark:bg-zinc-950/40 rounded-2xl px-4 py-3 border border-neutral-100/40 dark:border-zinc-900/50">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-bold text-slate-800 dark:text-zinc-100">{c.user.name}</span>
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-800 dark:text-zinc-100">{c.user.name}</span>
+                              <RoleBadge roles={c.user.roles} />
+                            </div>
                             {c.user.resident_profile && (
                               <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                 {c.user.resident_profile.phase} • Block {c.user.resident_profile.block}

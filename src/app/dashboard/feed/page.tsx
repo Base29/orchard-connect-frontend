@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
+import RoleBadge from "@/components/RoleBadge";
 
 interface ResidentProfile {
   phase: string;
@@ -27,6 +28,7 @@ interface User {
   avatar_url?: string;
   status: string;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface LikeRelation {
@@ -41,6 +43,7 @@ interface Post {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
   likes_count: number;
   comments_count: number;
@@ -61,6 +64,7 @@ interface Comment {
   user: {
     name: string;
     resident_profile?: ResidentProfile | null;
+    roles?: string[];
   };
 }
 
@@ -933,8 +937,9 @@ export default function DashboardPage() {
                         {getInitials(post.user.name)}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2 text-sm font-semibold">
-                          {post.user.name}
+                        <div className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                          <span>{post.user.name}</span>
+                          <RoleBadge roles={post.user.roles} />
                           {post.user.resident_profile && (
                             <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400 border border-teal-200/30">
                               {post.user.resident_profile.phase} • {post.user.resident_profile.block}
@@ -1042,10 +1047,13 @@ export default function DashboardPage() {
                                   {getInitials(comment.user.name)}
                                 </div>
                                 <div className="flex-1 bg-slate-50 dark:bg-zinc-800 rounded-xl px-3 py-2">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="font-semibold text-slate-800 dark:text-zinc-200">
-                                      {comment.user.name}
-                                    </span>
+                                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                                        {comment.user.name}
+                                      </span>
+                                      <RoleBadge roles={comment.user.roles} />
+                                    </div>
                                     {comment.user.resident_profile && (
                                       <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
                                         {comment.user.resident_profile.phase} • {comment.user.resident_profile.block}
