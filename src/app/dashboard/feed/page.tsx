@@ -8,6 +8,7 @@ import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import RoleBadge from "@/components/RoleBadge";
+import NotificationBell from "@/components/NotificationBell";
 
 interface ResidentProfile {
   phase: string;
@@ -292,6 +293,27 @@ export default function DashboardPage() {
       echo.leave('feed');
     };
   }, [currentUser]);
+
+  // Scroll to post if specified in URL query
+  useEffect(() => {
+    if (posts.length === 0) return;
+    
+    const params = new URLSearchParams(window.location.search);
+    const targetPostId = params.get("post");
+    
+    if (targetPostId) {
+      setTimeout(() => {
+        const element = document.getElementById(`post-${targetPostId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("ring-2", "ring-emerald-500", "dark:ring-emerald-450");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-emerald-500", "dark:ring-emerald-455");
+          }, 3000);
+        }
+      }, 500);
+    }
+  }, [posts]);
 
   // Image Upload Handlers
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -782,6 +804,8 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            <NotificationBell currentUser={currentUser} />
+
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme color"
@@ -929,7 +953,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               posts.map((post) => (
-                <div key={post.id} className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-6 space-y-4 shadow-sm">
+                <div key={post.id} id={`post-${post.id}`} className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-6 space-y-4 shadow-sm transition-all duration-500">
                   
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">

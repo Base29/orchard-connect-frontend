@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import NavigationCard from "@/components/NavigationCard";
+import NotificationBell from "@/components/NotificationBell";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -276,6 +277,8 @@ export default function BusinessDirectoryPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            <NotificationBell currentUser={currentUser} />
+
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme color"

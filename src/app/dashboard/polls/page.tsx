@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
+import NotificationBell from "@/components/NotificationBell";
 
 interface ResidentProfile {
   phase: string;
@@ -571,6 +572,8 @@ export default function PollsPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            <NotificationBell currentUser={currentUser} />
+
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme color"

@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import NavigationCard from "@/components/NavigationCard";
 import RoleBadge from "@/components/RoleBadge";
+import NotificationBell from "@/components/NotificationBell";
 
 interface ResidentProfile {
   phase: string;
@@ -389,6 +390,8 @@ export default function DashboardPortalPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            <NotificationBell currentUser={currentUser} />
+
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme color"
