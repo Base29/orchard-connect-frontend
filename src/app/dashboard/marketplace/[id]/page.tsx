@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 
@@ -27,6 +27,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
 }
 
@@ -194,7 +195,8 @@ export default function ListingDetailPage() {
   }, [listingId]);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -212,7 +214,9 @@ export default function ListingDetailPage() {
   // Add Comment handler
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCommentText.trim() || !listing || isVerified() === false) return;
+    if (!newCommentText.trim() || !listing) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
     if (commentSubmittingRef.current) return;
 
     commentSubmittingRef.current = true;
@@ -294,6 +298,7 @@ export default function ListingDetailPage() {
   // Flag/Report handlers
   const handleOpenFlagModal = () => {
     if (!listing) return;
+    if (!checkEmailVerification(currentUser)) return;
     if (isVerified() === false) {
       showToast("Verification required to report listings.", "error");
       return;
@@ -309,7 +314,9 @@ export default function ListingDetailPage() {
 
   const handleSubmitFlag = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!listing || isVerified() === false) return;
+    if (!listing) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
 
     setFlagSubmitting(true);
     try {
@@ -377,7 +384,7 @@ export default function ListingDetailPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -588,9 +595,15 @@ export default function ListingDetailPage() {
                       </div>
                       
                       {/* Flag button */}
-                      {isVerified() && listing.user_id !== currentUser?.id && (
+                      {((!isVerified() && currentUser && currentUser.email_verified_at === null) || isVerified()) && listing.user_id !== currentUser?.id && (
                         <button
-                          onClick={handleOpenFlagModal}
+                          onClick={() => {
+                            if (currentUser && currentUser.email_verified_at === null) {
+                              window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                            } else {
+                              handleOpenFlagModal();
+                            }
+                          }}
                           disabled={listing.flagged_by_user}
                           title={listing.flagged_by_user ? "You flagged this ad" : "Report ad"}
                           className={`p-2 rounded-xl border transition-all active:scale-95 shrink-0 ${
@@ -655,8 +668,17 @@ export default function ListingDetailPage() {
                         💬 WhatsApp Seller
                       </a>
                     ) : (
-                      <div className="w-full text-center py-3 px-3 bg-slate-100 dark:bg-zinc-800/80 rounded-xl text-[10px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800">
-                        🔒 Residency verification required to contact seller.
+                      <div 
+                        onClick={() => {
+                          if (currentUser && currentUser.email_verified_at === null) {
+                            window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                          }
+                        }}
+                        className={`w-full text-center py-3 px-3 bg-slate-100 dark:bg-zinc-800/80 rounded-xl text-[10px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800 ${
+                          currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors' : ''
+                        }`}
+                      >
+                        🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification required to contact seller." : "Residency verification required to contact seller."}
                       </div>
                     )}
                   </div>
@@ -746,8 +768,17 @@ export default function ListingDetailPage() {
                     </button>
                   </form>
                 ) : (
-                  <div className="bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-3 rounded-xl">
-                    🔒 Residency verification is required to participate in discussions.
+                  <div 
+                    onClick={() => {
+                      if (currentUser && currentUser.email_verified_at === null) {
+                        window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                      }
+                    }}
+                    className={`bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-3 rounded-xl ${
+                      currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-zinc-900 transition-colors' : ''
+                    }`}
+                  >
+                    🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification is required to participate in discussions." : "Residency verification is required to participate in discussions."}
                   </div>
                 )}
               </div>

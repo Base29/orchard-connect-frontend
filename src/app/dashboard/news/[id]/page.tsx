@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 
@@ -27,6 +27,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
   roles?: string[];
 }
@@ -168,7 +169,8 @@ export default function NewsDetailPage() {
   }, [newsId]);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -183,7 +185,9 @@ export default function NewsDetailPage() {
   // Handle post comment
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCommentText.trim() || !article || isVerified() === false) return;
+    if (!newCommentText.trim() || !article) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
     if (commentSubmittingRef.current) return;
 
     commentSubmittingRef.current = true;
@@ -248,7 +252,7 @@ export default function NewsDetailPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -500,8 +504,17 @@ export default function NewsDetailPage() {
                     </button>
                   </form>
                 ) : (
-                  <div className="bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-4 rounded-xl">
-                    🔒 Residency verification is required to participate in comments and discussion.
+                  <div 
+                    onClick={() => {
+                      if (currentUser && currentUser.email_verified_at === null) {
+                        window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                      }
+                    }}
+                    className={`bg-slate-50 dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-4 rounded-xl ${
+                      currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-zinc-900 transition-colors' : ''
+                    }`}
+                  >
+                    🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification is required to participate in comments and discussion." : "Residency verification is required to participate in comments and discussion."}
                   </div>
                 )}
 

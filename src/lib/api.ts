@@ -4,6 +4,37 @@
  * automatically forwarding user Sanctum cookies and handling auth redirection.
  */
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url?: string;
+  status: string;
+  email_verified_at?: string | null;
+  resident_profile?: {
+    phase: string;
+    block: string;
+    house_number: string;
+    street_number?: string;
+    user_type: string;
+    is_verified: boolean;
+    status: "pending" | "approved" | "rejected";
+    rejection_reason?: string;
+    rejection_message?: string;
+  } | null;
+  roles?: string[];
+}
+
+export function checkEmailVerification(user: User | null): boolean {
+  if (user && user.email_verified_at === null) {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+    }
+    return false;
+  }
+  return true;
+}
+
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
   const match = document.cookie.match(/(^|;)\s*auth_token\s*=\s*([^;]+)/);

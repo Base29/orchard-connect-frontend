@@ -26,6 +26,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
 }
 
@@ -77,6 +78,33 @@ export default function PhoneDirectoryPage() {
     setTimeout(() => {
       setToast(prev => ({ ...prev, show: false }));
     }, 4500);
+  };
+
+  // Email verification resend state
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState<"idle" | "sent" | "error">("idle");
+
+  const handleResendEmail = async () => {
+    setResendLoading(true);
+    setResendStatus("idle");
+    try {
+      const res = await apiRequest("/api/email/verification-notification", {
+        method: "POST",
+      });
+      if (res.ok) {
+        setResendStatus("sent");
+        showToast("Verification link sent successfully!", "success");
+        setTimeout(() => setResendStatus("idle"), 5000);
+      } else {
+        setResendStatus("error");
+        showToast("Failed to send verification link.", "error");
+      }
+    } catch (err) {
+      setResendStatus("error");
+      showToast("Network error. Please try again.", "error");
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   // Fetch Session Profile Context
@@ -145,7 +173,8 @@ export default function PhoneDirectoryPage() {
   }, []);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -261,7 +290,7 @@ export default function PhoneDirectoryPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -366,33 +395,73 @@ export default function PhoneDirectoryPage() {
 
           {/* Gate check - show lock screen if not verified */}
           {!isVerified() ? (
-            <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-sm p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6">
-              <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/25 rounded-full flex items-center justify-center text-3xl mx-auto text-amber-500 shadow-inner">
-                🔒
-              </div>
-              
-              <div className="space-y-2">
-                <h2 className="text-lg font-bold text-slate-800 dark:text-white">Residency Verification Required</h2>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto font-light leading-relaxed">
-                  For the security, safety, and privacy of all residents in Bahria Orchard, access to important society phone numbers, emergency lines, and utility dispatch contacts is restricted to verified community members.
-                </p>
-              </div>
+            currentUser?.email_verified_at === null && (profile?.is_verified === true || profile?.status === "approved") ? (
+              // Email Verification Required Lock Screen
+              <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-sm p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6">
+                <div className="w-16 h-16 bg-rose-50 dark:bg-rose-950/25 rounded-full flex items-center justify-center text-3xl mx-auto text-rose-500 shadow-inner">
+                  ✉️
+                </div>
+                
+                <div className="space-y-2">
+                  <h2 className="text-lg font-bold text-slate-800 dark:text-white">Email Verification Required</h2>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto font-light leading-relaxed">
+                    To access important society phone numbers, emergency lines, and utility dispatch contacts, you must first verify your email address.
+                  </p>
+                </div>
 
-              <div className="pt-2">
-                {profile?.status === "pending" ? (
-                  <div className="inline-block px-5 py-2.5 bg-slate-50 dark:bg-zinc-950 text-slate-500 dark:text-zinc-400 border border-neutral-200 dark:border-zinc-800 text-xs font-bold rounded-xl">
-                    ⏳ Verification Request Pending Review
-                  </div>
-                ) : (
+                <div className="pt-2">
                   <button
-                    onClick={() => router.push("/auth/complete-profile")}
-                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all active:scale-95 cursor-pointer shadow-md"
+                    onClick={handleResendEmail}
+                    disabled={resendLoading || resendStatus === "sent"}
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all active:scale-95 cursor-pointer shadow-md disabled:opacity-50 flex items-center justify-center gap-1.5 mx-auto"
                   >
-                    Complete Residency Profile
+                    {resendLoading && (
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    )}
+                    {resendStatus === "sent" ? "Link Resent" : "Resend Verification Email"}
                   </button>
-                )}
+                  {resendStatus === "sent" && (
+                    <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-2 font-medium">
+                      Please check your inbox (and spam folder) for the verification link.
+                    </p>
+                  )}
+                  {resendStatus === "error" && (
+                    <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-2 font-medium">
+                      Failed to send verification email. Please try again.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              // Residency Verification Required Lock Screen
+              <div className="bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl shadow-sm p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6">
+                <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/25 rounded-full flex items-center justify-center text-3xl mx-auto text-amber-500 shadow-inner">
+                  🔒
+                </div>
+                
+                <div className="space-y-2">
+                  <h2 className="text-lg font-bold text-slate-800 dark:text-white">Residency Verification Required</h2>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto font-light leading-relaxed">
+                    For the security, safety, and privacy of all residents in Bahria Orchard, access to important society phone numbers, emergency lines, and utility dispatch contacts is restricted to verified community members.
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  {profile?.status === "pending" ? (
+                    <div className="inline-block px-5 py-2.5 bg-slate-50 dark:bg-zinc-950 text-slate-500 dark:text-zinc-400 border border-neutral-200 dark:border-zinc-800 text-xs font-bold rounded-xl">
+                      ⏳ Verification Request Pending Review
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => router.push("/auth/complete-profile")}
+                      className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all active:scale-95 cursor-pointer shadow-md"
+                    >
+                      Complete Residency Profile
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
           ) : (
             <>
               {/* Search & Category Filter Section */}

@@ -25,6 +25,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
 }
 
@@ -203,7 +204,8 @@ export default function AnnouncementsPage() {
   }, [hasMore, nextPageUrl, loadingMore]);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -305,7 +307,7 @@ export default function AnnouncementsPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"

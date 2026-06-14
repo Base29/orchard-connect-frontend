@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import NavigationCard from "@/components/NavigationCard";
 import RoleBadge from "@/components/RoleBadge";
@@ -28,6 +28,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
   roles?: string[];
 }
@@ -281,7 +282,8 @@ export default function DashboardPortalPage() {
   };
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -343,7 +345,7 @@ export default function DashboardPortalPage() {
       )}
 
       {/* Global verification status banners */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"

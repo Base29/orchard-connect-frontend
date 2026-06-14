@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
@@ -29,6 +29,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
   roles?: string[];
 }
@@ -762,7 +763,9 @@ export default function DashboardPage() {
   // Interaction: Create Post
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostContent.trim() || isVerified() === false) return;
+    if (!newPostContent.trim()) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
     
     // Validate if any image is currently uploading
     if (selectedImages.some(img => img.status === "uploading")) {
@@ -919,7 +922,9 @@ export default function DashboardPage() {
   const handleCreateComment = async (postId: string, e: React.FormEvent) => {
     e.preventDefault();
     const content = commentInputs[postId]?.trim();
-    if (!content || isVerified() === false) return;
+    if (!content) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
     if (commentSubmittingRef.current[postId]) return;
 
     commentSubmittingRef.current[postId] = true;
@@ -991,6 +996,7 @@ export default function DashboardPage() {
 
   // Interaction: Like Post (with Optimistic UI Update)
   const handleToggleLike = async (postId: string) => {
+    if (!checkEmailVerification(currentUser)) return;
     if (isVerified() === false) {
       showToast("Verification required to interact with posts.", "error");
       return;
@@ -1067,6 +1073,7 @@ export default function DashboardPage() {
   };
 
   const handleOpenFlagModal = (postId: string) => {
+    if (!checkEmailVerification(currentUser)) return;
     if (isVerified() === false) {
       showToast("Verification required to flag posts.", "error");
       return;
@@ -1135,7 +1142,8 @@ export default function DashboardPage() {
   };
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -1180,7 +1188,7 @@ export default function DashboardPage() {
       )}
 
       {/* Global verification status banners */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -1286,7 +1294,16 @@ export default function DashboardPage() {
             
             {/* Read-Only overlay mask */}
             {!isVerified() && (
-              <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/60 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none rounded-2xl" />
+              <div 
+                onClick={() => {
+                  if (currentUser && currentUser.email_verified_at === null) {
+                    window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                  }
+                }}
+                className={`absolute inset-0 bg-white/40 dark:bg-zinc-950/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl ${
+                  currentUser && currentUser.email_verified_at === null ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none'
+                }`}
+              />
             )}
 
             <input 
@@ -1625,8 +1642,17 @@ export default function DashboardPage() {
                           </button>
                         </form>
                       ) : (
-                        <div className="bg-slate-50 dark:bg-zinc-800/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-400 text-center py-2 rounded-xl">
-                          🔒 Verification required to write comments.
+                        <div 
+                          onClick={() => {
+                            if (currentUser && currentUser.email_verified_at === null) {
+                              window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                            }
+                          }}
+                          className={`bg-slate-50 dark:bg-zinc-800/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-400 text-center py-2 rounded-xl ${
+                            currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-zinc-800 transition-colors' : ''
+                          }`}
+                        >
+                          🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification required to write comments." : "Verification required to write comments."}
                         </div>
                       )}
 

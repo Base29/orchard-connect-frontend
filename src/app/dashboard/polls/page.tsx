@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 import ResidentBadges from "@/components/ResidentBadges";
@@ -28,6 +28,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
   roles?: string[];
 }
@@ -197,7 +198,8 @@ export default function PollsPage() {
   }, []);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const isModerator = (): boolean => {
@@ -268,6 +270,7 @@ export default function PollsPage() {
   // Submit new poll
   const handleCreatePoll = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!checkEmailVerification(currentUser)) return;
     if (isVerified() === false) return;
 
     if (hasActivePollRunning()) {
@@ -394,6 +397,7 @@ export default function PollsPage() {
 
   // Submit Vote (with Optimistic Update)
   const handleCastVote = async (pollId: string, optionId: string) => {
+    if (!checkEmailVerification(currentUser)) return;
     if (isVerified() === false) {
       showToast("Verification required to cast votes.", "error");
       return;
@@ -526,7 +530,7 @@ export default function PollsPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -628,17 +632,23 @@ export default function PollsPage() {
               </p>
             </div>
 
-            {isVerified() && (
+            {((!isVerified() && currentUser && currentUser.email_verified_at === null) || isVerified()) && (
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setIsCreateModalOpen(true)}
-                  disabled={hasActivePollRunning()}
+                  onClick={() => {
+                    if (currentUser && currentUser.email_verified_at === null) {
+                      window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                    } else {
+                      setIsCreateModalOpen(true);
+                    }
+                  }}
+                  disabled={isVerified() && hasActivePollRunning()}
                   className={`px-4 py-2 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer ${
-                    hasActivePollRunning()
+                    isVerified() && hasActivePollRunning()
                       ? "bg-slate-200 text-slate-400 dark:bg-zinc-800 dark:text-zinc-650 opacity-60 cursor-not-allowed"
                       : "bg-emerald-500 hover:bg-emerald-600 text-white active:scale-95"
                   }`}
-                  title={hasActivePollRunning() ? "You already have an active poll running" : "Create a new poll"}
+                  title={isVerified() && hasActivePollRunning() ? "You already have an active poll running" : "Create a new poll"}
                 >
                   <span>+</span> Create Poll
                 </button>
@@ -841,10 +851,10 @@ export default function PollsPage() {
                               // Voting interaction radio row
                               <button
                                 onClick={() => handleCastVote(poll.id, option.id)}
-                                disabled={!isActivePoll || !isVerified()}
+                                disabled={!isActivePoll || (!isVerified() && currentUser?.email_verified_at !== null)}
                                 className={`w-full text-left flex items-center justify-between gap-3 p-3.5 rounded-xl border text-xs font-semibold transition-all active:scale-[0.99] cursor-pointer hover:border-emerald-500/50 hover:bg-neutral-50 dark:hover:bg-zinc-800 ${
                                   !isVerified() 
-                                    ? "opacity-50 cursor-not-allowed border-neutral-150 dark:border-zinc-850 bg-slate-50/20" 
+                                    ? `opacity-50 border-neutral-150 dark:border-zinc-850 bg-slate-50/20 ${currentUser && currentUser.email_verified_at === null ? '' : 'cursor-not-allowed'}` 
                                     : "border-neutral-200 dark:border-zinc-800"
                                 }`}
                               >

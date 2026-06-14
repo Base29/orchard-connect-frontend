@@ -20,6 +20,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
 }
 
@@ -45,7 +46,8 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
   const profile = currentUser?.resident_profile;
 
   const isVerified = (): boolean => {
-    return profile?.is_verified === true || profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (profile?.is_verified === true || profile?.status === "approved");
   };
 
   const handleLogout = () => {
@@ -99,7 +101,7 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-rose-200/50 dark:border-rose-955/30 text-rose-600 dark:text-rose-450 hover:bg-rose-50 dark:hover:bg-rose-955/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
         >
           Sign Out
         </button>
@@ -153,7 +155,7 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
 
       <button
         onClick={handleLogout}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 dark:text-rose-450 hover:bg-rose-50 dark:hover:bg-rose-955/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
       >
         Sign Out
       </button>

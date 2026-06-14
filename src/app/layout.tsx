@@ -53,7 +53,10 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full bg-white text-slate-900 dark:bg-black dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200 antialiased">
+      <body 
+        suppressHydrationWarning
+        className="min-h-full bg-white text-slate-900 dark:bg-black dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200 antialiased"
+      >
         <ThemeProvider initialTheme={theme}>
           <MaintenanceProvider>
             {children}

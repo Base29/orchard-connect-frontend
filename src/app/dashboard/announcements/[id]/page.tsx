@@ -25,6 +25,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
 }
 
@@ -50,13 +51,10 @@ export default function AnnouncementDetailPage() {
 
   // Session & User state
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLocked, setIsLocked] = useState(false);
 
-  // Announcement details & recent announcements sidebar state
+  // Announcement details state
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
-  const [recentAnnouncements, setRecentAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingRecent, setLoadingRecent] = useState(false);
 
   // Toast
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" | "info" }>({
@@ -82,7 +80,6 @@ export default function AnnouncementDetailPage() {
       }
       const data = await res.json();
       setCurrentUser(data.user);
-      setIsLocked(data.is_locked);
 
       if (!data.user?.resident_profile) {
         router.push("/auth/complete-profile");
@@ -120,35 +117,19 @@ export default function AnnouncementDetailPage() {
     }
   };
 
-  // Fetch recent announcements for sidebar
-  const fetchRecent = async () => {
-    setLoadingRecent(true);
-    try {
-      const res = await apiRequest("/api/announcements");
-      if (res.ok) {
-        const data = await res.json();
-        setRecentAnnouncements(data || []);
-      }
-    } catch (err) {
-      console.error("Error loading recent announcements:", err);
-    } finally {
-      setLoadingRecent(false);
-    }
-  };
-
   useEffect(() => {
     if (announcementId) {
       fetchUser().then((user) => {
         if (user) {
           fetchAnnouncementDetail();
-          fetchRecent();
         }
       });
     }
   }, [announcementId]);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -206,8 +187,7 @@ export default function AnnouncementDetailPage() {
   const profile = currentUser.resident_profile;
   const announcementConfig = announcement ? getTypeConfig(announcement.category) : null;
 
-  // Filter out current announcement from sidebar
-  const sidebarAnnouncements = recentAnnouncements.filter(item => item.id !== announcementId).slice(0, 5);
+
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200">
@@ -231,7 +211,7 @@ export default function AnnouncementDetailPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -322,7 +302,7 @@ export default function AnnouncementDetailPage() {
         </aside>
 
         {/* Center Content / Main Column */}
-        <main className="lg:col-span-6 space-y-6 order-1 lg:order-2">
+        <main className="lg:col-span-9 space-y-6 order-1 lg:order-2">
           
           {/* Breadcrumbs */}
           <div>
@@ -426,52 +406,7 @@ export default function AnnouncementDetailPage() {
 
         </main>
 
-        {/* Right Sidebar Column */}
-        <aside className="lg:col-span-3 space-y-6 order-2 lg:order-1">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-400">
-              Other Recent Notices
-            </span>
 
-            {loadingRecent ? (
-              <div className="flex justify-center py-4">
-                <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-              </div>
-            ) : sidebarAnnouncements.length === 0 ? (
-              <p className="text-xs text-slate-400 dark:text-zinc-500 italic font-light py-2">
-                No other recent notices.
-              </p>
-            ) : (
-              <div className="space-y-3.5">
-                {sidebarAnnouncements.map((item) => {
-                  const config = getTypeConfig(item.category);
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/dashboard/announcements/${item.id}`}
-                      className="block space-y-1 group border-l-2 hover:border-emerald-500 border-neutral-200 dark:border-zinc-850 pl-3 transition-colors"
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] text-slate-405 dark:text-zinc-500">
-                          {new Date(item.created_at).toLocaleDateString(undefined, {
-                            month: "short",
-                            day: "numeric"
-                          })}
-                        </span>
-                        <span className={`text-[8px] font-bold px-1 rounded uppercase tracking-wide scale-90 ${config.bg}`}>
-                          {config.icon}
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-slate-800 dark:text-zinc-200 text-xs truncate group-hover:text-emerald-500 transition-colors">
-                        {item.title}
-                      </h4>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </aside>
       </div>
 
     </div>

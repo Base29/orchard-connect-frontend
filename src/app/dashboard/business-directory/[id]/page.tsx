@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, checkEmailVerification } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 
@@ -27,6 +27,7 @@ interface User {
   email: string;
   avatar_url?: string;
   status: string;
+  email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
   roles?: string[];
 }
@@ -171,7 +172,8 @@ export default function BusinessDetailPage() {
   }, [business, currentUser]);
 
   const isVerified = (): boolean => {
-    return currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved";
+    return currentUser?.email_verified_at !== null && 
+      (currentUser?.resident_profile?.is_verified === true || currentUser?.resident_profile?.status === "approved");
   };
 
   const getInitials = (name: string) => {
@@ -200,7 +202,9 @@ export default function BusinessDetailPage() {
   // Review Form Submit (Create/Update)
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formRating === 0 || isVerified() === false || !business) return;
+    if (formRating === 0 || !business) return;
+    if (!checkEmailVerification(currentUser)) return;
+    if (isVerified() === false) return;
     if (reviewSubmittingRef.current) return;
 
     reviewSubmittingRef.current = true;
@@ -312,7 +316,7 @@ export default function BusinessDetailPage() {
       )}
 
       {/* Global verification status banner */}
-      {!isVerified() && profile && (
+      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
         <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
           profile.status === "rejected" 
             ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
@@ -522,7 +526,7 @@ export default function BusinessDetailPage() {
                               <span className="text-sm shrink-0">📞</span>
                               <div className="space-y-0.5">
                                 <span className="font-semibold block text-[10px] text-slate-400 dark:text-zinc-400 uppercase tracking-wider">Phone</span>
-                                <a href={`tel:${business.contact_phone}`} className="hover:underline text-emerald-600 dark:text-emerald-450 font-medium">
+                                <a href={`tel:${business.contact_phone}`} className="hover:underline text-emerald-600 dark:text-emerald-455 font-medium">
                                   {business.contact_phone}
                                 </a>
                               </div>
@@ -543,8 +547,17 @@ export default function BusinessDetailPage() {
                           )}
                         </>
                       ) : (
-                        <div className="bg-slate-50 dark:bg-zinc-800/60 rounded-2xl border border-dashed border-neutral-200 dark:border-zinc-800 p-4 text-center text-slate-400 dark:text-zinc-400 font-normal">
-                          🔒 Residency verification is required to view contact details and message this business.
+                        <div 
+                          onClick={() => {
+                            if (currentUser && currentUser.email_verified_at === null) {
+                              window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                            }
+                          }}
+                          className={`w-full text-center py-3.5 px-3 bg-slate-100 dark:bg-zinc-800/80 rounded-xl text-[10px] text-slate-400 dark:text-zinc-400 font-light border border-dashed border-neutral-200 dark:border-zinc-800 ${
+                            currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors' : ''
+                          }`}
+                        >
+                          🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification required to contact business." : "Residency verification required to contact business."}
                         </div>
                       )}
                     </div>
@@ -643,8 +656,17 @@ export default function BusinessDetailPage() {
                         </div>
                       </form>
                     ) : (
-                      <div className="bg-white dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-5 rounded-xl font-light">
-                        🔒 Verification required to write reviews.
+                      <div 
+                        onClick={() => {
+                          if (currentUser && currentUser.email_verified_at === null) {
+                            window.dispatchEvent(new CustomEvent("show-email-verification-modal"));
+                          }
+                        }}
+                        className={`bg-white dark:bg-zinc-950/50 border border-dashed border-neutral-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400 text-center py-5 rounded-xl font-light ${
+                          currentUser && currentUser.email_verified_at === null ? 'cursor-pointer hover:bg-neutral-50 dark:hover:bg-zinc-900 transition-colors' : ''
+                        }`}
+                      >
+                        🔒 {currentUser && currentUser.email_verified_at === null ? "Email verification required to write reviews." : "Verification required to write reviews."}
                       </div>
                     )}
                   </div>
