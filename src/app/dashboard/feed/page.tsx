@@ -502,6 +502,28 @@ export default function DashboardPage() {
 
     // Subscribe to feed private channel
     echo.private('feed')
+      .listen('.PostCreated', (data: { post: Post }) => {
+        console.log("Real-time PostCreated received:", data);
+        const { post } = data;
+        
+        if (post.user_id === currentUserRef.current?.id) return;
+        
+        // Avoid duplicate additions
+        setPosts(prev => {
+          const exists = prev.some(p => p.id === post.id);
+          if (exists) return prev;
+          
+          const mappedPost: Post = {
+            ...post,
+            liked_by_user: false,
+            flagged_by_user: false,
+            likes_count: post.likes_count ?? 0,
+            comments_count: post.comments_count ?? 0,
+          };
+          
+          return [mappedPost, ...prev];
+        });
+      })
       .listen('.PostLiked', (data: { post_id: string; likes_count: number; user_id: string; liked: boolean }) => {
         console.log("Real-time PostLiked received:", data);
         if (data.user_id === currentUserRef.current?.id) return;
