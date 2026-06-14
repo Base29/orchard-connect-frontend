@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
+import ResidentBadges from "@/components/ResidentBadges";
 
 interface ResidentProfile {
   phase: string;
@@ -1433,9 +1434,7 @@ export default function DashboardPage() {
                           <span>{post.user.name}</span>
                           <RoleBadge roles={post.user.roles} />
                           {post.user.resident_profile && (
-                            <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400 border border-teal-200/30">
-                              {post.user.resident_profile.phase} • {post.user.resident_profile.block}
-                            </span>
+                            <ResidentBadges profile={post.user.resident_profile} />
                           )}
                         </div>
                         <div className="text-[10px] text-slate-400 dark:text-zinc-400">
@@ -1547,9 +1546,7 @@ export default function DashboardPage() {
                                       <RoleBadge roles={comment.user.roles} />
                                     </div>
                                     {comment.user.resident_profile && (
-                                      <span className="text-[9px] text-slate-400 dark:text-zinc-400 font-light">
-                                        {comment.user.resident_profile.phase} • {comment.user.resident_profile.block}
-                                      </span>
+                                      <ResidentBadges profile={comment.user.resident_profile} size="sm" />
                                     )}
                                   </div>
                                   <p className="text-slate-600 dark:text-zinc-300 font-light mt-0.5 whitespace-pre-wrap leading-normal">

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
+import ResidentBadges from "@/components/ResidentBadges";
 
 interface ResidentProfile {
   phase: string;
@@ -728,9 +729,7 @@ export default function PollsPage() {
                             <span>{poll.user.name}</span>
                             <RoleBadge roles={poll.user.roles} />
                             {poll.user.resident_profile && (
-                              <span className="px-1.5 py-0.5 rounded text-[8px] bg-neutral-100 text-slate-500 dark:bg-zinc-800 dark:text-zinc-400 border border-neutral-200/10">
-                                {poll.user.resident_profile.phase} • {poll.user.resident_profile.block}
-                              </span>
+                              <ResidentBadges profile={poll.user.resident_profile} />
                             )}
                           </div>
                           <div className="text-[9px] text-slate-400 dark:text-zinc-500">
@@ -910,9 +909,7 @@ export default function PollsPage() {
                                       <RoleBadge roles={vote.user.roles} />
                                     </div>
                                     {vote.user.resident_profile && (
-                                      <div className="text-[9px] text-slate-400 dark:text-zinc-550 font-light">
-                                        {vote.user.resident_profile.phase} • {vote.user.resident_profile.block}
-                                      </div>
+                                      <ResidentBadges profile={vote.user.resident_profile} size="sm" />
                                     )}
                                   </div>
                                 </div>

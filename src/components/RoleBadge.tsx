@@ -47,36 +47,36 @@ export default function RoleBadge({ roles, className = "" }: RoleBadgeProps) {
   }> = {
     superadmin: {
       label: "Super Admin",
-      colors: "bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 border-amber-400/30 text-white shadow-sm shadow-amber-500/20 dark:shadow-amber-950/30",
+      colors: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
       icon: (
-        <svg className="w-2.5 h-2.5 mr-1 text-amber-100 fill-amber-100" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 mr-1 text-current fill-current" viewBox="0 0 24 24">
           <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
         </svg>
       )
     },
     "community-admin": {
       label: "Admin",
-      colors: "bg-gradient-to-r from-emerald-500 to-teal-600 border-emerald-400/30 text-white shadow-sm shadow-emerald-500/20 dark:shadow-emerald-950/30",
+      colors: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20",
       icon: (
-        <svg className="w-2.5 h-2.5 mr-1 text-emerald-100 fill-emerald-100" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 mr-1 text-current fill-current" viewBox="0 0 24 24">
           <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.09-.138-2.145-.395-3.155a.75.75 0 0 0-.722-.515 11.209 11.209 0 0 1-7.877-3.08Z" clipRule="evenodd" />
         </svg>
       )
     },
     "content-moderator": {
       label: "Mod",
-      colors: "bg-gradient-to-r from-fuchsia-500 to-purple-600 border-fuchsia-400/30 text-white shadow-sm shadow-fuchsia-500/20 dark:shadow-fuchsia-950/30",
+      colors: "bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/20",
       icon: (
-        <svg className="w-2.5 h-2.5 mr-1 text-fuchsia-100 fill-fuchsia-100" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 mr-1 text-current fill-current" viewBox="0 0 24 24">
           <path fillRule="evenodd" d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.022 7.447 7.447 0 0 0 2.417.422c4.142 0 7.5-3.134 7.5-7s-3.358-7-7.5-7-7.5 3.134-7.5 7c0 1.942.84 3.7 2.203 4.975A6.722 6.722 0 0 0 4.804 21.644Z" clipRule="evenodd" />
         </svg>
       )
     },
     "marketplace-moderator": {
       label: "Market Mod",
-      colors: "bg-gradient-to-r from-indigo-500 to-blue-600 border-indigo-400/30 text-white shadow-sm shadow-indigo-500/20 dark:shadow-indigo-950/30",
+      colors: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
       icon: (
-        <svg className="w-2.5 h-2.5 mr-1 text-indigo-100 fill-indigo-100" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 mr-1 text-current fill-current" viewBox="0 0 24 24">
           <path fillRule="evenodd" d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 0 0 4.25 22.5h15.5a1.875 1.875 0 0 0 1.865-2.071l-1.262-12a1.875 1.875 0 0 0-1.865-1.679H16.5V6a4.5 4.5 0 1 0-9 0ZM12 3a3 3 0 0 0-3 3v.75h6V6a3 3 0 0 0-3-3Zm-3 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm7.5-.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" clipRule="evenodd" />
         </svg>
       )
