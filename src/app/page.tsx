@@ -1743,6 +1743,7 @@ export default function Home() {
           </div>
           <div className="flex gap-4">
             <a href="/privacy" className="hover:text-slate-600 dark:hover:text-zinc-300">Privacy Policy</a>
+            <a href="/data-deletion" className="hover:text-slate-600 dark:hover:text-zinc-300">Data Deletion Policy</a>
             <a href="/terms" className="hover:text-slate-600 dark:hover:text-zinc-300">Terms of Service</a>
             <a href="/support" className="hover:text-slate-600 dark:hover:text-zinc-300">Contact Support</a>
           </div>

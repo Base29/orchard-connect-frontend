@@ -26,7 +26,7 @@ interface User {
 
 interface NavigationCardProps {
   currentUser: User;
-  activeKey: "dashboard" | "feed" | "announcements" | "news" | "marketplace" | "business-directory" | "phone-directory" | "polls";
+  activeKey: "dashboard" | "feed" | "announcements" | "news" | "marketplace" | "business-directory" | "phone-directory" | "polls" | "support-tickets";
   variant: "mobile" | "desktop";
 }
 
@@ -39,6 +39,7 @@ const links = [
   { href: "/dashboard/business-directory", icon: "🏢", label: "Business Directory", shortLabel: "Business", key: "business-directory" },
   { href: "/dashboard/phone-directory", icon: "📞", label: "Phone Directory", shortLabel: "Directory", key: "phone-directory" },
   { href: "/dashboard/polls", icon: "📊", label: "Polls", shortLabel: "Polls", key: "polls" },
+  { href: "/dashboard/support", icon: "🎫", label: "Support Tickets", shortLabel: "Support", key: "support-tickets" },
 ];
 
 export default function NavigationCard({ currentUser, activeKey, variant }: NavigationCardProps) {

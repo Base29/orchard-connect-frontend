@@ -115,6 +115,7 @@ export default function DashboardPortalPage() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [latestNews, setLatestNews] = useState<News | null>(null);
   const [polls, setPolls] = useState<Poll[]>([]);
+  const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [stats, setStats] = useState<UserStats>({
@@ -156,21 +157,23 @@ export default function DashboardPortalPage() {
         return;
       }
 
-      // Concurrently fetch stats, listings, announcements, news, and polls
-      const [statsRes, listingsRes, announcementsRes, newsRes, pollsRes] = await Promise.all([
+      // Concurrently fetch stats, listings, announcements, news, polls, and support tickets
+      const [statsRes, listingsRes, announcementsRes, newsRes, pollsRes, supportTicketsRes] = await Promise.all([
         apiRequest("/api/user/stats"),
         apiRequest("/api/listings"),
         apiRequest("/api/announcements"),
         apiRequest("/api/news"),
         apiRequest("/api/polls"),
+        apiRequest("/api/support/tickets"),
       ]);
 
-      const [statsData, listingsData, announcementsData, newsData, pollsData] = await Promise.all([
+      const [statsData, listingsData, announcementsData, newsData, pollsData, supportTicketsData] = await Promise.all([
         statsRes.ok ? statsRes.json() : null,
         listingsRes.ok ? listingsRes.json() : null,
         announcementsRes.ok ? announcementsRes.json() : null,
         newsRes.ok ? newsRes.json() : null,
         pollsRes.ok ? pollsRes.json() : null,
+        supportTicketsRes.ok ? supportTicketsRes.json() : null,
       ]);
 
       if (statsData) {
@@ -191,6 +194,10 @@ export default function DashboardPortalPage() {
 
       if (pollsData) {
         setPolls(pollsData.data || []);
+      }
+
+      if (supportTicketsData) {
+        setSupportTickets(supportTicketsData);
       }
 
     } catch (err) {
@@ -566,7 +573,7 @@ export default function DashboardPortalPage() {
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
               Your Activity Statistics
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               
               {/* Feed activity stats card */}
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 hover:-translate-y-0.5 transition-all duration-300 shadow-sm flex flex-col justify-between">
@@ -614,6 +621,22 @@ export default function DashboardPortalPage() {
                   <span className="flex items-center gap-1">📦 {stats.ads.sold} <span className="font-light text-slate-400">Sold</span></span>
                 </div>
               </div>
+
+              {/* Support Tickets stats card */}
+              <Link href="/dashboard/support" className="group bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm flex flex-col justify-between cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-400 dark:text-zinc-400 group-hover:text-emerald-500 transition-colors">SUPPORT TICKETS</span>
+                  <span className="text-lg">🎫</span>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl font-black">{supportTickets.length}</div>
+                  <div className="text-xs text-slate-500 dark:text-zinc-400 font-light">Support tickets filed</div>
+                </div>
+                <div className="border-t border-neutral-100 dark:border-zinc-850 pt-3 flex items-center gap-4 text-xs font-semibold text-slate-600 dark:text-zinc-300">
+                  <span className="flex items-center gap-1">⏱️ {supportTickets.filter((t: any) => t.status === "pending" || t.status === "open").length} <span className="font-light text-slate-400">Active</span></span>
+                  <span className="flex items-center gap-1">✅ {supportTickets.filter((t: any) => t.status === "resolved" || t.status === "closed").length} <span className="font-light text-slate-400">Resolved</span></span>
+                </div>
+              </Link>
 
             </div>
           </div>
