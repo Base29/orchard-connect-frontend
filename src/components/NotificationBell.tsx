@@ -145,6 +145,12 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
       console.error("Error marking notification as read:", err);
     }
 
+    // If already on the target URL path, dispatch a custom event to force scroll/highlight
+    const currentPath = window.location.pathname + window.location.search;
+    if (currentPath === targetUrl) {
+      window.dispatchEvent(new CustomEvent("scroll-to-target", { detail: { targetUrl } }));
+    }
+
     // Navigate to target URL
     router.push(targetUrl);
   };
@@ -188,6 +194,12 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
   // Resolve visual icons and color badges for notification types
   const getNotificationStyles = (type?: string) => {
     switch (type) {
+      case "post_mention":
+      case "comment_mention":
+        return { icon: "🏷️", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" };
+      case "post_mention_all":
+      case "comment_mention_all":
+        return { icon: "📢", color: "bg-amber-500/10 text-amber-600 dark:text-amber-450" };
       case "comment":
       case "comment_reply":
         return { icon: "💬", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" };

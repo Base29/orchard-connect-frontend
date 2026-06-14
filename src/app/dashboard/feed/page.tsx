@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
@@ -101,9 +101,90 @@ interface PostImage {
   status: "uploading" | "success" | "error";
 }
 
+// Helper to compute caret coordinates relative to input/textarea offset parent
+function getCaretCoordinates(
+  element: HTMLTextAreaElement | HTMLInputElement,
+  position: number
+): { top: number; left: number } {
+  const isTextArea = element.nodeName === 'TEXTAREA';
+  const div = document.createElement('div');
+  document.body.appendChild(div);
+  
+  const style = div.style;
+  const computed = window.getComputedStyle(element);
+  
+  style.position = 'absolute';
+  style.visibility = 'hidden';
+  style.whiteSpace = 'pre-wrap';
+  if (isTextArea) {
+    style.wordBreak = 'break-word';
+  }
+  
+  const properties = [
+    'direction',
+    'boxSizing',
+    'width',
+    'height',
+    'overflowX',
+    'overflowY',
+    'borderTopWidth',
+    'borderRightWidth',
+    'borderBottomWidth',
+    'borderLeftWidth',
+    'borderStyle',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'fontStyle',
+    'fontVariant',
+    'fontWeight',
+    'fontStretch',
+    'fontSize',
+    'fontSizeAdjust',
+    'lineHeight',
+    'fontFamily',
+    'textAlign',
+    'textTransform',
+    'textIndent',
+    'textDecoration',
+    'letterSpacing',
+    'wordSpacing',
+    'tabSize',
+    'MozTabSize'
+  ];
+  
+  properties.forEach(prop => {
+    // @ts-ignore
+    style[prop] = computed[prop];
+  });
+  
+  style.overflowY = 'hidden';
+  div.textContent = element.value.substring(0, position);
+  
+  if (isTextArea) {
+    div.style.width = `${element.clientWidth}px`;
+  } else {
+    div.style.width = `${element.clientWidth}px`;
+    div.style.whiteSpace = 'nowrap';
+  }
+  
+  const span = document.createElement('span');
+  span.textContent = element.value.substring(position) || '.';
+  div.appendChild(span);
+  
+  const top = element.offsetTop + span.offsetTop - element.scrollTop;
+  const left = element.offsetLeft + span.offsetLeft - element.scrollLeft;
+  
+  document.body.removeChild(div);
+  
+  return { top, left };
+}
+
 export default function DashboardPage() {
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // File Upload Reference
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -127,6 +208,187 @@ export default function DashboardPage() {
   const [newPostContent, setNewPostContent] = useState("");
   const [postSubmitting, setPostSubmitting] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
+
+  // Mentions states
+  const [mentionResults, setMentionResults] = useState<{ id: string; name: string; avatar_url?: string; resident_profile?: { phase: string; block: string } | null }[]>([]);
+  const [mentionActive, setMentionActive] = useState(false);
+  const [mentionSearchQuery, setMentionSearchQuery] = useState("");
+  const [mentionTriggerIndex, setMentionTriggerIndex] = useState(-1);
+  const [mentionTargetInput, setMentionTargetInput] = useState<'post' | { type: 'comment'; postId: string } | null>(null);
+  const [mentionIndex, setMentionIndex] = useState(0);
+
+  // Mentions custom mapping states to mask UUIDs from inputs
+  const [selectedMentions, setSelectedMentions] = useState<{ id: string; name: string }[]>([]);
+  const [commentMentions, setCommentMentions] = useState<Record<string, { id: string; name: string }[]>>({});
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+
+  // Close mentions dropdown when clicking outside of inputs or dropdown
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.mention-dropdown') && !target.closest('textarea') && !target.closest('input')) {
+        setMentionActive(false);
+        setMentionTargetInput(null);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleDocumentClick);
+    return () => document.removeEventListener("mousedown", handleDocumentClick);
+  }, []);
+
+  // Fetch residents for mentions search
+  useEffect(() => {
+    if (!mentionActive || mentionSearchQuery === undefined) {
+      setMentionResults([]);
+      return;
+    }
+
+    console.log("Mentions trigger query:", mentionSearchQuery);
+
+    const fetchMentions = async () => {
+      try {
+        const res = await apiRequest(`/api/residents/search-mentions?query=${encodeURIComponent(mentionSearchQuery)}`);
+        console.log("Mentions search response status:", res.status);
+        if (res.ok) {
+          let data = await res.json();
+          console.log("Mentions search results received:", data);
+          
+          // Prepend @all special mention if query matches prefix of "all"
+          const matchesAll = "all".startsWith(mentionSearchQuery.toLowerCase());
+          if (matchesAll) {
+            data = [{ id: "all", name: "all" }, ...data];
+          }
+          
+          setMentionResults(data);
+        } else {
+          console.error("Mentions search failed status:", res.status);
+        }
+      } catch (err) {
+        console.error("Error searching mentions:", err);
+      }
+    };
+
+    if (mentionSearchQuery === "") {
+      fetchMentions();
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(fetchMentions, 150);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [mentionSearchQuery, mentionActive]);
+
+  // Handle text typing inside inputs/textareas to check for '@' mentions
+  const handleInputChange = (
+    value: string,
+    selectionStart: number,
+    target: 'post' | { type: 'comment'; postId: string },
+    element?: HTMLTextAreaElement | HTMLInputElement
+  ) => {
+    const textBeforeCursor = value.substring(0, selectionStart);
+    const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+
+    console.log("Mention input check:", {
+      value,
+      selectionStart,
+      textBeforeCursor,
+      lastAtIndex
+    });
+
+    if (lastAtIndex !== -1) {
+      const charBeforeAt = lastAtIndex > 0 ? textBeforeCursor[lastAtIndex - 1] : ' ';
+      const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+
+      console.log("Mention char check:", {
+        charBeforeAt,
+        textAfterAt,
+        isDoubleSpaceOrNewline: /\s\s|\n/.test(textAfterAt),
+        isInvalidPrefix: (charBeforeAt !== ' ' && charBeforeAt !== '\n')
+      });
+
+      // Cancel if query has a newline, multiple spaces, or not preceded by a space/newline
+      if (/\s\s|\n/.test(textAfterAt) || (charBeforeAt !== ' ' && charBeforeAt !== '\n')) {
+        setMentionActive(false);
+        setMentionTargetInput(null);
+        return;
+      }
+
+      setMentionActive(true);
+      setMentionSearchQuery(textAfterAt);
+      setMentionTriggerIndex(lastAtIndex);
+      setMentionTargetInput(target);
+      setMentionIndex(0);
+
+      if (element) {
+        const coords = getCaretCoordinates(element, lastAtIndex);
+        setDropdownPosition(coords);
+      }
+    } else {
+      setMentionActive(false);
+      setMentionTargetInput(null);
+    }
+  };
+
+  const selectMention = (resident: { id: string; name: string }) => {
+    if (!mentionTargetInput) return;
+
+    // Display only friendly @Name in the input text box
+    const mentionText = `@${resident.name} `;
+
+    if (mentionTargetInput === 'post') {
+      const value = newPostContent;
+      const before = value.substring(0, mentionTriggerIndex);
+      const after = value.substring(mentionTriggerIndex + mentionSearchQuery.length + 1);
+      const newValue = before + mentionText + after;
+      setNewPostContent(newValue);
+
+      // Track selected mention metadata
+      setSelectedMentions(prev => {
+        if (prev.some(m => m.id === resident.id)) return prev;
+        return [...prev, resident];
+      });
+    } else if (mentionTargetInput.type === 'comment') {
+      const postId = mentionTargetInput.postId;
+      const value = commentInputs[postId] || "";
+      const before = value.substring(0, mentionTriggerIndex);
+      const after = value.substring(mentionTriggerIndex + mentionSearchQuery.length + 1);
+      const newValue = before + mentionText + after;
+      setCommentInputs(prev => ({ ...prev, [postId]: newValue }));
+
+      // Track selected mention metadata for comments
+      setCommentMentions(prev => {
+        const list = prev[postId] || [];
+        if (list.some(m => m.id === resident.id)) return prev;
+        return {
+          ...prev,
+          [postId]: [...list, resident]
+        };
+      });
+    }
+
+    setMentionActive(false);
+    setMentionTargetInput(null);
+    setMentionResults([]);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (!mentionActive || mentionResults.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setMentionIndex(prev => (prev + 1) % mentionResults.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setMentionIndex(prev => (prev - 1 + mentionResults.length) % mentionResults.length);
+    } else if (e.key === "Enter" || e.key === "Tab") {
+      e.preventDefault();
+      selectMention(mentionResults[mentionIndex]);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setMentionActive(false);
+      setMentionTargetInput(null);
+    }
+  };
 
   // Comments states
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
@@ -294,26 +556,128 @@ export default function DashboardPage() {
     };
   }, [currentUser]);
 
-  // Scroll to post if specified in URL query
+  // Scroll and focus on posts/comments based on URL query params or hash
   useEffect(() => {
     if (posts.length === 0) return;
-    
-    const params = new URLSearchParams(window.location.search);
-    const targetPostId = params.get("post");
-    
-    if (targetPostId) {
-      setTimeout(() => {
-        const element = document.getElementById(`post-${targetPostId}`);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-          element.classList.add("ring-2", "ring-emerald-500", "dark:ring-emerald-450");
-          setTimeout(() => {
-            element.classList.remove("ring-2", "ring-emerald-500", "dark:ring-emerald-455");
-          }, 3000);
-        }
-      }, 500);
+
+    let targetPostId = searchParams.get("post");
+    const targetCommentId = searchParams.get("comment");
+
+    // Fallback to parsing hash if search parameters are empty (for pre-existing notifications)
+    if (!targetPostId && typeof window !== "undefined" && window.location.hash) {
+      const hash = window.location.hash;
+      if (hash.startsWith("#post-")) {
+        targetPostId = hash.substring(6);
+      }
     }
-  }, [posts]);
+
+    if (targetPostId) {
+      if (targetCommentId) {
+        // Expand comments if not already expanded
+        if (!expandedComments[targetPostId]) {
+          setExpandedComments(prev => ({ ...prev, [targetPostId]: true }));
+          fetchComments(targetPostId);
+          return;
+        }
+
+        // Scroll to target comment once comments are loaded
+        if (comments[targetPostId]) {
+          const scrollToComment = (retries = 5) => {
+            const commentElement = document.getElementById(`comment-${targetCommentId}`);
+            if (commentElement) {
+              commentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+              const innerBox = commentElement.querySelector('.flex-1');
+              if (innerBox) {
+                innerBox.classList.add("border-2", "border-emerald-500", "dark:border-emerald-500");
+                innerBox.classList.remove("bg-slate-50", "dark:bg-zinc-800");
+                setTimeout(() => {
+                  innerBox.classList.remove("border-2", "border-emerald-500", "dark:border-emerald-500");
+                  innerBox.classList.add("bg-slate-50", "dark:bg-zinc-800");
+                }, 4000);
+              }
+            } else if (retries > 0) {
+              setTimeout(() => scrollToComment(retries - 1), 100);
+            }
+          };
+          scrollToComment();
+        }
+      } else {
+        // Scroll to post smoothly and highlight with a prominent border
+        setTimeout(() => {
+          const postElement = document.getElementById(`post-${targetPostId}`);
+          if (postElement) {
+            postElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            postElement.classList.add("border-2", "border-emerald-500", "dark:border-emerald-500");
+            postElement.classList.remove("border", "border-neutral-200/60", "dark:border-zinc-800/80");
+            setTimeout(() => {
+              postElement.classList.remove("border-2", "border-emerald-500", "dark:border-emerald-500");
+              postElement.classList.add("border", "border-neutral-200/60", "dark:border-zinc-800/80");
+            }, 3000);
+          }
+        }, 500);
+      }
+    }
+  }, [posts, comments, expandedComments, searchParams]);
+
+  // Listen to manual scroll-to-target events from notification bell clicks on the same page
+  useEffect(() => {
+    const handleScrollEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const targetUrl = customEvent.detail?.targetUrl;
+      if (!targetUrl) return;
+
+      const url = new URL(targetUrl, window.location.origin);
+      let targetPostId = url.searchParams.get("post");
+      const targetCommentId = url.searchParams.get("comment");
+
+      // Support hash url parsing for pre-existing notification redirects
+      if (!targetPostId && url.hash && url.hash.startsWith("#post-")) {
+        targetPostId = url.hash.substring(6);
+      }
+
+      if (targetPostId) {
+        if (targetCommentId) {
+          if (expandedComments[targetPostId] && comments[targetPostId]) {
+            const scrollToComment = (retries = 5) => {
+              const commentElement = document.getElementById(`comment-${targetCommentId}`);
+              if (commentElement) {
+                commentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+                const innerBox = commentElement.querySelector('.flex-1');
+                if (innerBox) {
+                  innerBox.classList.add("border-2", "border-emerald-500", "dark:border-emerald-500");
+                  innerBox.classList.remove("bg-slate-50", "dark:bg-zinc-800");
+                  setTimeout(() => {
+                    innerBox.classList.remove("border-2", "border-emerald-500", "dark:border-emerald-500");
+                    innerBox.classList.add("bg-slate-50", "dark:bg-zinc-800");
+                  }, 4000);
+                }
+              } else if (retries > 0) {
+                setTimeout(() => scrollToComment(retries - 1), 100);
+              }
+            };
+            scrollToComment();
+          } else {
+            setExpandedComments(prev => ({ ...prev, [targetPostId]: true }));
+            fetchComments(targetPostId);
+          }
+        } else {
+          const postElement = document.getElementById(`post-${targetPostId}`);
+          if (postElement) {
+            postElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            postElement.classList.add("border-2", "border-emerald-500", "dark:border-emerald-500");
+            postElement.classList.remove("border", "border-neutral-200/60", "dark:border-zinc-800/80");
+            setTimeout(() => {
+              postElement.classList.remove("border-2", "border-emerald-500", "dark:border-emerald-500");
+              postElement.classList.add("border", "border-neutral-200/60", "dark:border-zinc-800/80");
+            }, 3000);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll-to-target", handleScrollEvent);
+    return () => window.removeEventListener("scroll-to-target", handleScrollEvent);
+  }, [posts, comments, expandedComments]);
 
   // Image Upload Handlers
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -392,10 +756,25 @@ export default function DashboardPage() {
         .filter(img => img.status === "success" && img.url)
         .map(img => img.url);
 
+      // Preprocess text content to replace masked mentions with backend markdown syntax
+      let processedContent = newPostContent.trim();
+      
+      // Replace @all
+      processedContent = processedContent.replace(/\b@all\b/g, '@[all](user:all)');
+
+      // Filter to only those mentions currently inside the text
+      const activeMentions = selectedMentions.filter(m => processedContent.includes(`@${m.name}`));
+      const sortedMentions = [...activeMentions].sort((a, b) => b.name.length - a.name.length);
+      sortedMentions.forEach(mention => {
+        const escapedName = mention.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`@${escapedName}\\b`, 'g');
+        processedContent = processedContent.replace(regex, `@[${mention.name}](user:${mention.id})`);
+      });
+
       const response = await apiRequest("/api/posts", {
         method: "POST",
         body: JSON.stringify({ 
-          content: newPostContent.trim(),
+          content: processedContent,
           media_urls: uploadedUrls,
         }),
       });
@@ -405,6 +784,7 @@ export default function DashboardPage() {
         // Insert new post to top of timeline
         setPosts(prev => [newPost, ...prev]);
         setNewPostContent("");
+        setSelectedMentions([]); // Clear post mentions state
         
         // Revoke all preview URLs and reset selected images
         selectedImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
@@ -522,9 +902,24 @@ export default function DashboardPage() {
     commentSubmittingRef.current[postId] = true;
     setCommentSubmitting(prev => ({ ...prev, [postId]: true }));
     try {
+      // Preprocess text content to replace masked mentions with backend markdown syntax
+      let processedContent = content;
+
+      // Replace @all
+      processedContent = processedContent.replace(/\b@all\b/g, '@[all](user:all)');
+
+      // Filter to only those mentions currently inside the comment text
+      const activeMentions = (commentMentions[postId] || []).filter(m => processedContent.includes(`@${m.name}`));
+      const sortedMentions = [...activeMentions].sort((a, b) => b.name.length - a.name.length);
+      sortedMentions.forEach(mention => {
+        const escapedName = mention.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`@${escapedName}\\b`, 'g');
+        processedContent = processedContent.replace(regex, `@[${mention.name}](user:${mention.id})`);
+      });
+
       const response = await apiRequest(`/api/posts/${postId}/comments`, {
         method: "POST",
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content: processedContent }),
       });
 
       if (response.ok) {
@@ -540,6 +935,11 @@ export default function DashboardPage() {
           };
         });
         setCommentInputs(prev => ({ ...prev, [postId]: "" }));
+        setCommentMentions(prev => {
+          const next = { ...prev };
+          delete next[postId];
+          return next;
+        });
         
         // Increment comments count locally
         setPosts(prev => prev.map(post => {
@@ -859,11 +1259,11 @@ export default function DashboardPage() {
           <NavigationCard currentUser={currentUser} activeKey="feed" variant="mobile" />
           
           {/* Create Post Form */}
-          <form onSubmit={handleCreatePost} className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative overflow-hidden">
+          <form onSubmit={handleCreatePost} className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/60 dark:border-zinc-800/80 p-5 space-y-4 shadow-sm relative">
             
             {/* Read-Only overlay mask */}
             {!isVerified() && (
-              <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/60 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none" />
+              <div className="absolute inset-0 bg-white/40 dark:bg-zinc-950/60 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none rounded-2xl" />
             )}
 
             <input 
@@ -879,15 +1279,61 @@ export default function DashboardPage() {
               <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-sm shrink-0">
                 {getInitials(currentUser.name)}
               </div>
-              <div className="flex-1 space-y-3">
+              <div className="flex-1 space-y-3 relative">
                 <textarea
                   value={newPostContent}
                   disabled={!isVerified()}
-                  onChange={(e) => setNewPostContent(e.target.value)}
-                  placeholder={isVerified() ? "Share something helpful with your fellow orchard residents..." : "Residency verification pending: posting is disabled."}
+                  onChange={(e) => {
+                    setNewPostContent(e.target.value);
+                    handleInputChange(e.target.value, e.target.selectionStart || 0, 'post', e.target);
+                  }}
+                  onKeyDown={handleKeyDown}
+                  placeholder={isVerified() ? "Share something helpful with your fellow orchard residents (use @ to mention)..." : "Residency verification pending: posting is disabled."}
                   rows={3}
                   className="w-full text-sm py-2 focus:outline-none bg-transparent resize-none disabled:text-slate-400 dark:disabled:text-zinc-500"
                 />
+
+                {/* Mentions Dropdown for Post Creation */}
+                {mentionActive && mentionTargetInput === 'post' && mentionResults.length > 0 && (
+                  <div 
+                    className="mention-dropdown absolute bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto py-1"
+                    style={{
+                      top: dropdownPosition.top + 24,
+                      left: Math.max(0, dropdownPosition.left),
+                      width: '280px',
+                    }}
+                  >
+                    {mentionResults.map((resident, idx) => (
+                      <button
+                        key={resident.id}
+                        type="button"
+                        onClick={() => selectMention(resident)}
+                        onMouseEnter={() => setMentionIndex(idx)}
+                        className={`w-full text-left px-4 py-2 text-xs flex items-center gap-2 transition-colors ${
+                          idx === mentionIndex
+                            ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold"
+                            : "text-slate-700 dark:text-zinc-300 hover:bg-neutral-50 dark:hover:bg-zinc-800/50"
+                        }`}
+                      >
+                        <div className={`w-6 h-6 rounded-full text-white flex items-center justify-center font-bold text-[9px] shrink-0 ${
+                          resident.id === 'all' ? 'bg-amber-500' : 'bg-emerald-500'
+                        }`}>
+                          {resident.id === 'all' ? '📢' : getInitials(resident.name)}
+                        </div>
+                        <div className="flex-1 flex items-center justify-between gap-2">
+                          <span className={resident.id === 'all' ? 'text-amber-600 dark:text-amber-450 font-bold' : ''}>
+                            {resident.id === 'all' ? '@all (Notify Everyone)' : resident.name}
+                          </span>
+                          {resident.id !== 'all' && resident.resident_profile && (
+                            <span className="text-[9px] font-normal text-slate-400 dark:text-zinc-500 shrink-0">
+                              {resident.resident_profile.phase} • {resident.resident_profile.block}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Selected Images Preview Grid */}
                 {selectedImages.length > 0 && (
@@ -998,7 +1444,7 @@ export default function DashboardPage() {
                   </div>
 
                   <p className="text-sm font-light leading-relaxed text-slate-700 dark:text-zinc-300 whitespace-pre-wrap">
-                    {post.content}
+                    {renderContentWithMentions(post.content)}
                   </p>
 
                   {/* Post Images Grid */}
@@ -1066,7 +1512,7 @@ export default function DashboardPage() {
                             </p>
                           ) : (
                             comments[post.id].map(comment => (
-                              <div key={comment.id} className="flex gap-2.5 items-start text-xs">
+                              <div key={comment.id} id={`comment-${comment.id}`} className="flex gap-2.5 items-start text-xs transition-all duration-300">
                                 <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-neutral-300 flex items-center justify-center font-bold text-[10px] shrink-0">
                                   {getInitials(comment.user.name)}
                                 </div>
@@ -1085,7 +1531,7 @@ export default function DashboardPage() {
                                     )}
                                   </div>
                                   <p className="text-slate-600 dark:text-zinc-300 font-light mt-0.5 whitespace-pre-wrap leading-normal">
-                                    {comment.content}
+                                    {renderContentWithMentions(comment.content)}
                                   </p>
                                 </div>
                               </div>
@@ -1096,15 +1542,61 @@ export default function DashboardPage() {
 
                       {/* Comment Input Box */}
                       {isVerified() ? (
-                        <form onSubmit={(e) => handleCreateComment(post.id, e)} className="flex gap-2">
+                        <form onSubmit={(e) => handleCreateComment(post.id, e)} className="flex gap-2 relative">
                           <input
                             type="text"
-                            placeholder="Write a comment..."
+                            placeholder="Write a comment (use @ to mention)..."
                             value={commentInputs[post.id] || ""}
-                            onChange={(e) => setCommentInputs(prev => ({ ...prev, [post.id]: e.target.value }))}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setCommentInputs(prev => ({ ...prev, [post.id]: val }));
+                              handleInputChange(val, e.target.selectionStart || 0, { type: 'comment', postId: post.id }, e.target);
+                            }}
+                            onKeyDown={handleKeyDown}
                             disabled={commentSubmitting[post.id]}
                             className="flex-1 bg-slate-50 dark:bg-zinc-800 text-slate-900 dark:text-neutral-100 border border-neutral-200/50 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-emerald-500/50 transition-colors"
                           />
+
+                          {/* Mentions Dropdown for Comments */}
+                          {mentionActive && typeof mentionTargetInput === 'object' && mentionTargetInput?.type === 'comment' && mentionTargetInput.postId === post.id && mentionResults.length > 0 && (
+                            <div 
+                              className="mention-dropdown absolute bottom-full mb-1 bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 rounded-xl shadow-lg z-30 max-h-40 overflow-y-auto py-1"
+                              style={{
+                                left: Math.max(0, dropdownPosition.left),
+                                width: '280px',
+                              }}
+                            >
+                              {mentionResults.map((resident, idx) => (
+                                <button
+                                  key={resident.id}
+                                  type="button"
+                                  onClick={() => selectMention(resident)}
+                                  onMouseEnter={() => setMentionIndex(idx)}
+                                  className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center gap-2 transition-colors ${
+                                    idx === mentionIndex
+                                      ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold"
+                                      : "text-slate-700 dark:text-zinc-300 hover:bg-neutral-50 dark:hover:bg-zinc-800/50"
+                                  }`}
+                                >
+                                  <div className={`w-5 h-5 rounded-full text-white flex items-center justify-center font-bold text-[8px] shrink-0 ${
+                                    resident.id === 'all' ? 'bg-amber-500' : 'bg-emerald-500'
+                                  }`}>
+                                    {resident.id === 'all' ? '📢' : getInitials(resident.name)}
+                                  </div>
+                                  <div className="flex-1 flex items-center justify-between gap-2">
+                                    <span className={resident.id === 'all' ? 'text-amber-600 dark:text-amber-450 font-bold' : ''}>
+                                      {resident.id === 'all' ? '@all (Notify Everyone)' : resident.name}
+                                    </span>
+                                    {resident.id !== 'all' && resident.resident_profile && (
+                                      <span className="text-[9px] font-normal text-slate-400 dark:text-zinc-500 shrink-0">
+                                        {resident.resident_profile.phase} • {resident.resident_profile.block}
+                                      </span>
+                                    )}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
                           <button
                             type="submit"
                             disabled={commentSubmitting[post.id] || !commentInputs[post.id]?.trim()}
@@ -1305,3 +1797,46 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+// Helper to parse markdown mentions into beautiful React tags
+export const renderContentWithMentions = (content: string) => {
+  if (!content) return "";
+
+  const regex = /@\[([^\]]+)\]\(user:([a-fA-F0-9-]+|all)\)/g;
+  const parts: (string | React.ReactNode)[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(content)) !== null) {
+    const matchIndex = match.index;
+    const name = match[1];
+    const userId = match[2];
+
+    if (matchIndex > lastIndex) {
+      parts.push(content.substring(lastIndex, matchIndex));
+    }
+
+    const isAll = userId === "all";
+
+    parts.push(
+      <span
+        key={`${userId}-${matchIndex}`}
+        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold ${
+          isAll
+            ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-450 border border-amber-200/30 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+            : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
+        } cursor-pointer transition-colors`}
+      >
+        @{name}
+      </span>
+    );
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(content.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : content;
+};
