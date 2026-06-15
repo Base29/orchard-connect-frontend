@@ -32,7 +32,6 @@ export function getEcho(dynamicKey?: string): any {
   if (echoInstance) {
     try {
       echoInstance.disconnect();
-      console.log("[Reverb] Disconnected old Echo instance due to token/key change.");
     } catch (e) {
       console.error("[Reverb] Failed to disconnect old Echo instance:", e);
     }
@@ -110,8 +109,6 @@ export function getEcho(dynamicKey?: string): any {
     },
   } : {};
 
-  console.log(`[Reverb] Initializing Echo: host=${wsHost}, port=${wsPort}, secure=${forceTLS}, key=${currentKey}`);
-
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: currentKey,
@@ -126,9 +123,6 @@ export function getEcho(dynamicKey?: string): any {
   // Attach connection lifecycle loggers for debugging production/demo issues
   if (echoInstance.connector && echoInstance.connector.pusher) {
     const conn = echoInstance.connector.pusher.connection;
-    conn.bind("state_change", (states: any) => {
-      console.log(`[Reverb] Connection state changed: ${states.previous} -> ${states.current}`);
-    });
     conn.bind("error", (err: any) => {
       console.error("[Reverb] Connection error:", err);
     });

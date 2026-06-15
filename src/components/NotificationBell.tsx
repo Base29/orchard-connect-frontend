@@ -36,7 +36,7 @@ interface NotificationBellProps {
 export default function NotificationBell({ currentUser }: NotificationBellProps) {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const unreadCount = notifications.filter(n => n.read_at === null).length;
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -61,10 +61,7 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
         const data = await res.json();
         const list = data.data || [];
         setNotifications(list);
-        
-        // Count unread
-        const unread = list.filter((n: Notification) => n.read_at === null).length;
-        setUnreadCount(unread);
+
       }
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
@@ -88,34 +85,36 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
 
     echo.private(channelName)
       .notification((notification: any) => {
-        console.log("Real-time notification received via Reverb:", notification);
-        
-        // Format the notification to match our interface
+        // Format the notification to match our interface, supporting both flat and nested payloads
+        const title = notification.data?.title || notification.title || "New Notification";
+        const message = notification.data?.message || notification.data?.body || notification.message || notification.body || "";
+        const target_url = notification.data?.target_url || notification.target_url || "/dashboard";
+        const metadata = notification.data?.metadata || notification.metadata || {};
+
         const newNotification: Notification = {
           id: notification.id,
           type: "App\\Notifications\\GeneralNotification",
           data: {
-            title: notification.title,
-            message: notification.message || notification.body,
-            target_url: notification.target_url,
-            metadata: notification.metadata,
+            title,
+            message,
+            target_url,
+            metadata,
           },
           read_at: null,
-          created_at: notification.created_at || new Date().toISOString(),
+          created_at: notification.data?.created_at || notification.created_at || new Date().toISOString(),
         };
 
-        // Add to list and increment unread count, preventing duplicates
+        // Add to list, preventing duplicates
         setNotifications(prev => {
           if (prev.some(n => n.id === newNotification.id)) {
             return prev;
           }
-          setUnreadCount(c => c + 1);
           return [newNotification, ...prev];
         });
 
         // Optional: play subtle sound or trigger toast notification
         if ("Notification" in window && Notification.permission === "granted") {
-          new window.Notification(notification.title, { body: notification.message });
+          new window.Notification(title, { body: message });
         }
       });
 
@@ -136,7 +135,6 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
     setNotifications(prev =>
       prev.map(n => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
     );
-    setUnreadCount(prev => Math.max(0, prev - 1));
     setIsOpen(false);
 
     try {
@@ -160,7 +158,6 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
     setNotifications(prev =>
       prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
     );
-    setUnreadCount(0);
 
     try {
       await apiRequest("/api/notifications/read-all", { method: "POST" });
@@ -211,6 +208,8 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
         return { icon: "⚠️", color: "bg-amber-500/10 text-amber-650 dark:text-amber-450" };
       case "listing_status":
         return { icon: "🛍️", color: "bg-purple-500/10 text-purple-600 dark:text-purple-400" };
+      case "ticket_status":
+        return { icon: "🎫", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" };
       case "moderation_verification":
         return { icon: "📋", color: "bg-orange-500/10 text-orange-600 dark:text-orange-400" };
       case "moderation_listing_submitted":
@@ -290,13 +289,13 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
               </div>
             ) : (
               notifications.map(item => {
-                const styles = getNotificationStyles(item.data.metadata?.type);
+                const styles = getNotificationStyles(item.data?.metadata?.type);
                 const isUnread = item.read_at === null;
 
                 return (
                   <button
                     key={item.id}
-                    onClick={() => handleMarkAsRead(item.id, item.data.target_url)}
+                    onClick={() => handleMarkAsRead(item.id, item.data?.target_url || "/dashboard")}
                     className={`w-full text-left px-5 py-4 flex items-start gap-4 transition-colors cursor-pointer hover:bg-slate-50/50 dark:hover:bg-zinc-850/30 ${
                       isUnread ? "bg-emerald-500/[0.02] dark:bg-emerald-500/[0.01]" : ""
                     }`}
@@ -310,14 +309,14 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center justify-between gap-2">
                         <h4 className={`text-xs truncate leading-snug ${isUnread ? "font-bold text-slate-900 dark:text-neutral-100" : "font-semibold text-slate-655 dark:text-zinc-400"}`}>
-                          {item.data.title}
+                          {item.data?.title || "New Notification"}
                         </h4>
                         <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-light shrink-0">
                           {formatTimeAgo(item.created_at)}
                         </span>
                       </div>
                       <p className="text-[11px] leading-normal font-light text-slate-500 dark:text-zinc-400 break-words">
-                        {item.data.message}
+                        {item.data?.message || ""}
                       </p>
                     </div>
 

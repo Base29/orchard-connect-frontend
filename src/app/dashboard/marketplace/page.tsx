@@ -207,8 +207,6 @@ export default function MarketplacePage() {
     
     echo.private(channelName)
       .listen(".ResidentVerificationStatusUpdated", (data: { status: "pending" | "approved" | "rejected"; rejection_reason?: string; rejection_message?: string }) => {
-        console.log("WebSocket Reverb update received on Marketplace:", data);
-        
         // Show toast notification
         if (data.status === "approved") {
           showToast("🎉 Congratulations! Your residency profile has been verified and approved!", "success");
@@ -225,8 +223,6 @@ export default function MarketplacePage() {
         });
       })
       .listen(".ListingStatusUpdated", (data: { listing_id: string; status: string; title: string }) => {
-        console.log("WebSocket Reverb update received on Marketplace for Listing status:", data);
-        
         if (data.status === "active") {
           showToast(`🎉 Your classified ad "${data.title}" has been approved!`, "success");
         } else if (data.status === "suspended") {

@@ -53,7 +53,6 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
   // Setup fallback event listener to catch 503 response triggers immediately (e.g. client clicks during active session)
   useEffect(() => {
     const handleMaintenanceEvent = () => {
-      console.log("Fail-safe platform-maintenance event caught, transitioning immediately to maintenance screen.");
       setIsMaintenance(true);
     };
 
@@ -70,13 +69,7 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
       const channel = echo.channel("maintenance");
       
       channel.listen(".MaintenanceModeChanged", (data: { is_enabled: boolean }) => {
-        console.log("Real-time MaintenanceModeChanged broadcast received:", data);
         setIsMaintenance(data.is_enabled);
-      });
-
-      // Listen to all events on this channel for diagnostic logging
-      channel.listenToAll((eventName: string, data: any) => {
-        console.log(`[Reverb] Raw event received on 'maintenance' channel: event=${eventName}`, data);
       });
 
       return () => {

@@ -5,6 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import { getEcho } from "@/lib/echo";
 import NavigationCard from "@/components/NavigationCard";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
@@ -78,9 +79,46 @@ export default function ResidentSupportTicketsPage() {
     }
   };
 
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: "info" | "success" | "error" }>({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  const showToast = (message: string, type: "info" | "success" | "error" = "info") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, 4500);
+  };
+
   useEffect(() => {
     fetchTicketsData();
   }, []);
+
+  // Listen for real-time ticket status updates
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const echo = getEcho();
+    if (!echo) return;
+
+    const channelName = `user.${currentUser.id}`;
+
+    echo.private(channelName)
+      .listen(".SupportTicketStatusUpdated", (data: any) => {
+        // Show premium toast notification
+        const message = `Support Ticket [${data.tracking_id}] status has been updated to: ${data.status.toUpperCase()}`;
+        showToast(message, "success");
+        
+        // Refresh support tickets list
+        fetchTicketsData();
+      });
+
+    return () => {
+      echo.leave(channelName);
+    };
+  }, [currentUser]);
 
   if (loading || !currentUser) {
     return (
@@ -114,6 +152,23 @@ export default function ResidentSupportTicketsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl border shadow-lg text-xs font-semibold max-w-sm animate-slide-in ${
+          toast.type === "success"
+            ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-440 border-emerald-250/30"
+            : toast.type === "error"
+            ? "bg-rose-50 dark:bg-rose-950/20 text-rose-800 dark:text-rose-450 border-rose-250/30"
+            : "bg-white dark:bg-zinc-900 text-slate-800 dark:text-neutral-100 border-neutral-200/60 dark:border-zinc-800/80"
+        }`}>
+          <span>
+            {toast.type === "success" && "✅"}
+            {toast.type === "error" && "❌"}
+            {toast.type === "info" && "ℹ️"}
+          </span>
+          <div className="flex-1">{toast.message}</div>
+        </div>
+      )}
       {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b border-neutral-100 dark:border-zinc-900 bg-white/80 dark:bg-black/80 backdrop-blur-md transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">

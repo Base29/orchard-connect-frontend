@@ -488,8 +488,6 @@ export default function DashboardPage() {
     
     echo.private(channelName)
       .listen(".ResidentVerificationStatusUpdated", (data: { status: "pending" | "approved" | "rejected"; rejection_reason?: string; rejection_message?: string }) => {
-        console.log("WebSocket Reverb update received:", data);
-        
         // Show minimalist toast notification
         if (data.status === "approved") {
           showToast("🎉 Congratulations! Your residency profile has been verified and approved!", "success");
@@ -505,7 +503,6 @@ export default function DashboardPage() {
     // Subscribe to feed private channel
     echo.private('feed')
       .listen('.PostCreated', (data: { post: Post }) => {
-        console.log("Real-time PostCreated received:", data);
         const { post } = data;
         
         if (post.user_id === currentUserRef.current?.id) return;
@@ -527,7 +524,6 @@ export default function DashboardPage() {
         });
       })
       .listen('.PostLiked', (data: { post_id: string; likes_count: number; user_id: string; liked: boolean }) => {
-        console.log("Real-time PostLiked received:", data);
         if (data.user_id === currentUserRef.current?.id) return;
 
         setPosts(prev => prev.map(post => {
@@ -541,7 +537,6 @@ export default function DashboardPage() {
         }));
       })
       .listen('.CommentCreated', (data: { comment: Comment }) => {
-        console.log("Real-time CommentCreated received:", data);
         const { comment } = data;
         
         if (comment.user_id === currentUserRef.current?.id) return;
