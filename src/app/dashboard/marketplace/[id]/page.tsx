@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest, checkEmailVerification } from "@/lib/api";
+import { apiRequest, checkEmailVerification, clearAuthToken } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 
@@ -204,7 +204,7 @@ export default function ListingDetailPage() {
   };
 
   const handleLogout = () => {
-    document.cookie = "auth_token=; path=/; max-age=0";
+    clearAuthToken();
     router.push("/");
   };
 

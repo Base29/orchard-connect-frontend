@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { clearAuthToken } from "@/lib/api";
 
 interface ResidentProfile {
   phase: string;
@@ -52,7 +53,7 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
   };
 
   const handleLogout = () => {
-    document.cookie = "auth_token=; path=/; max-age=0";
+    clearAuthToken();
     router.push("/");
   };
 

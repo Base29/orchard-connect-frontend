@@ -2,6 +2,7 @@
 
 import React, { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { setAuthToken } from "@/lib/api";
 
 function CallbackHandler() {
   const router = useRouter();
@@ -12,9 +13,12 @@ function CallbackHandler() {
     const profileComplete = searchParams.get("profile_complete");
 
     if (token) {
-      // 1. Write the Sanctum token to a Lax, 7-day secure client cookie
-      const maxAge = 60 * 60 * 24 * 7;
-      document.cookie = `auth_token=${token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      // 1. Write the token using our hybrid storage setter
+      const remember = typeof window !== "undefined" && localStorage.getItem("oauth_remember_me") === "true";
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("oauth_remember_me");
+      }
+      setAuthToken(token, remember);
 
       // 2. Conditional Redirect routing based on Resident Profile completion status
       if (profileComplete === "false") {

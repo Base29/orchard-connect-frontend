@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { apiRequest, checkEmailVerification } from "@/lib/api";
+import { apiRequest, checkEmailVerification, clearAuthToken } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
 import NavigationCard from "@/components/NavigationCard";
 import RoleBadge from "@/components/RoleBadge";
@@ -284,7 +284,7 @@ export default function DashboardPortalPage() {
   };
 
   const handleLogout = () => {
-    document.cookie = "auth_token=; path=/; max-age=0";
+    clearAuthToken();
     router.push("/");
   };
 

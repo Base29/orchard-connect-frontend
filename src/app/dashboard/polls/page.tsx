@@ -5,7 +5,7 @@ import NavigationCard from "@/components/NavigationCard";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { apiRequest, checkEmailVerification } from "@/lib/api";
+import { apiRequest, checkEmailVerification, clearAuthToken } from "@/lib/api";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 import ResidentBadges from "@/components/ResidentBadges";
@@ -212,7 +212,7 @@ export default function PollsPage() {
   };
 
   const handleLogout = () => {
-    document.cookie = "auth_token=; path=/; max-age=0";
+    clearAuthToken();
     router.push("/");
   };
 

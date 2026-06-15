@@ -37,8 +37,26 @@ export function checkEmailVerification(user: User | null): boolean {
 
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
-  const match = document.cookie.match(/(^|;)\s*auth_token\s*=\s*([^;]+)/);
-  return match ? decodeURIComponent(match[2]) : null;
+  return sessionStorage.getItem("auth_token") || localStorage.getItem("auth_token");
+}
+
+export function setAuthToken(token: string, remember: boolean = false): void {
+  if (typeof window === "undefined") return;
+  if (remember) {
+    localStorage.setItem("auth_token", token);
+    sessionStorage.removeItem("auth_token");
+  } else {
+    sessionStorage.setItem("auth_token", token);
+    localStorage.removeItem("auth_token");
+  }
+}
+
+export function clearAuthToken(): void {
+  if (typeof window === "undefined") return;
+  sessionStorage.removeItem("auth_token");
+  localStorage.removeItem("auth_token");
+  // Also clear any lingering cookies from the previous implementation
+  document.cookie = "auth_token=; path=/; max-age=0";
 }
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
@@ -74,8 +92,8 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
 
     if (response.status === 401) {
       if (typeof window !== "undefined") {
-        // Session expired, clean cookie and route to login
-        document.cookie = "auth_token=; path=/; max-age=0";
+        // Session expired, clear token and route to login
+        clearAuthToken();
         window.location.href = "/auth/login?error=oauth_failed";
       }
     }

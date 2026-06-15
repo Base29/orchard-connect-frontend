@@ -1,15 +1,22 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
-import { getBaseUrl } from "@/lib/api";
+import { getBaseUrl, setAuthToken, getAuthToken } from "@/lib/api";
 
 function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
+
   const error = searchParams.get("error");
   const baseUrl = getBaseUrl();
 
@@ -25,6 +32,14 @@ function LoginForm() {
   // Loading & error statuses
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
+
+  const handleOAuthRedirect = (provider: "google" | "facebook") => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("oauth_remember_me", rememberMe ? "true" : "false");
+    }
+    window.location.href = `${baseUrl}/api/auth/${provider}/redirect`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +74,8 @@ function LoginForm() {
         return;
       }
 
-      // Success: Save token to the auth_token cookie
-      const maxAge = 60 * 60 * 24 * 7; // 7 days
-      document.cookie = `auth_token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      // Success: Save token using hybrid storage helper
+      setAuthToken(data.token, rememberMe);
 
       // Redirect depending on resident profile status
       if (data.profile_complete === true) {
@@ -128,7 +142,7 @@ function LoginForm() {
       {/* OAuth Options */}
       <div className="space-y-2.5">
         <button
-          onClick={() => window.location.href = `${baseUrl}/api/auth/google/redirect`}
+          onClick={() => handleOAuthRedirect("google")}
           className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-800 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-zinc-700/50 active:scale-[0.99] transition-all cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -141,7 +155,7 @@ function LoginForm() {
         </button>
 
         <button
-          onClick={() => window.location.href = `${baseUrl}/api/auth/facebook/redirect`}
+          onClick={() => handleOAuthRedirect("facebook")}
           className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-neutral-50 dark:bg-zinc-800 text-slate-800 dark:text-neutral-100 border border-neutral-200/60 dark:border-zinc-800/80 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-zinc-700/50 active:scale-[0.99] transition-all cursor-pointer"
         >
           <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
@@ -228,6 +242,19 @@ function LoginForm() {
             />
           </div>
         )}
+
+        <div className="flex items-center gap-2 py-1">
+          <input
+            id="rememberMe"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded border-neutral-200 dark:border-zinc-800 text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer"
+          />
+          <label htmlFor="rememberMe" className="text-xs text-slate-550 dark:text-zinc-400 select-none cursor-pointer font-medium">
+            Keep me signed in
+          </label>
+        </div>
 
         <button
           type="submit"

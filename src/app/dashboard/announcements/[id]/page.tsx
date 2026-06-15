@@ -5,7 +5,7 @@ import NotificationBell from "@/components/NotificationBell";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, clearAuthToken } from "@/lib/api";
 
 interface ResidentProfile {
   phase: string;
@@ -137,7 +137,7 @@ export default function AnnouncementDetailPage() {
   };
 
   const handleLogout = () => {
-    document.cookie = "auth_token=; path=/; max-age=0";
+    clearAuthToken();
     router.push("/");
   };
 

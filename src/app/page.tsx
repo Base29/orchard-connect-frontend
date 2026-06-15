@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
+import { useRouter } from "next/navigation";
+import { getAuthToken } from "@/lib/api";
 
 // Types for interactive simulator structures
 interface Post {
@@ -57,6 +59,14 @@ interface Notification {
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   // Active Explorer Tab
   const [activeTab, setActiveTab] = useState<"verification" | "feed" | "marketplace" | "directory_polls" | "realtime">("feed");
