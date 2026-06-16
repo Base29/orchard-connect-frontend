@@ -49,6 +49,9 @@ const PHASE_BLOCKS: Record<string, string[]> = {
     "Block G2",
     "Block G3",
     "Block G4",
+    "Block G5",
+    "Block G6",
+    "Block G7",
     "Awami Homes"
   ]
 };
@@ -91,9 +94,14 @@ export default function CompleteProfilePage() {
             
             const loadedPhase = profile.phase;
             const validPhases = ["Phase 1", "Phase 2", "Phase 3", "Phase 4"];
-            setPhase(validPhases.includes(loadedPhase) ? loadedPhase : "Phase 1");
+            const resolvedPhase = validPhases.includes(loadedPhase) ? loadedPhase : "Phase 1";
+            setPhase(resolvedPhase);
 
-            setBlock(profile.block || "");
+            if (resolvedPhase === "Phase 3") {
+              setBlock("N/A");
+            } else {
+              setBlock(profile.block || "");
+            }
             setHouseNumber(profile.house_number || "");
             setStreetNumber(profile.street_number || "");
             setUserType(profile.user_type || "tenant");
@@ -232,7 +240,7 @@ export default function CompleteProfilePage() {
                 </p>
                 {previousProfile.rejection_message && (
                   <p className="text-slate-500 dark:text-zinc-400 italic mt-1 font-light border-l-2 border-amber-500/30 pl-2">
-                    "{previousProfile.rejection_message}"
+                    &ldquo;{previousProfile.rejection_message}&rdquo;
                   </p>
                 )}
               </div>
@@ -268,7 +276,11 @@ export default function CompleteProfilePage() {
                         const newPhase = e.target.value;
                         setPhase(newPhase);
                         const newPhaseBlocks = PHASE_BLOCKS[newPhase] || [];
-                        if (newPhaseBlocks.length > 0 && !newPhaseBlocks.includes(block)) {
+                        if (newPhase === "Phase 3") {
+                          setBlock("N/A");
+                        } else if (newPhaseBlocks.length > 0 && !newPhaseBlocks.includes(block)) {
+                          setBlock("");
+                        } else if (block === "N/A") {
                           setBlock("");
                         }
                       }}
@@ -306,10 +318,11 @@ export default function CompleteProfilePage() {
                         id="block"
                         type="text"
                         required
-                        placeholder="e.g. Block A"
+                        disabled={phase === "Phase 3"}
+                        placeholder={phase === "Phase 3" ? "No Blocks in Phase 3" : "e.g. Block A"}
                         value={block}
                         onChange={(e) => setBlock(e.target.value)}
-                        className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors"
+                        className="w-full text-sm px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-950 focus:outline-none focus:border-emerald-500 transition-colors disabled:opacity-50 disabled:bg-neutral-100 dark:disabled:bg-zinc-900 cursor-not-allowed"
                       />
                     )}
                   </div>

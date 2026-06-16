@@ -117,6 +117,8 @@ export default function DashboardPortalPage() {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [supportTickets, setSupportTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(false);
+  const [welcomeLoaded, setWelcomeLoaded] = useState(false);
 
   const [stats, setStats] = useState<UserStats>({
     posts: { count: 0, likes: 0, comments: 0 },
@@ -211,6 +213,19 @@ export default function DashboardPortalPage() {
   useEffect(() => {
     fetchPortalData();
   }, []);
+
+  // Track if user is signing in / visiting the dashboard for the first time
+  useEffect(() => {
+    if (currentUser) {
+      const key = `visited_dashboard_${currentUser.id}`;
+      const hasVisited = localStorage.getItem(key);
+      if (!hasVisited) {
+        setIsFirstTime(true);
+        localStorage.setItem(key, "true");
+      }
+      setWelcomeLoaded(true);
+    }
+  }, [currentUser]);
 
   // WebSockets integration for real-time verification changes
   useEffect(() => {
@@ -520,7 +535,7 @@ export default function DashboardPortalPage() {
           <div className="relative overflow-hidden rounded-3xl border border-emerald-100/55 dark:border-emerald-950/40 bg-gradient-to-br from-emerald-50/50 via-teal-50/10 to-transparent dark:from-emerald-950/10 dark:via-zinc-900/10 dark:to-zinc-950 p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-2 max-w-xl">
               <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-                Welcome back, {currentUser.name.split(" ")[0]} 👋
+                {!welcomeLoaded ? "Welcome" : (isFirstTime ? "Welcome" : "Welcome back")}, {currentUser.name.split(" ")[0]} 👋
               </h1>
               <p className="text-sm font-light leading-relaxed text-slate-500 dark:text-zinc-400">
                 You have landed on your Orchard Connect portal dashboard. Stay updated with society matters, manage your ads, vote on polls, and engage with your neighbors.
