@@ -115,6 +115,9 @@ jobs:
             
             # Restart only the frontend service
             docker compose up -d frontend
+            
+            # Ensure the entire stack is running (including caddy, queue)
+            docker compose up -d
           EOF
 
   deploy-production:
@@ -150,4 +153,7 @@ jobs:
             
             # Restart only the frontend service
             sudo docker compose up -d frontend
+            
+            # Ensure the entire stack is running (including caddy, queue)
+            sudo docker compose up -d
           EOF
