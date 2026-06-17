@@ -297,6 +297,25 @@ export default function MarketplacePage() {
     }
   };
 
+  const formatPhoneNumber = (value: string): string => {
+    if (!value) return "";
+    const phone = value.replace(/[^\d+]/g, "");
+    if (phone.startsWith("+92")) {
+      return phone;
+    } else if (phone.startsWith("0092")) {
+      return "+92" + phone.slice(4);
+    } else if (phone.startsWith("92")) {
+      return "+" + phone;
+    } else if (phone.startsWith("0")) {
+      return "+92" + phone.slice(1);
+    } else {
+      if (!phone.startsWith("+")) {
+        return "+92" + phone;
+      }
+      return phone;
+    }
+  };
+
   // Form Submit: Post Classified Ad
   const handleCreateListing = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -314,7 +333,7 @@ export default function MarketplacePage() {
           title: newTitle.trim(),
           category: newCategory,
           price: parseFloat(newPrice),
-          contact_whatsapp: newWhatsapp.trim(),
+          contact_whatsapp: formatPhoneNumber(newWhatsapp.trim()),
           description: newDescription.trim(),
           images: newImages,
         }),
