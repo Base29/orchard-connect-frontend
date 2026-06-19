@@ -19,6 +19,7 @@ interface ResidentProfile {
   user_type: string;
   is_verified: boolean;
   status: "pending" | "approved" | "rejected";
+  document_path?: string | null;
   rejection_reason?: string;
   rejection_message?: string;
 }
@@ -1182,40 +1183,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Global verification status banners */}
-      {!isVerified() && profile && currentUser?.email_verified_at !== null && (
-        <div className={`w-full py-3.5 px-6 border-b text-xs flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
-          profile.status === "rejected" 
-            ? "bg-amber-500/10 border-amber-500/20 text-amber-900 dark:text-amber-300"
-            : "bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-400"
-        }`}>
-          <div className="flex items-center gap-2.5">
-            <span className="text-sm">
-              {profile.status === "rejected" ? "⚠️" : "🔒"}
-            </span>
-            <p className="font-light">
-              {profile.status === "rejected" ? (
-                <>
-                  <strong>Residency Profile Rejected</strong> (Reason: {formatRejectionReason(profile.rejection_reason)}). 
-                  {profile.rejection_message && <span className="italic"> "{profile.rejection_message}"</span>}
-                </>
-              ) : (
-                <>
-                  <strong>Read-Only Guest State</strong> — Your proof documents are pending review. Interactions are restricted.
-                </>
-              )}
-            </p>
-          </div>
-          {profile.status === "rejected" && (
-            <button 
-              onClick={() => router.push("/auth/complete-profile")}
-              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 dark:bg-amber-650 dark:hover:bg-amber-700 text-white font-bold text-[10px] uppercase tracking-wider active:scale-[0.98] transition-all cursor-pointer shrink-0"
-            >
-              Update & Resubmit
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b border-neutral-100 dark:border-zinc-900 bg-white/80 dark:bg-black/80 backdrop-blur-md transition-colors duration-200">

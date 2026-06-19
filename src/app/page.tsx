@@ -1755,6 +1755,8 @@ export default function Home() {
             <a href="/privacy" className="hover:text-slate-600 dark:hover:text-zinc-300">Privacy Policy</a>
             <a href="/data-deletion" className="hover:text-slate-600 dark:hover:text-zinc-300">Data Deletion Policy</a>
             <a href="/terms" className="hover:text-slate-600 dark:hover:text-zinc-300">Terms of Service</a>
+            <a href="/disclaimer" className="hover:text-slate-600 dark:hover:text-zinc-300">Disclaimer</a>
+            <a href="/guidelines" className="hover:text-slate-600 dark:hover:text-zinc-300">Community Guidelines</a>
             <a href="/support" className="hover:text-slate-600 dark:hover:text-zinc-300">Contact Support</a>
           </div>
         </div>

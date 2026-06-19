@@ -71,7 +71,6 @@ export default function CompleteProfilePage() {
   const [houseNumber, setHouseNumber] = useState("");
   const [streetNumber, setStreetNumber] = useState("");
   const [userType, setUserType] = useState("tenant");
-  const [documentFile, setDocumentFile] = useState<File | null>(null);
 
   // Status management
   const [submitting, setSubmitting] = useState(false);
@@ -122,33 +121,11 @@ export default function CompleteProfilePage() {
     loadUserStatus();
   }, [router]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const validTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg"];
-      
-      if (!validTypes.includes(file.type)) {
-        setErrorMsg("Please upload a PDF, PNG, or JPEG file.");
-        setDocumentFile(null);
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setErrorMsg("File size must be less than 10MB.");
-        setDocumentFile(null);
-        return;
-      }
-
-      setErrorMsg("");
-      setDocumentFile(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLocked) return;
-    if (!block.trim() || !houseNumber.trim() || !documentFile) {
-      setErrorMsg("All fields including residency document proof are required.");
+    if (!block.trim() || !houseNumber.trim()) {
+      setErrorMsg("All fields are required.");
       return;
     }
 
@@ -162,7 +139,6 @@ export default function CompleteProfilePage() {
       formData.append("house_number", houseNumber.trim());
       formData.append("street_number", streetNumber.trim());
       formData.append("user_type", userType);
-      formData.append("document", documentFile);
 
       const response = await apiRequest("/api/resident/profile", {
         method: "POST",
@@ -208,7 +184,7 @@ export default function CompleteProfilePage() {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight">Complete Residency Profile</h1>
           <p className="text-sm font-light text-slate-500 dark:text-zinc-400">
-            Submit your address and document proof to activate your community interactions.
+            Submit your address details to complete your profile setup.
           </p>
         </div>
 
@@ -386,43 +362,19 @@ export default function CompleteProfilePage() {
                   </div>
                 </div>
 
-                {/* Secure Document Upload Input */}
-                <div className="space-y-1.5 pt-2">
-                  <label className="text-xs font-semibold text-slate-500 dark:text-zinc-400">
-                    Residency Document Proof (Electricity Bill / Maintenance Bill) <span className="text-rose-500">*</span>
-                  </label>
-                  <div className="relative group border-2 border-dashed border-neutral-200 dark:border-zinc-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/30 rounded-xl p-6 transition-all duration-200 bg-neutral-50 dark:bg-zinc-950/40 text-center flex flex-col items-center justify-center min-h-[140px] cursor-pointer">
-                    <input
-                      type="file"
-                      accept=".pdf,.png,.jpg,.jpeg"
-                      onChange={handleFileChange}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                    />
-                    <div className="space-y-1 pointer-events-none">
-                      <span className="text-2xl mb-1 block">📄</span>
-                      <p className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                        {documentFile ? documentFile.name : "Select proof file"}
-                      </p>
-                      <p className="text-[10px] text-slate-400 dark:text-zinc-400">
-                        PDF, PNG, JPG, JPEG (Max. 10MB)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Form submit */}
                 <button
                   type="submit"
-                  disabled={submitting || !block.trim() || !houseNumber.trim() || !documentFile}
+                  disabled={submitting || !block.trim() || !houseNumber.trim()}
                   className="w-full flex items-center justify-center gap-2 mt-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm active:scale-[0.99] transition-all disabled:opacity-40 disabled:active:scale-100 cursor-pointer"
                 >
                   {submitting ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Uploading Residency Records...
+                      Saving Address Details...
                     </>
                   ) : (
-                    "Submit Verification Request"
+                    "Save & Continue"
                   )}
                 </button>
 

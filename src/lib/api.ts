@@ -19,6 +19,7 @@ export interface User {
     user_type: string;
     is_verified: boolean;
     status: "pending" | "approved" | "rejected";
+    document_path?: string | null;
     rejection_reason?: string;
     rejection_message?: string;
   } | null;
@@ -37,24 +38,35 @@ export function checkEmailVerification(user: User | null): boolean {
 
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
-  return sessionStorage.getItem("auth_token") || localStorage.getItem("auth_token");
+  
+  let token = sessionStorage.getItem("auth_token");
+  if (!token) {
+    token = localStorage.getItem("auth_token");
+    if (token) {
+      // Sync it to sessionStorage for this tab/session to insulate it from changes in other tabs
+      sessionStorage.setItem("auth_token", token);
+    }
+  }
+  return token;
 }
 
 export function setAuthToken(token: string, remember: boolean = false): void {
   if (typeof window === "undefined") return;
+  
+  // We ALWAYS set sessionStorage so the current tab has a stable, tab-isolated session
+  sessionStorage.setItem("auth_token", token);
+  
   if (remember) {
     localStorage.setItem("auth_token", token);
-    sessionStorage.removeItem("auth_token");
   } else {
-    sessionStorage.setItem("auth_token", token);
     localStorage.removeItem("auth_token");
   }
 }
 
 export function clearAuthToken(): void {
   if (typeof window === "undefined") return;
-  sessionStorage.removeItem("auth_token");
-  localStorage.removeItem("auth_token");
+  sessionStorage.clear();
+  localStorage.clear();
   // Also clear any lingering cookies from the previous implementation
   document.cookie = "auth_token=; path=/; max-age=0";
 }
