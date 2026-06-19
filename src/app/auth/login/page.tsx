@@ -130,6 +130,7 @@ function LoginForm() {
           {error === "oauth_failed" && "OAuth authentication was rejected or expired."}
           {error === "account_suspended" && "Your resident account has been suspended by moderation."}
           {error === "invalid_callback" && "Authentication sequence aborted due to invalid callback payload."}
+          {error === "email_required" && "An email address is required to authenticate. Please check your social media profile permissions."}
         </div>
       )}
 
