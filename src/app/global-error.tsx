@@ -2,13 +2,6 @@
 
 import React from "react";
 
-export const dynamic = "force-dynamic";
-
-/**
- * Root Error Boundary for Next.js App Router.
- * Replaces the entire root layout in case of fatal layout errors.
- * Explicitly defines HTML and body tags and operates independently of theme contexts.
- */
 export default function GlobalError({
   error,
   reset,
@@ -18,19 +11,16 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-slate-50 text-slate-900 font-sans">
-        <div className="max-w-md space-y-4">
-          <span className="text-4xl">⚠️</span>
-          <div className="space-y-1.5">
-            <h2 className="text-lg font-bold tracking-tight">Something went wrong</h2>
-            <p className="text-xs font-light text-slate-500 leading-relaxed">
-              An unexpected system error occurred while rendering the portal. 
-              Please reload or contact Bahria society support.
-            </p>
-          </div>
+      <body className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="max-w-md bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-2xl p-8 space-y-6 shadow-sm">
+          <div className="text-4xl">⚠️</div>
+          <h2 className="text-xl font-bold tracking-tight">Something went wrong</h2>
+          <p className="text-sm font-light text-slate-500 dark:text-zinc-400">
+            An unexpected error occurred. Please try reloading the page.
+          </p>
           <button
             onClick={() => reset()}
-            className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all active:scale-[0.98]"
+            className="w-full py-2.5 px-4 text-xs font-semibold rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all"
           >
             Try Again
           </button>
