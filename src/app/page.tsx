@@ -1062,8 +1062,8 @@ export default function Home() {
                         ) : (
                           <div className="space-y-3">
                             <span className="block text-2xl">📄</span>
-                            <p className="text-xs font-semibold text-slate-700 dark:text-zinc-300">Drag & drop Registry scans or Utility Bills here</p>
-                            <span className="block text-[10px] text-slate-400 dark:text-zinc-555">PDF, PNG, JPG accepted (Private & served securely via temp URLs)</span>
+                            <p className="text-xs font-semibold text-slate-700 dark:text-zinc-300">Drag & drop Electricity Bill or Maintenance Bill here</p>
+                            <span className="block text-[10px] text-slate-400 dark:text-zinc-500">PDF, PNG, JPG, or JPEG accepted. Note: This document will be permanently deleted once your residency status is approved or rejected.</span>
                           </div>
                         )}
                       </div>
