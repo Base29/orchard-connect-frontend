@@ -206,14 +206,15 @@ export default function DashboardLayout({
                     <>
                       <strong>Residency Profile Rejected</strong> (Reason: {formatRejectionReason(profile?.rejection_reason)}). 
                       {profile?.rejection_message && <span className="italic"> "{profile.rejection_message}"</span>}
+                      {" "}Please upload your latest Electricity Bill or Maintenance Bill (PDF, PNG, JPG, or JPEG format). Note: This document will be permanently deleted once your residency status is approved or rejected.
                     </>
                   ) : !hasDocument ? (
                     <>
-                      <strong>Read-Only Guest State</strong> — Please upload a utility bill or tenancy agreement to verify your residency and unlock all features.
+                      <strong>Read-Only Guest State</strong> — Please upload your latest official Bahria Electricity Bill or Maintenance Bill (PDF, PNG, JPG, or JPEG format) to verify your residency and unlock all features. Note: This document will be permanently deleted once your residency status is approved or rejected.
                     </>
                   ) : (
                     <>
-                      <strong>Read-Only Guest State</strong> — Your proof documents are pending review. Interactions are restricted.
+                      <strong>Read-Only Guest State</strong> — Your proof documents are pending review. Interactions are restricted. Note: This document will be permanently deleted once your residency status is approved or rejected.
                     </>
                   )}
                 </p>
