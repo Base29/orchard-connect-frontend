@@ -229,7 +229,7 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="sm:relative" ref={dropdownRef}>
       {/* Bell Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -259,7 +259,7 @@ export default function NotificationBell({ currentUser }: NotificationBellProps)
 
       {/* Popover Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2.5 w-80 sm:w-96 max-h-[480px] bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-850 rounded-2xl shadow-xl z-50 flex flex-col overflow-hidden animate-slide-up transition-all duration-200">
+        <div className="absolute right-4 left-4 sm:right-0 sm:left-auto top-full mt-2.5 w-auto sm:w-96 max-h-[480px] bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-850 rounded-2xl shadow-xl z-50 flex flex-col overflow-hidden animate-slide-up transition-all duration-200">
           {/* Header */}
           <div className="px-5 py-4 border-b border-neutral-100 dark:border-zinc-850 flex items-center justify-between">
             <div className="flex items-center gap-2">

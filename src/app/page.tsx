@@ -462,7 +462,7 @@ export default function Home() {
             </div>
 
             {/* Notification Bell with simulated dropdown */}
-            <div className="relative">
+            <div className="sm:relative">
               <button
                 onClick={() => setNotificationBellOpen(!notificationBellOpen)}
                 className="relative p-2 rounded-xl border border-slate-200/80 dark:border-zinc-800/80 hover:bg-slate-100 dark:hover:bg-zinc-900/50 text-slate-600 dark:text-zinc-400 transition-all active:scale-95 cursor-pointer"
@@ -480,7 +480,7 @@ export default function Home() {
 
               {/* Notification dropdown simulator */}
               {notificationBellOpen && (
-                <div className="absolute right-0 mt-3 w-80 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 shadow-xl z-50">
+                <div className="absolute right-4 left-4 sm:right-0 sm:left-auto top-full mt-3 w-auto sm:w-80 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 shadow-xl z-50">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-900">
                     <span className="font-bold text-xs uppercase tracking-wider text-slate-400 dark:text-zinc-505">
                       Notifications Hub
@@ -630,7 +630,7 @@ export default function Home() {
             {/* Call to action */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
               <a
-                href="/auth/register"
+                href="/auth/login"
                 className="flex items-center justify-center px-8 py-4 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-neutral-100 font-bold rounded-full shadow-lg shadow-slate-950/10 active:scale-95 transition-all text-sm text-center cursor-pointer"
               >
                 Register For Verification
@@ -1733,7 +1733,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
               <a
-                href="/auth/register"
+                href="/auth/login"
                 className="w-full sm:w-auto px-8 py-3.5 bg-white text-emerald-800 font-bold rounded-full text-xs uppercase tracking-wider hover:bg-neutral-100 active:scale-95 transition-all text-center cursor-pointer"
               >
                 Get Verified Access
