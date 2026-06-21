@@ -41,7 +41,11 @@ const PHASE_BLOCKS: Record<string, string[]> = {
     "Block F",
     "Block G",
     "Block H",
-    "Block J"
+    "Block J",
+    "Block K",
+    "Block L",
+    "Block M",
+    "Block N"
   ],
   "Phase 3": [],
   "Phase 4": [

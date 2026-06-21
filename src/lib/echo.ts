@@ -124,7 +124,15 @@ export function getEcho(dynamicKey?: string): any {
   if (echoInstance.connector && echoInstance.connector.pusher) {
     const conn = echoInstance.connector.pusher.connection;
     conn.bind("error", (err: any) => {
-      console.error("[Reverb] Connection error:", err);
+      // Code 1006 is a standard websocket abnormal closure (e.g. connection lost/stale prune),
+      // which pusher-js automatically handles and attempts to reconnect.
+      // We log it as a warning/info to avoid triggering Next.js error overlays or cluttering console.
+      const code = err?.data?.code;
+      if (code === 1006) {
+        console.warn("[Reverb] Connection closed abnormally (reconnecting...):", err);
+      } else {
+        console.error("[Reverb] Connection error:", err);
+      }
     });
     conn.bind("connected", () => {
       console.log("[Reverb] Socket successfully connected and online!");

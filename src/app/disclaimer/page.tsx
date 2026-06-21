@@ -49,6 +49,7 @@ export default function DisclaimerPage() {
       "social-feed",
       "marketplace",
       "support",
+      "privacy-guarantee",
       "infrastructure",
       "contact"
     ];
@@ -91,7 +92,8 @@ export default function DisclaimerPage() {
     { id: "social-feed", label: "2. Social Feed Liability" },
     { id: "marketplace", label: "3. Marketplace Disclaimer" },
     { id: "support", label: "4. Complaints & Support" },
-    { id: "infrastructure", label: "5. Data Infrastructure" },
+    { id: "privacy-guarantee", label: "5. Privacy Guarantee" },
+    { id: "infrastructure", label: "6. Data Infrastructure" },
     { id: "contact", label: "Contact and Support" }
   ];
 
@@ -157,7 +159,7 @@ export default function DisclaimerPage() {
             Platform Disclaimer
           </h1>
           <p className="text-sm md:text-base text-slate-505 dark:text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Please read this disclaimer carefully before using Orchard Connect. By accessing our hyper-local network, social feed, and community tools, you acknowledge the legal boundaries and limitations of liability.
+            Please read this disclaimer carefully before using Orchard Connect. By accessing our hyper-local network, social feed, and community tools, you acknowledge the legal boundaries, liability limits, and data privacy safeguards.
           </p>
           <div className="mt-6 text-xs text-slate-400 dark:text-zinc-555 font-mono">
             EFFECTIVE DATE: JUNE 14, 2026 | DOMAIN: ORCHARDCONNECT.PK
@@ -199,12 +201,12 @@ export default function DisclaimerPage() {
             {/* Introduction */}
             <section id="introduction" className="space-y-4 scroll-mt-24">
               <p className="text-base text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                Please read this Disclaimer carefully before using <strong className="font-semibold text-slate-900 dark:text-white">Orchard Connect</strong> (&ldquo;the platform&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;). By accessing or using our hyper-local network, social feed, and community tools, you acknowledge and agree to the legal boundaries and limitations of liability outlined below.
+                Please read this Disclaimer carefully before using <strong className="font-semibold text-slate-900 dark:text-white">Orchard Connect</strong> (&ldquo;the platform&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;). By accessing or using our hyper-local network, social feed, and community tools, you acknowledge and agree to the legal boundaries, liability limits, and data privacy safeguards outlined below.
               </p>
               
               <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-amber-900 dark:text-amber-200/90 text-sm space-y-2">
                 <span className="font-bold flex items-center gap-1.5 uppercase tracking-wider text-xs text-amber-700 dark:text-amber-400">
-                  ⚠️ IMPORTANT CIVIC NOTICE
+                  ⚠️ NO OFFICIAL CORPORATE AFFILIATION
                 </span>
                 <p className="leading-relaxed font-light">
                   Orchard Connect is an independent, community-driven digital initiative. This platform is <strong>NOT</strong> officially affiliated with, endorsed by, authorized by, or in any way connected to the main corporate housing developers or the official management office of <strong>Bahria Orchard</strong>. All corporate trademarks and registered names belong to their respective legal owners.
@@ -222,12 +224,16 @@ export default function DisclaimerPage() {
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
                 Orchard Connect functions as a decentralized, independent community information hub and neighborhood social network for residents of Bahria Orchard. All community news, utility notifications, maintenance alerts, and directories published on the platform are provided for general informational purposes only.
               </p>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                While we strive to maintain accuracy, we do not guarantee the completeness, reliability, or real-time validity of any official or unofficial notices posted by platform administrators or moderators.
-              </p>
-              <div className="p-4 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400">
-                <strong>Recommendation:</strong> Users are advised to independently verify critical utility or administrative announcements with official management channels before taking action.
-              </div>
+              <ul className="space-y-3">
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>While we strive to maintain accuracy, we do not guarantee the completeness, reliability, or real-time validity of any official or unofficial notices posted by platform administrators or moderators.</span>
+                </li>
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>Users are advised to independently verify critical utility or administrative announcements with official management channels before taking action.</span>
+                </li>
+              </ul>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
@@ -240,12 +246,16 @@ export default function DisclaimerPage() {
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
                 The platform features an active, real-time social interaction ecosystem powered entirely by user-generated content.
               </p>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                The views, opinions, discussions, comments, and posts actively published by registered users are strictly those of the individual authors and do not reflect the stance, beliefs, or corporate policies of the Orchard Connect administration or management team.
-              </p>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                We assume zero liability or responsibility for offensive, incorrect, defamatory, or deceptive user-generated text or media. However, our active moderation team maintains the right to flag, archive, or remove content that violates local neighborhood guidelines.
-              </p>
+              <ul className="space-y-3">
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>The views, opinions, discussions, comments, and posts actively published by registered users are strictly those of the individual authors and do not reflect the stance, beliefs, or corporate policies of the Orchard Connect administration or management team.</span>
+                </li>
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>We assume zero liability or responsibility for offensive, incorrect, defamatory, or deceptive user-generated text or media. However, our active moderation team maintains the right to flag, archive, or remove content that violates local neighborhood guidelines.</span>
+                </li>
+              </ul>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
@@ -292,24 +302,53 @@ export default function DisclaimerPage() {
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
                 Our anonymous complaint forms and support tracking modules are built to offer a friction-free communication route for resolving shared community concerns.
               </p>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                While our support staff routes submitted tickets to specific backend channels for attention, the submission of a support ticket does not guarantee an immediate resolution, nor does it obligate the portal administration to execute physical structural repairs, civil adjustments, or legal interventions.
-              </p>
+              <ul className="space-y-3">
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>While our support staff routes submitted tickets to specific backend channels for attention, the submission of a support ticket does not guarantee an immediate resolution, nor does it obligate the portal administration to execute physical structural repairs, civil adjustments, or legal interventions.</span>
+                </li>
+              </ul>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 5. Third-Party Services and Data Infrastructure */}
+            {/* 5. Strict Data Privacy and Non-Commercialization Guarantee */}
+            <section id="privacy-guarantee" className="space-y-4 scroll-mt-24">
+              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                <span className="text-emerald-500">5.</span> Strict Data Privacy and Non-Commercialization Guarantee
+              </h2>
+              <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 dark:bg-emerald-950/10 text-slate-700 dark:text-zinc-300 text-sm space-y-3 shadow-sm">
+                <span className="font-bold flex items-center gap-2 uppercase tracking-wider text-xs text-emerald-700 dark:text-emerald-400">
+                  <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Strict Data Privacy and Non-Commercialization Guarantee
+                </span>
+                <p className="leading-relaxed font-light text-slate-700 dark:text-zinc-300">
+                  We are committed to maintaining Orchard Connect as a secure and trusted sanctuary for our neighbors. Orchard Connect will <strong className="font-semibold text-slate-950 dark:text-white">never sell, trade, rent, lease, disclose, or distribute</strong> any information about our residents—including verification records, address structures, contact details, or activity profiles—to any third party for commercial, advertising, promotional, marketing, or personal use.
+                </p>
+                <p className="leading-relaxed font-light text-slate-700 dark:text-zinc-300">
+                  All collected onboarding indicators remain highly isolated and are used strictly within our decoupled infrastructure to protect neighborhood integrity and cross-reference physical residency.
+                </p>
+              </div>
+            </section>
+
+            <hr className="border-slate-200/60 dark:border-zinc-900" />
+
+            {/* 6. Third-Party Services and Data Infrastructure */}
             <section id="infrastructure" className="space-y-4 scroll-mt-24">
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="text-emerald-500">5.</span> Third-Party Services and Data Infrastructure
+                <span className="text-emerald-500">6.</span> Third-Party Services and Data Infrastructure
               </h2>
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
                 Our technical framework communicates with premium external providers (including Supabase for database security, AWS S3 for asset delivery, and Resend/SendGrid for email routing).
               </p>
-              <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                We are not liable for any temporary platform downtime, third-party server interruptions, security breaches originating at the vendor level, or network delays caused by technical outages originating from these cloud infrastructure providers.
-              </p>
+              <ul className="space-y-3">
+                <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>We are not liable for any temporary platform downtime, third-party server interruptions, security breaches originating at the vendor level, or network delays caused by technical outages originating from these cloud infrastructure providers.</span>
+                </li>
+              </ul>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
@@ -320,7 +359,7 @@ export default function DisclaimerPage() {
                 Contact and Support
               </h2>
               <p className="text-sm text-slate-600 dark:text-zinc-300 leading-relaxed font-light">
-                If you have any questions regarding this Legal Disclaimer, or wish to report a violation of community guidelines within the marketplace or social feed, please submit a query via the{" "}
+                If you have any questions regarding this Legal Disclaimer, data protection protocols, or wish to report a violation of community guidelines within the marketplace or social feed, please submit a query via the{" "}
                 <Link href="/support" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">
                   Contact Support
                 </Link>{" "}
