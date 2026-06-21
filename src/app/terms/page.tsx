@@ -286,7 +286,7 @@ export default function TermsOfServicePage() {
                   </div>
                 </div>
 
-                {/* Auto-Purge Policy Callout Box */}
+                {/* Instant-Purge Policy Callout Box */}
                 <div className="relative p-6 md:p-8 rounded-3xl bg-gradient-to-tr from-emerald-500/10 to-teal-500/5 border border-emerald-500/20 dark:border-emerald-500/10 overflow-hidden">
                   <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl" />
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -295,13 +295,13 @@ export default function TermsOfServicePage() {
                     </div>
                     <div className="space-y-2">
                       <h4 className="font-bold text-sm text-slate-800 dark:text-zinc-100">
-                        Data Security & The 30-Day Auto-Purge Policy
+                        Data Security & The Instant-Purge Policy
                       </h4>
                       <p className="text-xs text-slate-600 dark:text-zinc-350 leading-relaxed font-light">
-                        Orchard Connect does not hoard your sensitive, private physical documents. In accordance with our localized data minimization standards, the moment an authorized Administrator marks a resident&apos;s onboarding request as <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, a background cron process is permanently triggered.
+                        Orchard Connect does not hoard your sensitive, private physical documents. In accordance with our localized data minimization standards, the moment an authorized Community Admin reviews your application and explicitly updates your profile status to either <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, an automated background webhook is instantly executed.
                       </p>
                       <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                        The original uploaded bill file is completely and irreversibly purged from our private, encrypted storage buckets <strong>within thirty (30) days</strong>. Only the structured address layout remains linked to your account profile to maintain platform integrity and prevent duplicate plot claims.
+                        This runtime action immediately and permanently deletes the original verification file (PDF or image) from our private, encrypted cloud storage bucket. No residual data trail or orphaned documentation is left on our cloud layers. Only your normalized, verified address structure (Phase, Block, Street, and House/Plot Number) remains pinned to your resident account to ensure platform mapping validity and prevent fraudulent duplicate plot claims.
                       </p>
                     </div>
                   </div>

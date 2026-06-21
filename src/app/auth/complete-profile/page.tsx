@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/api";
+import PolicyAgreementModal from "@/components/PolicyAgreementModal";
 
 type VerificationStatus = "pending" | "approved" | "rejected" | null;
 
@@ -68,6 +69,7 @@ export default function CompleteProfilePage() {
   const [isLocked, setIsLocked] = useState(false);
   const [rejectionsCount, setRejectionsCount] = useState(0);
   const [previousProfile, setPreviousProfile] = useState<UserProfile["resident_profile"]>(null);
+  const [user, setUser] = useState<any | null>(null);
 
   // Form fields state
   const [phase, setPhase] = useState("Phase 1");
@@ -88,6 +90,7 @@ export default function CompleteProfilePage() {
         const response = await apiRequest("/api/user");
         if (response.ok) {
           const data = await response.json();
+          setUser(data.user);
           setIsLocked(data.is_locked);
           setRejectionsCount(data.rejections_count || 0);
 
@@ -123,6 +126,13 @@ export default function CompleteProfilePage() {
     }
 
     loadUserStatus();
+
+    const handleRefreshUser = () => loadUserStatus();
+    window.addEventListener("refresh-user-session", handleRefreshUser);
+
+    return () => {
+      window.removeEventListener("refresh-user-session", handleRefreshUser);
+    };
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -387,7 +397,7 @@ export default function CompleteProfilePage() {
           </>
         )}
       </div>
-
+      <PolicyAgreementModal user={user} />
     </div>
   );
 }

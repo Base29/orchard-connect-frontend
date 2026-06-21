@@ -47,7 +47,7 @@ export default function DataDeletionPolicyPage() {
       "introduction",
       "right-to-delete",
       "content-purge",
-      "auto-purge",
+      "instant-purge",
       "visitor-tickets",
       "oauth-deletion",
       "policy-updates",
@@ -90,7 +90,7 @@ export default function DataDeletionPolicyPage() {
     { id: "introduction", label: "Introduction" },
     { id: "right-to-delete", label: "1. Right to Delete & Account Erasure" },
     { id: "content-purge", label: "2. Interactive & Public Content" },
-    { id: "auto-purge", label: "3. 30-Day Auto-Purge" },
+    { id: "instant-purge", label: "3. Instant Document Purge" },
     { id: "visitor-tickets", label: "4. Visitor Support Tickets" },
     { id: "oauth-deletion", label: "5. Third-Party OAuth Deletion" },
     { id: "policy-updates", label: "6. Policy Updates" },
@@ -305,14 +305,14 @@ export default function DataDeletionPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 3. Automated 30-Day Document Auto-Purge Policy */}
-            <section id="auto-purge" className="space-y-6 scroll-mt-24">
+            {/* 3. Automated Instant Document Purge Policy */}
+            <section id="instant-purge" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                  <span className="text-emerald-500">3.</span> Automated 30-Day Document Auto-Purge Policy
+                  <span className="text-emerald-500">3.</span> Automated Instant Document Purge Policy
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
-                  To protect structural data privacy and maintain a highly secure space free from unnecessary data footprints, we enforce an aggressive auto-purge policy for high-sensitivity onboarding documents.
+                  To protect structural data privacy and maintain a highly secure space free from unnecessary data footprints, we enforce an absolute zero-retention policy for high-sensitivity onboarding documents once audited.
                 </p>
               </div>
 
@@ -324,13 +324,13 @@ export default function DataDeletionPolicyPage() {
                   </div>
                   <div className="space-y-2">
                     <h3 className="font-bold text-base text-slate-800 dark:text-zinc-100">
-                      The Retention Rule & Purge Mechanism
+                      The Zero-Retention Rule & Instant Purge Mechanism
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-zinc-350 leading-relaxed font-light">
-                      During resident onboarding, you upload a digital copy of your <strong>Bahria Electricity Bill</strong> or <strong>Maintenance Bill</strong> to verify physical residency. The moment an authorized Community Admin audits your document and marks your profile status as either &quot;Approved&quot; or &quot;Rejected,&quot; a background cron job is triggered.
+                      During resident onboarding, you upload a digital copy of your <strong>Bahria Electricity Bill</strong> or <strong>Maintenance Bill</strong> to verify physical residency. We do not store or retain these structural assets long-term. The exact moment an authorized Community Admin reviews your application and explicitly updates your profile status to either &quot;Approved&quot; or &quot;Rejected&quot;, an automated background webhook is instantly executed.
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light pt-1">
-                      The original verification file (PDF or image) stored inside our private, encrypted cloud bucket is <strong>automatically and permanently deleted within 30 days</strong>. Only your normalized, structured address layout (Phase, Block, Street, House/Plot Number) remains attached to your profile to prevent duplicate plot claims and maintain platform integrity.
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
+                      This runtime action immediately and permanently deletes the original verification file (PDF or image) from our private, encrypted cloud storage bucket. No residual data trail or orphaned documentation is left on our cloud layers. Only your normalized, verified address structure (Phase, Block, Street, and House/Plot Number) remains pinned to your resident account to ensure platform mapping validity and prevent fraudulent duplicate plot claims.
                     </p>
                   </div>
                 </div>

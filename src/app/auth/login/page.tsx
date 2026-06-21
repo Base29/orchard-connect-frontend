@@ -33,6 +33,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
+  const [policiesAccepted, setPoliciesAccepted] = useState(false);
 
   const handleOAuthRedirect = (provider: "google" | "facebook") => {
     if (typeof window !== "undefined") {
@@ -51,7 +52,7 @@ function LoginForm() {
     try {
       const payload = mode === "login"
         ? { email, password }
-        : { name, email, password, password_confirmation: passwordConfirmation };
+        : { name, email, password, password_confirmation: passwordConfirmation, policies_accepted: policiesAccepted };
 
       const res = await fetch(`${baseUrl}${endpoint}`, {
         method: "POST",
@@ -257,9 +258,40 @@ function LoginForm() {
           </label>
         </div>
 
+        {mode === "register" && (
+          <div className="flex items-start gap-2.5 py-2 animate-fadeIn">
+            <input
+              id="policiesAccepted"
+              type="checkbox"
+              checked={policiesAccepted}
+              onChange={(e) => setPoliciesAccepted(e.target.checked)}
+              className="w-4 h-4 mt-0.5 rounded border-neutral-200 dark:border-zinc-800 text-emerald-500 focus:ring-emerald-500 accent-emerald-500 cursor-pointer"
+            />
+            <label htmlFor="policiesAccepted" className="text-xs text-slate-550 dark:text-zinc-400 select-none cursor-pointer font-medium leading-relaxed">
+              I agree to the{" "}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
+                Terms of Service
+              </a>
+              ,{" "}
+              <a href="/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
+                Privacy Policy
+              </a>
+              ,{" "}
+              <a href="/data-deletion" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
+                Data Deletion Policy
+              </a>
+              , and{" "}
+              <a href="/guidelines" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
+                Community Rules
+              </a>
+              .
+            </label>
+          </div>
+        )}
+
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || (mode === "register" && !policiesAccepted)}
           className="w-full py-3.5 mt-4 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-black font-bold text-sm hover:opacity-90 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
         >
           {loading ? (

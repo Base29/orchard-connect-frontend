@@ -92,7 +92,7 @@ export default function PrivacyPolicyPage() {
     { id: "introduction", label: "Introduction" },
     { id: "info-collect", label: "1. Information We Collect" },
     { id: "data-protection", label: "2. Data Protection & Security" },
-    { id: "auto-purge", label: "3. 30-Day Auto-Purge" },
+    { id: "auto-purge", label: "3. The Instant-Purge Policy" },
     { id: "role-isolation", label: "4. Role-Based Access" },
     { id: "spam-protection", label: "5. Spam & Bot Protection" },
     { id: "third-party", label: "6. Third-Party Services" },
@@ -166,7 +166,7 @@ export default function PrivacyPolicyPage() {
             Welcome to Orchard Connect (orchardconnect.pk). Learn how we collect, protect, utilize, and eventually purge your information to build a trusted community space.
           </p>
           <div className="mt-6 text-xs text-slate-400 dark:text-zinc-555 font-mono">
-            EFFECTIVE DATE: JUNE 14, 2026
+            EFFECTIVE DATE: JUNE 22, 2026
           </div>
         </div>
       </section>
@@ -232,10 +232,10 @@ export default function PrivacyPolicyPage() {
                   </div>
                   <div className="pl-8 space-y-2 text-xs text-slate-600 dark:text-zinc-400">
                     <p>
-                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Authentication Data:</strong> When you register or log in using social networks (Google or Facebook), we securely receive your authenticated name, email address, and profile token via Laravel Sanctum.
+                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Authentication Data:</strong> When you register or log in using social networks (Google or Facebook), we securely receive your authenticated profile credentials (such as your name and email address) via standard secure authentication protocols.
                     </p>
                     <p>
-                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose:</strong> To verify your identity, prevent ghost accounts, and manage your active session securely.
+                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose:</strong> To verify your identity, prevent ghost accounts, and manage your active web sessions safely.
                     </p>
                   </div>
                 </div>
@@ -252,10 +252,10 @@ export default function PrivacyPolicyPage() {
                     </p>
                     <ul className="list-disc pl-4 space-y-1 mb-2">
                       <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Structured Address Fields:</strong> Phase, Block, Street, and House/Plot Number.</li>
-                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Verification Document:</strong> A digital upload (PDF or image) of your latest official Bahria Electricity Bill or Maintenance Bill.</li>
+                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Verification Document:</strong> A digital upload (PDF or image) of your latest official Bahria Electricity Bill or Maintenance Bill. Users are explicitly required to upload a redacted form of this bill; all sensitive, non-residential information (such as financial totals, consumption metrics, or bank details) should be covered or blacked out, leaving only the house/street address clearly visible for processing.</li>
                     </ul>
                     <p>
-                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose:</strong> To cross-reference physical residency and protect the community from trolls, scammers, or outsiders.
+                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose:</strong> To cross-reference physical residency and protect the community from malicious entities, scammers, or outsiders.
                     </p>
                   </div>
                 </div>
@@ -272,10 +272,10 @@ export default function PrivacyPolicyPage() {
                         <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Social Feed & News:</strong> Posts, comments, and poll responses you actively publish.
                       </li>
                       <li>
-                        <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Marketplace Listings:</strong> Titles, descriptions, prices, item images, and the contact phone/WhatsApp link you choose to provide.
+                        <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Marketplace Listings:</strong> Titles, descriptions, prices, item images, and the contact phone or third-party links you explicitly choose to provide.
                       </li>
                       <li>
-                        <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Support Tickets & Complaints:</strong> Information submitted via anonymous complaint forms or the &quot;Contact Support&quot; module (including names, emails, and attached photo evidence).
+                        <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Support Tickets & Complaints:</strong> Information submitted via anonymous complaint forms or the contact modules (including names, emails, and attached photo evidence).
                       </li>
                     </ul>
                   </div>
@@ -293,7 +293,7 @@ export default function PrivacyPolicyPage() {
                   <span className="text-emerald-500">2.</span> How Your Data is Protected & Secured
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
-                  We treat your personal and residency details with high-end, industry-standard cloud security infrastructure:
+                  We treat your personal and residency details with standard enterprise cloud security practices:
                 </p>
               </div>
 
@@ -301,25 +301,25 @@ export default function PrivacyPolicyPage() {
                 
                 <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-3">
                   <div className="text-xl">🗄️</div>
-                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Secure Infrastructure</h3>
+                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Secure Infrastructure & Encryption</h3>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
-                    Our data layer is powered by Supabase (PostgreSQL). All uploaded verification documents are stored in a private, encrypted storage bucket shielded by strict Row-Level Security (RLS).
+                    All platform data layers are secured using encrypted storage and monitored communication links. Uploaded verification documents are stored in private, isolated cloud storage buckets shielded by strict user access policies.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-3">
                   <div className="text-xl">🔒</div>
-                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Strict Access Control</h3>
+                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Access Control</h3>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
-                    Uploaded utility/maintenance bills are completely hidden from the public. Only the uploading resident and authorized internal staff can view documents via temporary, expiring signed links.
+                    Your uploaded utility or maintenance bills are completely hidden from the public. Only the uploading resident and authorized community administrators can access these documents via temporary, expiring secure links.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-3">
                   <div className="text-xl">🧼</div>
-                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Metadata Sanitization</h3>
+                  <h3 className="font-extrabold text-xs text-slate-800 dark:text-zinc-200 uppercase tracking-wider">Sanitization</h3>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
-                    To protect your structural data privacy, all uploaded media files have their original metadata stripped and are automatically renamed to randomized UUID strings upon upload.
+                    To protect your structural data privacy, all uploaded media files have their original metadata stripped and are automatically renamed to randomized identifier strings upon system ingestion.
                   </p>
                 </div>
 
@@ -328,14 +328,14 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 3. The 30-Day Auto-Purge Policy */}
+            {/* 3. The Instant-Purge Policy */}
             <section id="auto-purge" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                  <span className="text-emerald-500">3.</span> The 30-Day Auto-Purge Policy
+                  <span className="text-emerald-500">3.</span> The Instant-Purge Policy
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
-                  We do not believe in hoarding your private documents. This policy ensures your uploaded files do not live on our cloud indefinitely.
+                  We do not believe in retaining your sensitive private documentation longer than absolutely necessary.
                 </p>
               </div>
 
@@ -343,17 +343,17 @@ export default function PrivacyPolicyPage() {
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl" />
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="p-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl text-2xl flex-shrink-0">
-                    ⏱️
+                    ⚡
                   </div>
                   <div className="space-y-2">
                     <h3 className="font-bold text-base text-slate-800 dark:text-zinc-100">
-                      The Retention Rule & Automatic Purging
+                      The Instant Retention Rule
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-zinc-350 leading-relaxed font-light">
-                      Once an authorized Community Admin reviews your uploaded electricity or maintenance bill and marks your profile status as <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, a background process is triggered. The original uploaded document file is automatically and permanently purged from our secure cloud storage <strong>within 30 days</strong>.
+                      As soon as an authorized administrator reviews your uploaded redacted utility or maintenance bill and formally updates your residency status to either <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, an automated system trigger is executed. The original proof of residency document is instantly and permanently deleted from our secure cloud storage environment.
                     </p>
                     <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                      Only your structured, verified address layout (Phase, Block, Street, Plot) remains linked to your profile to preserve platform integrity and prevent duplicate plot claims.
+                      Only your structured address schema (Phase, Block, Street, Plot) remains mapped to your profile metadata to enforce platform integrity and prevent duplicate plot claims.
                     </p>
                   </div>
                 </div>
@@ -362,31 +362,31 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 4. Role-Based Data Isolation (Who Sees What?) */}
+            {/* 4. Role-Based Data Isolation */}
             <section id="role-isolation" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
                   <span className="text-emerald-500">4.</span> Role-Based Data Isolation
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
-                  Our platform enforces strict Role-Based Access Control (RBAC) to isolate sensitive resident files from unauthorized team roles:
+                  Our platform enforces strict access boundaries to ensure your information is handled only by team members who absolutely require it:
                 </p>
               </div>
 
               {/* Grid showing roles comparison */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {/* Moderator */}
+                {/* Moderators */}
                 <div className="p-6 bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 rounded-2xl space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-400 dark:text-zinc-500">ROLE 1</span>
                     <span className="text-[10px] uppercase font-bold text-red-500 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">
-                      Feed Only
+                      Moderation
                     </span>
                   </div>
-                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Content Moderators</h3>
+                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Content & Marketplace Moderators</h3>
                   <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    Personnel assigned to monitor the public social feed or approve buy/sell listings. They <strong>cannot</strong> access or view your private residential verification documents or sensitive support tickets.
+                    Personnel assigned to monitor the public social feed or approve marketplace listings cannot access or view your private residential verification documents or sensitive support tickets.
                   </p>
                 </div>
 
@@ -398,13 +398,13 @@ export default function PrivacyPolicyPage() {
                       Verifier
                     </span>
                   </div>
-                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Community Admins</h3>
+                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Community Administrators</h3>
                   <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    Trusted high-level local administrators. They hold explicit permission and authorization keys to audit onboarding documents and approve residency verification requests.
+                    Only trusted high-level administration accounts possess the authorized clearance to audit onboarding address proofs.
                   </p>
                 </div>
 
-                {/* Superadmin */}
+                {/* Technical Operations */}
                 <div className="p-6 bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 rounded-2xl space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-400 dark:text-zinc-500">ROLE 3</span>
@@ -412,9 +412,9 @@ export default function PrivacyPolicyPage() {
                       System Logs
                     </span>
                   </div>
-                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Superadmins</h3>
+                  <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Technical Operations</h3>
                   <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    Technical platform administrators. They maintain system logs but do not participate in everyday document viewing unless resolving escalated, complex disputes.
+                    System administrators maintain platform operational logs but do not participate in day-to-day document verification loops.
                   </p>
                 </div>
 
@@ -429,7 +429,7 @@ export default function PrivacyPolicyPage() {
                 <span className="text-emerald-500">5.</span> Spam and Bot Protection
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                To maintain a clean and lightweight user experience, our public interaction portals (such as anonymous complaints or pre-signup footer support links) utilize security features like rate-limiting throttles and hidden honeypot fields. These mechanisms detect and silently discard automated script abuse, keeping our administration queues free of malicious spam.
+                To maintain a clean and lightweight user experience, our public interaction portals (such as anonymous complaints or support forms) utilize security features like rate-limiting throttles and hidden honeypot fields. These mechanisms detect and silently discard automated script abuse, keeping our administration queues free of malicious spam.
               </p>
             </section>
 
@@ -442,37 +442,41 @@ export default function PrivacyPolicyPage() {
                   <span className="text-emerald-500">6.</span> Third-Party Services
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
-                  We partner with specific trusted cloud services to run the platform efficiently. We do <strong>not</strong> sell, trade, or rent your personal resident data to third-party advertisers or corporate entities.
+                  We partner with specific trusted cloud providers to run the platform efficiently:
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 <div className="p-5 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2">
-                  <div className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase">Database & Storage</div>
-                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Supabase / AWS S3</h3>
+                  <div className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase">Database & Hosting</div>
+                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Managed Database & Hosting Providers</h3>
                   <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                    For managed database hosting, PostgreSQL indexing, performance optimization, and content delivery (CDN).
+                    For system availability, security architecture, and fast asset content delivery (CDN).
                   </p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2">
                   <div className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase">System Emails</div>
-                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Resend / SendGrid</h3>
+                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Transactional Email Services</h3>
                   <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                    For executing transactional emails (sending support tracking numbers or secure verification links directly to your inbox).
+                    For executing notification emails (such as sending automated support tracking numbers or secure account links directly to your inbox).
                   </p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2">
                   <div className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase">Social Identity</div>
-                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Google & Facebook OAuth</h3>
+                  <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-100">Social Auth Providers</h3>
                   <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                    For providing seamless, single-click social login flows to register or sign in safely.
+                    For providing seamless, single-click social login mechanisms.
                   </p>
                 </div>
 
               </div>
+
+              <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
+                We do not sell, trade, or rent your personal resident data to third-party advertisers or corporate entities.
+              </p>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
@@ -487,10 +491,10 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-disc pl-5 space-y-3 text-xs text-slate-600 dark:text-zinc-400">
                 <li>
-                  <strong className="text-slate-800 dark:text-zinc-200 font-semibold">Correction:</strong> You can modify your active marketplace listings or re-submit updated documents if your verification is marked unsuccessful.
+                  <strong className="text-slate-805 dark:text-zinc-200 font-semibold">Correction:</strong> You can modify your market listings or re-submit updated documents if your verification is marked unsuccessful.
                 </li>
                 <li>
-                  <strong className="text-slate-805 dark:text-zinc-200 font-semibold">Account Deletion:</strong> You can request the total removal of your profile and historical data from the network by contacting our portal support desk.
+                  <strong className="text-slate-805 dark:text-zinc-200 font-semibold">Account Deletion:</strong> You can request the total removal of your profile and historical data from the network by contacting the platform administration desk.
                 </li>
               </ul>
             </section>
@@ -503,7 +507,7 @@ export default function PrivacyPolicyPage() {
                 <span className="text-emerald-500">8.</span> Updates to This Policy
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                We may occasionally update this Privacy Policy to reflect technical stack adjustments or community guidelines. Any significant policy changes will be highlighted transparently via a notification banner at the top of your dashboard viewport.
+                We may occasionally update this Privacy Policy to reflect system adjustments or community requirements. Any significant policy changes will be highlighted transparently via an alert banner at the top of your dashboard viewport.
               </p>
             </section>
 
@@ -531,7 +535,6 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </section>
-
           </main>
 
         </div>

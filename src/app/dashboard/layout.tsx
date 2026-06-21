@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest, User } from "@/lib/api";
 import EmailVerificationModal from "@/components/EmailVerificationModal";
+import PolicyAgreementModal from "@/components/PolicyAgreementModal";
 
 export default function DashboardLayout({
   children,
@@ -273,6 +274,11 @@ export default function DashboardLayout({
           isOpen={isModalOpen} 
           onClose={() => setIsModalOpen(false)} 
         />
+      )}
+
+      {/* Policies Consent Interceptor Modal */}
+      {mounted && (
+        <PolicyAgreementModal user={user} />
       )}
     </div>
   );

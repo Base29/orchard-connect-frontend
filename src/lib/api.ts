@@ -24,6 +24,8 @@ export interface User {
     rejection_message?: string;
   } | null;
   roles?: string[];
+  policies_accepted?: boolean;
+  policies_accepted_at?: string | null;
 }
 
 export function checkEmailVerification(user: User | null): boolean {

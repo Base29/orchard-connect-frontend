@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import Link from "next/link";
 import { apiRequest, getAuthToken } from "@/lib/api";
+import PolicyAgreementModal from "@/components/PolicyAgreementModal";
 
 interface User {
   id: string;
@@ -50,7 +51,15 @@ export default function ContactSupportPage() {
         setLoadingUser(false);
       }
     };
+
     checkAuth();
+
+    const handleRefreshUser = () => checkAuth();
+    window.addEventListener("refresh-user-session", handleRefreshUser);
+
+    return () => {
+      window.removeEventListener("refresh-user-session", handleRefreshUser);
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -331,6 +340,7 @@ export default function ContactSupportPage() {
           </div>
         )}
       </main>
+      <PolicyAgreementModal user={user as any} />
     </div>
   );
 }
