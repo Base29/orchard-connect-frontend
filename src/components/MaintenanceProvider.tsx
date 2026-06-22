@@ -88,8 +88,12 @@ export function MaintenanceProvider({ children }: { children: React.ReactNode })
     );
   }
 
-  // If maintenance mode is active, display the maintenance page to all users on the resident platform
-  if (isMaintenance) {
+  // Check if current route is support page or tracking page
+  const isSupportRoute = pathname === "/support" || pathname?.startsWith("/support/");
+
+  // If maintenance mode is active, display the maintenance page to all users on the resident platform,
+  // except for the support page.
+  if (isMaintenance && !isSupportRoute) {
     return <MaintenancePage />;
   }
 

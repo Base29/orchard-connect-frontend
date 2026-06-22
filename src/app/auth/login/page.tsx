@@ -280,9 +280,13 @@ function LoginForm() {
               <a href="/data-deletion" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
                 Data Deletion Policy
               </a>
-              , and{" "}
+              ,{" "}
               <a href="/guidelines" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
                 Community Rules
+              </a>
+              , and{" "}
+              <a href="/disclaimer" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-900 dark:text-neutral-100 hover:underline">
+                Disclaimer
               </a>
               .
             </label>

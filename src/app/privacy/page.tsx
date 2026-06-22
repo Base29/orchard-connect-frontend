@@ -252,10 +252,11 @@ export default function PrivacyPolicyPage() {
                     </p>
                     <ul className="list-disc pl-4 space-y-1 mb-2">
                       <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Structured Address Fields:</strong> Phase, Block, Street, and House/Plot Number.</li>
-                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Verification Document:</strong> A digital upload (PDF or image) of your latest official Bahria Electricity Bill or Maintenance Bill. Users are explicitly required to upload a redacted form of this bill; all sensitive, non-residential information (such as financial totals, consumption metrics, or bank details) should be covered or blacked out, leaving only the house/street address clearly visible for processing.</li>
+                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Verification Document:</strong> A digital upload (PDF or image) of your latest official Bahria Electricity Bill or Maintenance Bill.</li>
+                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Redaction Requirement:</strong> Users are explicitly required to upload a redacted form of this bill; all sensitive, non-residential information (such as financial totals, consumption metrics, or bank details) should be covered or blacked out, leaving only the house/street address clearly visible for processing.</li>
                     </ul>
                     <p>
-                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose:</strong> To cross-reference physical residency and protect the community from malicious entities, scammers, or outsiders.
+                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose & Rationale for Requesting Residency Proof:</strong> Shifting from an open public forum to a dedicated neighborhood network introduces increased security responsibilities. We require proof of address to ensure an absolute shield against malicious entities, internet trolls, fake real estate listings, and external outsiders attempting to look in on or disrupt the community. Cross-referencing physical residency establishes an essential foundation of trust, authenticity, and legal accountability among neighbors within the marketplace and social feeds.
                     </p>
                   </div>
                 </div>
@@ -343,7 +344,7 @@ export default function PrivacyPolicyPage() {
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl" />
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="p-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl text-2xl flex-shrink-0">
-                    ⚡
+                    🔒
                   </div>
                   <div className="space-y-2">
                     <h3 className="font-bold text-base text-slate-800 dark:text-zinc-100">
@@ -353,7 +354,7 @@ export default function PrivacyPolicyPage() {
                       As soon as an authorized administrator reviews your uploaded redacted utility or maintenance bill and formally updates your residency status to either <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, an automated system trigger is executed. The original proof of residency document is instantly and permanently deleted from our secure cloud storage environment.
                     </p>
                     <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                      Only your structured address schema (Phase, Block, Street, Plot) remains mapped to your profile metadata to enforce platform integrity and prevent duplicate plot claims.
+                      Only your structured address schema (Phase, Block, Street, Plot) remains mapped to your profile metadata to enforce platform integrity, prevent duplicate plot claims, and eliminate long-term privacy vectors.
                     </p>
                   </div>
                 </div>

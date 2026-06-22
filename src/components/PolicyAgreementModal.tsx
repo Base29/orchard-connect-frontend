@@ -112,6 +112,17 @@ export default function PolicyAgreementModal({ user }: PolicyAgreementModalProps
                 <span className="text-[10px] text-slate-400 dark:text-zinc-500 group-hover:underline">Read ↗</span>
               </a>
             </li>
+            <li className="border-t border-neutral-150/40 dark:border-zinc-800/40 pt-2">
+              <a 
+                href="/disclaimer" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors py-1 group"
+              >
+                <span>⚠️ Disclaimer</span>
+                <span className="text-[10px] text-slate-400 dark:text-zinc-500 group-hover:underline">Read ↗</span>
+              </a>
+            </li>
           </ul>
         </div>
 

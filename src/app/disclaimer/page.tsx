@@ -88,7 +88,7 @@ export default function DisclaimerPage() {
 
   const sectionsList = [
     { id: "introduction", label: "Introduction" },
-    { id: "civic-notice", label: "1. Civic Notice Board" },
+    { id: "civic-notice", label: "1. Independent Civic Core" },
     { id: "social-feed", label: "2. Social Feed Liability" },
     { id: "marketplace", label: "3. Marketplace Disclaimer" },
     { id: "support", label: "4. Complaints & Support" },
@@ -159,7 +159,7 @@ export default function DisclaimerPage() {
             Platform Disclaimer
           </h1>
           <p className="text-sm md:text-base text-slate-505 dark:text-zinc-400 max-w-2xl mx-auto font-light leading-relaxed">
-            Please read this disclaimer carefully before using Orchard Connect. By accessing our hyper-local network, social feed, and community tools, you acknowledge the legal boundaries, liability limits, and data privacy safeguards.
+            Please read this disclaimer carefully before using Orchard Connect. By accessing our hyper-local network, social feed, and community tools, you acknowledge the legal boundaries, operational limits, and strict data privacy safeguards.
           </p>
           <div className="mt-6 text-xs text-slate-400 dark:text-zinc-555 font-mono">
             EFFECTIVE DATE: JUNE 14, 2026 | DOMAIN: ORCHARDCONNECT.PK
@@ -201,25 +201,28 @@ export default function DisclaimerPage() {
             {/* Introduction */}
             <section id="introduction" className="space-y-4 scroll-mt-24">
               <p className="text-base text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                Please read this Disclaimer carefully before using <strong className="font-semibold text-slate-900 dark:text-white">Orchard Connect</strong> (&ldquo;the platform&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;). By accessing or using our hyper-local network, social feed, and community tools, you acknowledge and agree to the legal boundaries, liability limits, and data privacy safeguards outlined below.
+                Please read this Disclaimer carefully before using <strong className="font-semibold text-slate-900 dark:text-white">Orchard Connect</strong> (&ldquo;the platform&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;). By accessing or using our hyper-local network, social feed, and community tools, you acknowledge and agree to the legal boundaries, operational limits, and strict data privacy safeguards outlined below.
               </p>
               
-              <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-amber-900 dark:text-amber-200/90 text-sm space-y-2">
+              <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-amber-900 dark:text-amber-200/90 text-sm space-y-2.5">
                 <span className="font-bold flex items-center gap-1.5 uppercase tracking-wider text-xs text-amber-700 dark:text-amber-400">
-                  ⚠️ NO OFFICIAL CORPORATE AFFILIATION
+                  ⚠️ STRICT NON-AFFILIATION & COMMUNITY EFFORT STATEMENT
                 </span>
                 <p className="leading-relaxed font-light">
-                  Orchard Connect is an independent, community-driven digital initiative. This platform is <strong>NOT</strong> officially affiliated with, endorsed by, authorized by, or in any way connected to the main corporate housing developers or the official management office of <strong>Bahria Orchard</strong>. All corporate trademarks and registered names belong to their respective legal owners.
+                  Orchard Connect is an independent, grassroots digital initiative. This platform is <strong>NOT</strong> officially associated with, endorsed by, authorized by, sponsored by, or in any way connected to <strong>Bahria Orchard</strong>, <strong>Bahria Town management</strong>, or any of their parent corporate housing development offices.
+                </p>
+                <p className="leading-relaxed font-light">
+                  Orchard Connect is purely a voluntary community effort designed and developed to bring neighbors together, foster local cooperation, and simplify communication within the housing society. All corporate trademarks, names, logos, and entities remain the exclusive property of their respective legal owners.
                 </p>
               </div>
             </section>
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 1. General Information and Civic Notice Board */}
+            {/* 1. General Information and Independent Civic Core */}
             <section id="civic-notice" className="space-y-4 scroll-mt-24">
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="text-emerald-500">1.</span> General Information and Civic Notice Board
+                <span className="text-emerald-500">1.</span> General Information and Independent Civic Core
               </h2>
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
                 Orchard Connect functions as a decentralized, independent community information hub and neighborhood social network for residents of Bahria Orchard. All community news, utility notifications, maintenance alerts, and directories published on the platform are provided for general informational purposes only.
@@ -231,7 +234,7 @@ export default function DisclaimerPage() {
                 </li>
                 <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span>Users are advised to independently verify critical utility or administrative announcements with official management channels before taking action.</span>
+                  <span>Users are advised to independently verify critical utility, structural, or administrative announcements with official management channels before taking action.</span>
                 </li>
               </ul>
             </section>
@@ -276,7 +279,7 @@ export default function DisclaimerPage() {
                     No Transactional Facilitation
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
-                    The platform does not process payments, handle escrow, offer buyer protection, or manage fulfillment logistics. Interactions between parties occur externally through independent communication triggers, such as direct WhatsApp routing or telephone calls.
+                    The platform does not process payments, handle escrow, offer buyer protection, or manage fulfillment logistics. Interactions between parties occur externally through independent communication triggers, such as direct WhatsApp routing links or direct telephone calls.
                   </p>
                 </div>
 
@@ -286,7 +289,7 @@ export default function DisclaimerPage() {
                     Zero Trading Liability
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
-                    We do not audit, verify, check, or guarantee the physical condition, safety, legality, quality, or authenticity of any item, business, property listing, or service published within the public marketplace directory. Users engage in buying, selling, or hiring at their own exclusive financial and physical risk.
+                    We do not audit, verify, check, or guarantee the physical condition, safety, legality, quality, or authenticity of any item, business listing, property ad, or service published within the public marketplace directory. Users engage in buying, selling, or hiring at their own exclusive financial and personal risk.
                   </p>
                 </div>
               </div>
@@ -341,12 +344,12 @@ export default function DisclaimerPage() {
                 <span className="text-emerald-500">6.</span> Third-Party Services and Data Infrastructure
               </h2>
               <p className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed">
-                Our technical framework communicates with premium external providers (including Supabase for database security, AWS S3 for asset delivery, and Resend/SendGrid for email routing).
+                Our technical framework communicates with premium external cloud infrastructure providers to keep the platform securely active (such as Supabase for database security, AWS S3 for asset delivery, and Resend/SendGrid for email routing).
               </p>
               <ul className="space-y-3">
                 <li className="text-sm text-slate-600 dark:text-zinc-300 font-light leading-relaxed flex items-start gap-2.5">
                   <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span>We are not liable for any temporary platform downtime, third-party server interruptions, security breaches originating at the vendor level, or network delays caused by technical outages originating from these cloud infrastructure providers.</span>
+                  <span>We are not liable for any temporary platform downtime, third-party server interruptions, network leaks, data delays, or technical outages originating from these external providers.</span>
                 </li>
               </ul>
             </section>

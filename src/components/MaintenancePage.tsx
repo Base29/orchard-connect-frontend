@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export function MaintenancePage() {
   return (
@@ -72,12 +73,20 @@ export function MaintenancePage() {
         </div>
 
         {/* Support Link */}
-        {/* <div className="text-xs text-slate-400 dark:text-zinc-500">
-          Need urgent assistance? Contact the{" "}
-          <span className="font-semibold text-slate-600 dark:text-zinc-400">
-            Bahria Orchard Society Office
-          </span>
-        </div> */}
+        <div className="space-y-3 pt-2">
+          <p className="text-xs text-slate-400 dark:text-zinc-500 font-light">
+            Need urgent assistance or have queries?
+          </p>
+          <Link
+            href="/support"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 transition-all duration-200 shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            Contact Support Helpdesk
+          </Link>
+        </div>
 
       </main>
 
