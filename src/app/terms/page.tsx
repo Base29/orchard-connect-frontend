@@ -166,7 +166,7 @@ export default function TermsOfServicePage() {
             Please read these Terms carefully. By accessing or using Orchard Connect (orchardconnect.pk), you agree to be bound by these Terms of Service.
           </p>
           <div className="mt-6 text-xs text-slate-400 dark:text-zinc-555 font-mono">
-            EFFECTIVE DATE: JUNE 14, 2026 | PLATFORM DOMAIN: ORCHARDCONNECT.PK
+            UPDATED DATE: JUNE 22, 2026 | PLATFORM DOMAIN: ORCHARDCONNECT.PK
           </div>
         </div>
       </section>
@@ -268,20 +268,41 @@ export default function TermsOfServicePage() {
                   </div>
                   <div className="pl-8 space-y-2 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
                     <p>
-                      To unlock write-access (posting to the social feed, leaving comments, participating in community polls, or publishing marketplace listings), users are required to supply structured address metadata (Phase, Block, Street, House/Plot Number) and upload a digital proof of residency (a PDF or clear image of their latest official Bahria Electricity Bill or Maintenance Bill).
+                      To unlock write-access (posting to the social feed, leaving comments, participating in community polls, or publishing marketplace listings), users are required to supply structured address metadata (Phase, Block, Street, House/Plot Number) and upload a digital proof of residency (such as a copy of their latest official Bahria Electricity Bill or Maintenance Bill).
                     </p>
+                  </div>
+                </div>
+
+                {/* Mandatory Redaction Rule */}
+                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 shadow-sm space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 text-xs font-bold">3</span>
+                    <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-200">Mandatory Redaction Rule</h3>
+                  </div>
+                  <div className="pl-8 space-y-2 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
+                    <p>
+                      To protect your personal data, uploaded documents <strong>must be heavily redacted before submission</strong>. Only the physical street/property address must remain completely legible. You must explicitly blur, cross out, or black out all other non-essential data segments, including but not limited to:
+                    </p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                      <li>Consumer / reference numbers</li>
+                      <li>Meter numbers</li>
+                      <li>QR codes and barcodes</li>
+                      <li>Payment status indicators</li>
+                      <li>Bill balances or payment amounts</li>
+                      <li>Any visible National Identity Card (CNIC) details or associated individual identifiers</li>
+                    </ul>
                   </div>
                 </div>
 
                 {/* Manual Audit */}
                 <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 shadow-sm space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-bold">3</span>
+                    <span className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-bold">4</span>
                     <h3 className="font-bold text-sm text-slate-800 dark:text-zinc-200">Manual Audit & Status Transitions</h3>
                   </div>
                   <div className="pl-8 space-y-2 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
                     <p>
-                      Verification requests are manually reviewed by authorized staff via our internal Filament dashboard. If a submission is approved, full network privileges are instantly unlocked. If a submission is rejected (e.g., due to blurry text or an address mismatch), the account remains in a read-only state, and the user is permitted to re-submit corrected credentials.
+                      Verification requests are manually reviewed by authorized staff via our internal Filament dashboard. If a submission is approved, full network privileges are instantly unlocked. If a submission is rejected (e.g., due to unreadable text, unredacted sensitive criteria, or an address mismatch), the account remains in a read-only state, and the user is permitted to re-submit corrected credentials.
                     </p>
                   </div>
                 </div>
@@ -295,13 +316,13 @@ export default function TermsOfServicePage() {
                     </div>
                     <div className="space-y-2">
                       <h4 className="font-bold text-sm text-slate-800 dark:text-zinc-100">
-                        Data Security & The Instant-Purge Policy
+                        Data Security & The Immediate Auto-Purge Policy
                       </h4>
                       <p className="text-xs text-slate-600 dark:text-zinc-350 leading-relaxed font-light">
-                        Orchard Connect does not hoard your sensitive, private physical documents. In accordance with our localized data minimization standards, the moment an authorized Community Admin reviews your application and explicitly updates your profile status to either <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, an automated background webhook is instantly executed.
+                        Orchard Connect holds a zero-retention mandate regarding physical documentation. In accordance with our aggressive, privacy-first data minimization standards, the moment an authorized Administrator processes an onboarding verification request and clicks <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong> within the Filament dashboard, a background workflow is instantly triggered.
                       </p>
                       <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                        This runtime action immediately and permanently deletes the original verification file (PDF or image) from our private, encrypted cloud storage bucket. No residual data trail or orphaned documentation is left on our cloud layers. Only your normalized, verified address structure (Phase, Block, Street, and House/Plot Number) remains pinned to your resident account to ensure platform mapping validity and prevent fraudulent duplicate plot claims.
+                        The uploaded bill image or file is immediately, permanently, and irreversibly purged from our private, encrypted cloud storage buckets. No historical document footprint is preserved; only the validated address mapping is linked to your database profile record to secure access privileges and maintain platform integrity.
                       </p>
                     </div>
                   </div>
@@ -322,13 +343,13 @@ export default function TermsOfServicePage() {
               </p>
               <ul className="list-disc pl-5 space-y-3 text-xs text-slate-600 dark:text-zinc-400">
                 <li>
-                  <strong className="text-slate-800 dark:text-zinc-200 font-semibold">Contains malicious spam, script abuse, or automated payload injections:</strong> Open forms are protected by hidden honeypot inputs and strict IP-based rate-limiting throttles; any automated violation results in immediate database isolation.
+                  Contains malicious spam, script abuse, or automated payload injections. Open forms are protected by hidden honeypot inputs and strict IP-based rate-limiting throttles; any automated violation results in immediate database isolation.
                 </li>
                 <li>
-                  <strong className="text-slate-805 dark:text-zinc-200 font-semibold">Promotes targeted harassment:</strong> Content depicting personal feuds, local defamation, or malicious real estate scams is strictly prohibited.
+                  Promotes targeted harassment, personal feuds, local defamation, or malicious real estate scams.
                 </li>
                 <li>
-                  <strong className="text-slate-805 dark:text-zinc-200 font-semibold font-normal text-slate-600 dark:text-zinc-400">Unrelated Topics:</strong> Content that discusses political or structural topics entirely unrelated to the hyper-local Bahria Orchard community.
+                  Discusses political or structural topics entirely unrelated to the hyper-local Bahria Orchard community.
                 </li>
               </ul>
               <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed pt-2">
@@ -370,7 +391,7 @@ export default function TermsOfServicePage() {
                 We treat your personal and structural resident profiles with strict, high-end enterprise separation protocols under a customized Role-Based Access Control (RBAC) model.
               </p>
               <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
-                Residential validation bills are stored in encrypted buckets protected by Row-Level Security (RLS) and are completely hidden from the public. Content Moderators who police public social feeds are strictly barred from viewing private utility files or sensitive support tickets. Access to onboarding documents is restricted solely to authorized Community Admins via expiring, temporary signed URLs.
+                Residential validation documents are stored in encrypted environments protected by Row-Level Security (RLS) and are completely hidden from the public. Content Moderators who police public social feeds are strictly barred from viewing private utility files or sensitive support tickets. Access to onboarding documents during their transient validation lifetime is restricted solely to authorized Community Admins via expiring, temporary signed URLs.
               </p>
             </section>
 
@@ -382,10 +403,7 @@ export default function TermsOfServicePage() {
                 <span className="text-emerald-500">6.</span> Termination & Deletion Rights
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                Residents retain absolute command over their digital footprint. You possess the right to be forgotten. Account deletion requests can be initiated at any time through the <Link href="/support" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Contact Support</Link> helpdesk link located in the landing page viewport footer or by notifying the administration desk.
-              </p>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
-                Upon request execution, technical Superadmins will permanently purge your authentication mapping, core profile records, and associated interactive feed history from our active PostgreSQL database clusters within 24 to 48 hours.
+                Residents retain absolute command over their digital footprint. You possess the right to be forgotten. Account deletion requests can be initiated at any time through the <Link href="/support" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Contact Support</Link> helpdesk link located in the landing page viewport footer or by notifying the administration desk. Upon request execution, technical Superadmins will permanently purge your authentication mapping, core profile records, and associated interactive feed history from our active PostgreSQL database clusters within 24 to 48 hours.
               </p>
             </section>
 
@@ -397,10 +415,7 @@ export default function TermsOfServicePage() {
                 <span className="text-emerald-500">7.</span> Disclaimers & Limitation of Liability
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
-                Orchard Connect is provided on an &quot;as-is&quot; and &quot;as-available&quot; basis without representations or warranties of any kind. The platform is an independent, community-driven initiative and holds no official corporate or legal affiliation with the primary developer of Bahria Orchard.
-              </p>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-light">
-                We do not guarantee the absolute accuracy of user-generated marketplace entries, anonymous support ticket resolution times, or uninterrupted WebSocket broadcast states via Laravel Reverb. In no event shall the platform administration, team members, or Superadmins be held liable for any damages arising out of your utilization of our digital network channels.
+                Orchard Connect is provided on an &quot;as-is&quot; and &quot;as-available&quot; basis without representations or warranties of any kind. The platform is an independent, community-driven initiative and holds no official corporate or legal affiliation with the primary developer of Bahria Orchard. We do not guarantee the absolute accuracy of user-generated marketplace entries, anonymous support ticket resolution times, or uninterrupted WebSocket broadcast states via Laravel Reverb. In no event shall the platform administration, team members, or Superadmins be held liable for any damages arising out of your utilization of our digital network channels.
               </p>
             </section>
 

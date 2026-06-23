@@ -47,6 +47,7 @@ export default function PrivacyPolicyPage() {
       "introduction",
       "info-collect",
       "data-protection",
+      "address-visibility",
       "auto-purge",
       "role-isolation",
       "spam-protection",
@@ -92,12 +93,13 @@ export default function PrivacyPolicyPage() {
     { id: "introduction", label: "Introduction" },
     { id: "info-collect", label: "1. Information We Collect" },
     { id: "data-protection", label: "2. Data Protection & Security" },
-    { id: "auto-purge", label: "3. The Instant-Purge Policy" },
-    { id: "role-isolation", label: "4. Role-Based Access" },
-    { id: "spam-protection", label: "5. Spam & Bot Protection" },
-    { id: "third-party", label: "6. Third-Party Services" },
-    { id: "user-rights", label: "7. Your Rights & Control" },
-    { id: "policy-updates", label: "8. Policy Updates" },
+    { id: "address-visibility", label: "3. Address Visibility Controls" },
+    { id: "auto-purge", label: "4. The Instant-Purge Policy" },
+    { id: "role-isolation", label: "5. Role-Based Access" },
+    { id: "spam-protection", label: "6. Spam & Bot Protection" },
+    { id: "third-party", label: "7. Third-Party Services" },
+    { id: "user-rights", label: "8. Your Rights & Control" },
+    { id: "policy-updates", label: "9. Policy Updates" },
     { id: "contact-us", label: "Contact Us" }
   ];
 
@@ -166,7 +168,7 @@ export default function PrivacyPolicyPage() {
             Welcome to Orchard Connect (orchardconnect.pk). Learn how we collect, protect, utilize, and eventually purge your information to build a trusted community space.
           </p>
           <div className="mt-6 text-xs text-slate-400 dark:text-zinc-555 font-mono">
-            EFFECTIVE DATE: JUNE 22, 2026
+            EFFECTIVE DATE: JUNE 23, 2026
           </div>
         </div>
       </section>
@@ -250,13 +252,24 @@ export default function PrivacyPolicyPage() {
                     <p className="mb-2">
                       To unlock full write-access (posting, commenting, and marketplace interactions), users must submit proof of residency consisting of:
                     </p>
-                    <ul className="list-disc pl-4 space-y-1 mb-2">
+                    <ul className="list-disc pl-4 space-y-1.5 mb-2">
                       <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Structured Address Fields:</strong> Phase, Block, Street, and House/Plot Number.</li>
                       <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Verification Document:</strong> A digital upload (PDF or image) of your latest official Bahria Electricity Bill or Maintenance Bill.</li>
-                      <li><strong className="text-slate-805 dark:text-zinc-350 font-semibold">Redaction Requirement:</strong> Users are explicitly required to upload a redacted form of this bill; all sensitive, non-residential information (such as financial totals, consumption metrics, or bank details) should be covered or blacked out, leaving only the house/street address clearly visible for processing.</li>
+                      <li>
+                        <strong className="text-slate-805 dark:text-zinc-350 font-semibold">Strict Redaction Requirement:</strong> To ensure maximum data privacy, users are explicitly required to redact or black out all non-residential and sensitive criteria prior to upload. The submission must only display the physical house/street address. You must explicitly blur or cross out the following structural items:
+                        <ul className="list-disc pl-6 mt-1 space-y-0.5">
+                          <li>Consumer / Reference Number</li>
+                          <li>Meter Number</li>
+                          <li>QR Code and Barcode structures</li>
+                          <li>Payment Status and historical columns</li>
+                          <li>Bill Amount and monetary figures</li>
+                          <li>Any CNIC-related details or personal identification numbers, if present</li>
+                        </ul>
+                        <span className="block mt-1.5 text-red-600 dark:text-red-400 font-semibold">Submitting an unredacted document is strictly prohibited and may result in immediate rejection of the verification request.</span>
+                      </li>
                     </ul>
                     <p>
-                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose & Rationale for Requesting Residency Proof:</strong> Shifting from an open public forum to a dedicated neighborhood network introduces increased security responsibilities. We require proof of address to ensure an absolute shield against malicious entities, internet trolls, fake real estate listings, and external outsiders attempting to look in on or disrupt the community. Cross-referencing physical residency establishes an essential foundation of trust, authenticity, and legal accountability among neighbors within the marketplace and social feeds.
+                      <strong className="text-slate-805 dark:text-zinc-300 font-semibold">Purpose & Rationale:</strong> Shifting from an open public forum to a dedicated neighborhood network introduces increased security responsibilities. We require proof of address to ensure an absolute shield against malicious entities, internet trolls, fake real estate listings, and external outsiders. Cross-referencing physical residency establishes an essential foundation of trust, authenticity, and accountability among neighbors.
                     </p>
                   </div>
                 </div>
@@ -329,14 +342,60 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 3. The Instant-Purge Policy */}
+            {/* Data Isolation & Address Visibility Controls */}
+            <section id="address-visibility" className="space-y-6 scroll-mt-24">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                  <span className="text-emerald-500">3.</span> Data Isolation & Address Visibility Controls
+                </h2>
+                <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
+                  An exact residential location is highly sensitive. Therefore, we implement precise visibility rules regarding how your validated address fields are handled across the platform:
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2 shadow-sm">
+                  <h3 className="font-bold text-sm text-slate-805 dark:text-zinc-200">Public Profiles</h3>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
+                    By default, public-facing resident profiles and feed activities hide specific location metrics. The public community view only displays your Phase and Block (e.g., &quot;Phase 1, Block G&quot;).
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2 shadow-sm">
+                  <h3 className="font-bold text-sm text-slate-805 dark:text-zinc-200">Exact Address Privacy Boundaries</h3>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
+                    Your precise residential details—specifically your Street Number and House/Plot Number—are completely hidden from general members, marketplace browsers, and public feeds.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2 shadow-sm">
+                  <h3 className="font-bold text-sm text-slate-805 dark:text-zinc-200">User-Controlled Visibility</h3>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
+                    Through your account settings panel, you retain complete authority to opt-in or out of showing advanced location indicators. You can independently hide or reveal your plot/house number to other validated neighbors if desired, keeping you in complete control of your physical footprint.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-950 border border-slate-200/60 dark:border-zinc-900 space-y-2 shadow-sm">
+                  <h3 className="font-bold text-sm text-slate-805 dark:text-zinc-200">Administrative Clearance</h3>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 font-light leading-relaxed">
+                    The exact address coordinates are restricted exclusively to verification administrators for system integrity mapping and preventing duplicate fraudulent plot claims.
+                  </p>
+                </div>
+
+              </div>
+            </section>
+
+            <hr className="border-slate-200/60 dark:border-zinc-900" />
+
+            {/* 4. The Instant-Purge Policy */}
             <section id="auto-purge" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                  <span className="text-emerald-500">3.</span> The Instant-Purge Policy
+                  <span className="text-emerald-500">4.</span> The Instant-Purge Policy
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
-                  We do not believe in retaining your sensitive private documentation longer than absolutely necessary.
+                  We do not believe in retaining your private documentation files a second longer than needed.
                 </p>
               </div>
 
@@ -354,7 +413,7 @@ export default function PrivacyPolicyPage() {
                       As soon as an authorized administrator reviews your uploaded redacted utility or maintenance bill and formally updates your residency status to either <strong>&quot;Approved&quot;</strong> or <strong>&quot;Rejected&quot;</strong>, an automated system trigger is executed. The original proof of residency document is instantly and permanently deleted from our secure cloud storage environment.
                     </p>
                     <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-light">
-                      Only your structured address schema (Phase, Block, Street, Plot) remains mapped to your profile metadata to enforce platform integrity, prevent duplicate plot claims, and eliminate long-term privacy vectors.
+                      Only your structured address schema remains mapped to your user metadata under the visibility constraints defined in Section 2.
                     </p>
                   </div>
                 </div>
@@ -363,11 +422,11 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 4. Role-Based Data Isolation */}
+            {/* 5. Role-Based Data Isolation */}
             <section id="role-isolation" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                  <span className="text-emerald-500">4.</span> Role-Based Data Isolation
+                  <span className="text-emerald-500">5.</span> Role-Based Data Isolation
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
                   Our platform enforces strict access boundaries to ensure your information is handled only by team members who absolutely require it:
@@ -387,7 +446,7 @@ export default function PrivacyPolicyPage() {
                   </div>
                   <h3 className="font-extrabold text-sm text-slate-800 dark:text-zinc-100">Content & Marketplace Moderators</h3>
                   <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    Personnel assigned to monitor the public social feed or approve marketplace listings cannot access or view your private residential verification documents or sensitive support tickets.
+                    Personnel assigned to monitor the public social feed or approve marketplace listings cannot access or view your private address verification documents or sensitive support tickets.
                   </p>
                 </div>
 
@@ -424,10 +483,10 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 5. Spam and Bot Protection */}
+            {/* 6. Spam and Bot Protection */}
             <section id="spam-protection" className="space-y-4 scroll-mt-24">
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="text-emerald-500">5.</span> Spam and Bot Protection
+                <span className="text-emerald-500">6.</span> Spam and Bot Protection
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
                 To maintain a clean and lightweight user experience, our public interaction portals (such as anonymous complaints or support forms) utilize security features like rate-limiting throttles and hidden honeypot fields. These mechanisms detect and silently discard automated script abuse, keeping our administration queues free of malicious spam.
@@ -436,11 +495,11 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 6. Third-Party Services */}
+            {/* 7. Third-Party Services */}
             <section id="third-party" className="space-y-6 scroll-mt-24">
               <div className="space-y-2">
                 <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                  <span className="text-emerald-500">6.</span> Third-Party Services
+                  <span className="text-emerald-500">7.</span> Third-Party Services
                 </h2>
                 <p className="text-sm text-slate-555 dark:text-zinc-400 font-light leading-relaxed">
                   We partner with specific trusted cloud providers to run the platform efficiently:
@@ -482,10 +541,10 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 7. Your Rights & Control */}
+            {/* 8. Your Rights & Control */}
             <section id="user-rights" className="space-y-4 scroll-mt-24">
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="text-emerald-500">7.</span> Your Rights & Control
+                <span className="text-emerald-500">8.</span> Your Rights & Control
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-400 leading-relaxed font-light mb-4">
                 As a resident using Orchard Connect, you maintain control over your digital footprint:
@@ -502,10 +561,10 @@ export default function PrivacyPolicyPage() {
 
             <hr className="border-slate-200/60 dark:border-zinc-900" />
 
-            {/* 8. Updates to This Policy */}
+            {/* 9. Updates to This Policy */}
             <section id="policy-updates" className="space-y-4 scroll-mt-24">
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                <span className="text-emerald-500">8.</span> Updates to This Policy
+                <span className="text-emerald-500">9.</span> Updates to This Policy
               </h2>
               <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-light">
                 We may occasionally update this Privacy Policy to reflect system adjustments or community requirements. Any significant policy changes will be highlighted transparently via an alert banner at the top of your dashboard viewport.
