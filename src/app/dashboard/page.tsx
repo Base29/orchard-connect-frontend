@@ -141,6 +141,42 @@ export default function DashboardPortalPage() {
     }, 4500);
   };
 
+  const [adminLoading, setAdminLoading] = useState(false);
+
+  const handleAccessAdminPanel = async () => {
+    setAdminLoading(true);
+    try {
+      const res = await apiRequest("/api/admin/exchange-token", {
+        method: "POST"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          showToast("Failed to access admin panel.", "error");
+        }
+      } else {
+        const err = await res.json();
+        showToast(err.message || "Unauthorized access.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Network error accessing admin panel.", "error");
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const showAdminButton = (): boolean => {
+    const adminRoles = ['superadmin', 'community-admin', 'marketplace-moderator', 'content-moderator', 'support-staff'];
+    const hasAdminRole = currentUser?.roles?.some(role => adminRoles.includes(role)) || currentUser?.status === 'admin';
+    if (!hasAdminRole) return false;
+
+    const isSuperAdmin = currentUser?.roles?.includes('superadmin') || currentUser?.email === 'me@imfaisal.pro';
+    return isSuperAdmin || isVerified();
+  };
+
   // Fetch all dashboard portal data concurrently
   const fetchPortalData = async () => {
     try {
@@ -508,12 +544,28 @@ export default function DashboardPortalPage() {
                 You have landed on your Orchard Connect portal dashboard. Stay updated with society matters, manage your ads, vote on polls, and engage with your neighbors.
               </p>
             </div>
-            <Link 
-              href="/dashboard/feed" 
-              className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer"
-            >
-              Go to Community Feed →
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link 
+                href="/dashboard/feed" 
+                className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow active:scale-95 transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer text-center"
+              >
+                Go to Community Feed →
+              </Link>
+              {showAdminButton() && (
+                <button
+                  onClick={handleAccessAdminPanel}
+                  disabled={adminLoading}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow active:scale-95 transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer disabled:opacity-50"
+                >
+                  {adminLoading ? (
+                    <>
+                      <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5" />
+                      Connecting...
+                    </>
+                  ) : "🛡️ Admin Panel"}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Navigation Card (Mobile Only) */}

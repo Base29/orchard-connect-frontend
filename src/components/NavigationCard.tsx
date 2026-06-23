@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearAuthToken } from "@/lib/api";
+import { clearAuthToken, apiRequest } from "@/lib/api";
 
 interface ResidentProfile {
   phase: string;
@@ -23,6 +23,7 @@ interface User {
   status: string;
   email_verified_at?: string | null;
   resident_profile?: ResidentProfile | null;
+  roles?: string[];
 }
 
 interface NavigationCardProps {
@@ -46,6 +47,44 @@ const links = [
 export default function NavigationCard({ currentUser, activeKey, variant }: NavigationCardProps) {
   const router = useRouter();
   const profile = currentUser?.resident_profile;
+
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleAccessAdminPanel = async () => {
+    setAdminLoading(true);
+    setErrorMsg(null);
+    try {
+      const res = await apiRequest("/api/admin/exchange-token", {
+        method: "POST"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          setErrorMsg("No redirect URL received");
+        }
+      } else {
+        const err = await res.json();
+        setErrorMsg(err.message || "Failed to authenticate");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Network error connecting to admin panel");
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const showAdminButton = (): boolean => {
+    const adminRoles = ['superadmin', 'community-admin', 'marketplace-moderator', 'content-moderator', 'support-staff'];
+    const hasAdminRole = currentUser.roles?.some(role => adminRoles.includes(role)) || currentUser.status === 'admin';
+    if (!hasAdminRole) return false;
+
+    const isSuperAdmin = currentUser.roles?.includes('superadmin') || currentUser.email === 'me@imfaisal.pro';
+    return isSuperAdmin || isVerified();
+  };
 
   const isVerified = (): boolean => {
     return currentUser?.email_verified_at !== null && 
@@ -101,6 +140,28 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
 
         <hr className="border-neutral-100 dark:border-zinc-800" />
 
+        {showAdminButton() && (
+          <div className="mb-2">
+            <button
+              onClick={handleAccessAdminPanel}
+              disabled={adminLoading}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50"
+            >
+              {adminLoading ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Connecting...
+                </>
+              ) : "🔑 Access Admin Panel"}
+            </button>
+            {errorMsg && (
+              <div className="text-[10px] text-rose-500 font-medium text-center mt-1 animate-fade-in">
+                ⚠️ {errorMsg}
+              </div>
+            )}
+          </div>
+        )}
+
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-rose-200/50 dark:border-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-bold transition-all active:scale-[0.99] cursor-pointer"
@@ -154,6 +215,28 @@ export default function NavigationCard({ currentUser, activeKey, variant }: Navi
       </nav>
 
       <hr className="border-neutral-100 dark:border-zinc-800" />
+
+      {showAdminButton() && (
+        <div className="mb-3">
+          <button
+            onClick={handleAccessAdminPanel}
+            disabled={adminLoading}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs transition-all active:scale-[0.99] cursor-pointer disabled:opacity-50"
+          >
+            {adminLoading ? (
+              <>
+                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Connecting...
+              </>
+            ) : "🔑 Access Admin Panel"}
+          </button>
+          {errorMsg && (
+            <div className="text-[10px] text-rose-500 font-medium text-center mt-1 animate-fade-in">
+              ⚠️ {errorMsg}
+            </div>
+          )}
+        </div>
+      )}
 
       <button
         onClick={handleLogout}
