@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { apiRequest, checkEmailVerification, clearAuthToken } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
+import { resizeImageTo1080x1350 } from "@/lib/image";
 import RoleBadge from "@/components/RoleBadge";
 import NotificationBell from "@/components/NotificationBell";
 import ResidentBadges from "@/components/ResidentBadges";
@@ -707,16 +708,31 @@ export default function DashboardPage() {
       return;
     }
 
-    const newImages = files.map(file => ({
-      file,
-      previewUrl: URL.createObjectURL(file),
-      status: "uploading" as const,
-    }));
+    // Crop and resize to 1080x1350 before upload
+    const processedImages = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const resizedFile = await resizeImageTo1080x1350(file);
+          return {
+            file: resizedFile,
+            previewUrl: URL.createObjectURL(resizedFile),
+            status: "uploading" as const,
+          };
+        } catch (resizeErr) {
+          console.error("Image resize failed, using original file:", resizeErr);
+          return {
+            file,
+            previewUrl: URL.createObjectURL(file),
+            status: "uploading" as const,
+          };
+        }
+      })
+    );
 
-    setSelectedImages(prev => [...prev, ...newImages]);
+    setSelectedImages(prev => [...prev, ...processedImages]);
 
     // Upload each file concurrently
-    newImages.forEach(async (img) => {
+    processedImages.forEach(async (img) => {
       try {
         const formData = new FormData();
         formData.append("file", img.file);

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest, checkEmailVerification, clearAuthToken } from "@/lib/api";
 import { getEcho } from "@/lib/echo";
+import { resizeImageTo1080x1350 } from "@/lib/image";
 
 interface ResidentProfile {
   phase: string;
@@ -257,7 +258,7 @@ export default function MarketplacePage() {
 
   // Image Upload helper communicating with Laravel Headless upload endpoint
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    let file = e.target.files?.[0];
     if (!file || isVerified() === false) return;
 
     if (newImages.length >= 3) {
@@ -269,6 +270,13 @@ export default function MarketplacePage() {
     setUploadProgress(10); // Start progress bar
 
     try {
+      // Crop and resize to 1080x1350 before upload
+      try {
+        file = await resizeImageTo1080x1350(file);
+      } catch (resizeErr) {
+        console.error("Image resize failed, using original file:", resizeErr);
+      }
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", "listing");
