@@ -60,13 +60,24 @@ interface Notification {
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getAuthToken();
     if (token) {
       router.push("/dashboard");
+    } else {
+      setLoading(false);
     }
   }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#09090b]">
+        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   // Active Explorer Tab
   const [activeTab, setActiveTab] = useState<"verification" | "feed" | "marketplace" | "directory_polls" | "realtime">("feed");
