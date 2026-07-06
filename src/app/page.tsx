@@ -71,14 +71,6 @@ export default function Home() {
     }
   }, [router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#09090b]">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   // Active Explorer Tab
   const [activeTab, setActiveTab] = useState<"verification" | "feed" | "marketplace" | "directory_polls" | "realtime">("feed");
 
@@ -446,6 +438,14 @@ export default function Home() {
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#09090b]">
+        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-300">
