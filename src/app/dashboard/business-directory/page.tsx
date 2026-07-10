@@ -6,7 +6,7 @@ import NotificationBell from "@/components/NotificationBell";
 import { useTheme } from "@/components/ThemeProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { apiRequest, clearAuthToken } from "@/lib/api";
+import { apiRequest, clearAuthToken, getBaseUrl } from "@/lib/api";
 
 interface ResidentProfile {
   phase: string;
@@ -155,6 +155,16 @@ export default function BusinessDirectoryPage() {
     const h1 = Math.abs(hash % 360);
     const h2 = (h1 + 60) % 360;
     return `linear-gradient(135deg, hsl(${h1}, 75%, 45%) 0%, hsl(${h2}, 85%, 55%) 100%)`;
+  };
+
+  const getLogoUrl = (url: string | null) => {
+    if (!url) return null;
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    const baseUrl = getBaseUrl();
+    const cleanUrl = url.startsWith("/") ? url : `/${url}`;
+    return `${baseUrl}${cleanUrl}`;
   };
 
   const handleLogout = () => {
@@ -416,7 +426,7 @@ export default function BusinessDirectoryPage() {
                       {/* Logo fallback or image */}
                       {business.logo_url ? (
                         <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-zinc-950 border border-neutral-100 dark:border-zinc-850 shrink-0">
-                          <img src={business.logo_url} alt={business.name} className="w-full h-full object-cover" />
+                          <img src={getLogoUrl(business.logo_url) || undefined} alt={business.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
                         <div 
