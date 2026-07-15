@@ -20,11 +20,38 @@ function CallbackHandler() {
       }
       setAuthToken(token, remember);
 
-      // 2. Conditional Redirect routing based on Resident Profile completion status
-      if (profileComplete === "false") {
-        router.push("/auth/complete-profile");
+      // 2. Claim invite code if it exists in local storage
+      const inviteCode = typeof window !== "undefined" ? localStorage.getItem("orchard_invite_code") : null;
+      if (inviteCode) {
+        const claimInvite = async () => {
+          try {
+            // Import apiRequest dynamically or use the imported helper
+            const { apiRequest } = await import("@/lib/api");
+            await apiRequest("/api/invitations/claim", {
+              method: "POST",
+              body: JSON.stringify({ code: inviteCode })
+            });
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("orchard_invite_code");
+            }
+          } catch (err) {
+            console.error("Failed to claim invitation post-OAuth:", err);
+          } finally {
+            if (profileComplete === "false") {
+              router.push("/auth/complete-profile");
+            } else {
+              router.push("/dashboard");
+            }
+          }
+        };
+        claimInvite();
       } else {
-        router.push("/dashboard");
+        // 3. Conditional Redirect routing based on Resident Profile completion status
+        if (profileComplete === "false") {
+          router.push("/auth/complete-profile");
+        } else {
+          router.push("/dashboard");
+        }
       }
     } else {
       // Fallback: Return to login page if token is missing

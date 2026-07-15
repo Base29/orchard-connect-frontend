@@ -177,6 +177,68 @@ export default function DashboardPortalPage() {
     return isSuperAdmin || isVerified();
   };
 
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [canShare, setCanShare] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      setCanShare(true);
+    }
+  }, []);
+
+  const showInviteButton = (): boolean => {
+    const inviterRoles = ['superadmin', 'community-admin'];
+    return currentUser?.roles?.some(role => inviterRoles.includes(role)) || false;
+  };
+
+  const handleGenerateInvite = async () => {
+    setInviteLoading(true);
+    setCopied(false);
+    try {
+      const res = await apiRequest("/api/invitations", {
+        method: "POST"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInviteUrl(data.invite_url);
+        showToast("Invitation link generated!", "success");
+      } else {
+        const err = await res.json();
+        showToast(err.message || "Failed to generate invitation link.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Network error generating invitation link.", "error");
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (!inviteUrl) return;
+    navigator.clipboard.writeText(inviteUrl);
+    setCopied(true);
+    showToast("Link copied to clipboard!", "success");
+    setTimeout(() => setCopied(false), 3005);
+  };
+
+  const handleShareLink = async () => {
+    if (!inviteUrl) return;
+    try {
+      await navigator.share({
+        title: "Orchard Connect Invitation",
+        text: "Join the Orchard Connect community portal for verified residents.",
+        url: inviteUrl,
+      });
+      showToast("Link shared successfully!", "success");
+    } catch (err) {
+      console.warn("System sharing dismissed or failed:", err);
+    }
+  };
+
   // Fetch all dashboard portal data concurrently
   const fetchPortalData = async () => {
     try {
@@ -551,6 +613,14 @@ export default function DashboardPortalPage() {
               >
                 Go to Community Feed →
               </Link>
+              {showInviteButton() && (
+                <button
+                  onClick={() => setIsInviteModalOpen(true)}
+                  className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow active:scale-95 transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer text-center"
+                >
+                  ✉️ Invite Resident
+                </button>
+              )}
               {showAdminButton() && (
                 <button
                   onClick={handleAccessAdminPanel}
@@ -927,6 +997,89 @@ export default function DashboardPortalPage() {
         </main>
 
       </div>
+
+      {isInviteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div 
+            className="absolute inset-0" 
+            onClick={() => {
+              setIsInviteModalOpen(false);
+              setInviteUrl("");
+            }} 
+          />
+          <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 border border-neutral-200/60 dark:border-zinc-800/80 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl z-10 animate-scale-up">
+            <button 
+              onClick={() => {
+                setIsInviteModalOpen(false);
+                setInviteUrl("");
+              }}
+              className="absolute right-4 top-4 text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-350 cursor-pointer"
+            >
+              ✕
+            </button>
+            
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold tracking-tight">Invite New Resident</h2>
+              <p className="text-xs font-light text-slate-500 dark:text-zinc-400 leading-relaxed">
+                Generate a secure, signed onboarding link. Residents registering via this link will bypass the residency document proof upload requirement and be auto-verified.
+              </p>
+            </div>
+
+            {inviteUrl ? (
+              <div className="space-y-4 animate-fade-in">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                    Invitation URL
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input 
+                      type="text" 
+                      readOnly 
+                      value={inviteUrl}
+                      className="w-full text-xs px-4 py-3 rounded-xl border border-neutral-250 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 focus:outline-none font-mono select-all truncate text-slate-800 dark:text-zinc-200"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleCopyLink}
+                        className="flex-1 px-4 py-3 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-neutral-100 font-bold text-xs rounded-xl shadow-sm active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        {copied ? "Copied! ✓" : "📋 Copy Link"}
+                      </button>
+                      {canShare && (
+                        <button
+                          onClick={handleShareLink}
+                          className="flex-1 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          📲 Share Link
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-[10px] text-center text-slate-400 dark:text-zinc-500 font-light">
+                  This link expires in 7 days and is valid for a single registration.
+                </p>
+              </div>
+            ) : (
+              <div className="pt-2">
+                <button
+                  onClick={handleGenerateInvite}
+                  disabled={inviteLoading}
+                  className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold text-sm rounded-xl active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {inviteLoading ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Generating Secure Signature...
+                    </>
+                  ) : "Generate Invitation Link"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

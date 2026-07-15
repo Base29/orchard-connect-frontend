@@ -10,6 +10,7 @@ function LoginForm() {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
   
   useEffect(() => {
     const token = getAuthToken();
@@ -17,8 +18,21 @@ function LoginForm() {
       router.push("/dashboard");
     } else {
       setCheckingAuth(false);
+
+      const queryMode = searchParams.get("mode");
+      if (queryMode === "register") {
+        setMode("register");
+      }
+
+      if (typeof window !== "undefined") {
+        const code = localStorage.getItem("orchard_invite_code");
+        if (code) {
+          setInviteCode(code);
+          setMode("register");
+        }
+      }
     }
-  }, [router]);
+  }, [router, searchParams]);
 
   const error = searchParams.get("error");
   const baseUrl = getBaseUrl();
@@ -64,7 +78,7 @@ function LoginForm() {
     try {
       const payload = mode === "login"
         ? { email, password }
-        : { name, email, password, password_confirmation: passwordConfirmation, policies_accepted: policiesAccepted };
+        : { name, email, password, password_confirmation: passwordConfirmation, policies_accepted: policiesAccepted, invite_code: inviteCode };
 
       const res = await fetch(`${baseUrl}${endpoint}`, {
         method: "POST",
@@ -89,6 +103,23 @@ function LoginForm() {
 
       // Success: Save token using hybrid storage helper
       setAuthToken(data.token, rememberMe);
+
+      if (inviteCode) {
+        try {
+          await fetch(`${baseUrl}/api/invitations/claim`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": `Bearer ${data.token}`,
+            },
+            body: JSON.stringify({ code: inviteCode }),
+          });
+          localStorage.removeItem("orchard_invite_code");
+        } catch (err) {
+          console.error("Failed to claim invitation:", err);
+        }
+      }
 
       // Redirect depending on resident profile status
       if (data.profile_complete === true) {
@@ -118,6 +149,13 @@ function LoginForm() {
           Enter the secure portal for Bahria Orchard residents.
         </p>
       </div>
+
+      {inviteCode && (
+        <div className="p-4 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 text-emerald-800 dark:text-emerald-400 text-xs font-semibold space-y-1 animate-fade-in text-center">
+          <span>🎉 Onboarding Invitation Applied</span>
+          <p className="text-[11px] font-light opacity-90">Residency document upload requirement is waived. Your account will be automatically verified once you save your address details (works for both social and credential signups).</p>
+        </div>
+      )}
 
       {/* Tabs Selector */}
       <div className="flex border-b border-neutral-100 dark:border-zinc-850/80">

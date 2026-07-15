@@ -99,15 +99,15 @@ export function getEcho(dynamicKey?: string): any {
     }
   }
 
-  const authConfig = token ? {
+  const authConfig = {
     authEndpoint: `${getBaseUrl()}/api/broadcasting/auth`, // Secure Sanctum authorizer
     auth: {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         Accept: "application/json",
       },
     },
-  } : {};
+  };
 
   echoInstance = new Echo({
     broadcaster: "reverb",
